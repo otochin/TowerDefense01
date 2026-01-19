@@ -113,6 +113,9 @@ public class GameModeSelectUI : MonoBehaviour
     {
         Debug.Log($"[GameModeSelectUI] Mode selected: {selectedMode}");
         
+        // ステージ管理（勝利時はStageを進める、敗北時はStageをリセット）
+        HandleStageManagement();
+        
         // ゲーム再開時のリセット処理
         ResetGame();
         
@@ -253,5 +256,37 @@ public class GameModeSelectUI : MonoBehaviour
         }
         
         Debug.Log("[GameModeSelectUI] All characters and enemies removed.");
+    }
+    
+    /// <summary>
+    /// ステージ管理（勝利時はStageを進める、敗北時はStageをリセット）
+    /// </summary>
+    private void HandleStageManagement()
+    {
+        GameEndHandler gameEndHandler = FindObjectOfType<GameEndHandler>();
+        if (gameEndHandler == null)
+        {
+            Debug.LogWarning("[GameModeSelectUI] GameEndHandlerが見つかりません。ステージ管理をスキップします。");
+            return;
+        }
+        
+        StageManager stageManager = StageManager.Instance;
+        if (stageManager == null)
+        {
+            Debug.LogWarning("[GameModeSelectUI] StageManagerが見つかりません。ステージ管理をスキップします。");
+            return;
+        }
+        
+        // 勝利時はStageを進める、敗北時はStageをリセット
+        if (gameEndHandler.IsVictory)
+        {
+            stageManager.AdvanceStage();
+            Debug.Log($"[GameModeSelectUI] Stage advanced to: {stageManager.CurrentStage}");
+        }
+        else
+        {
+            stageManager.ResetStage();
+            Debug.Log("[GameModeSelectUI] Stage reset to: 1");
+        }
     }
 }

@@ -11,10 +11,12 @@ public class EnemySpawner : MonoBehaviour
     [Header("スポーン設定")]
     [SerializeField] private List<EnemyData> availableEnemies = new List<EnemyData>();
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private float spawnInterval = 3.0f; // スポーン間隔（秒）
+    [SerializeField] private float spawnInterval = 3.0f; // スポーン間隔（秒）（基本値）
     [SerializeField] private bool autoSpawn = false; // 自動スポーン開始（ゲームモード選択後に手動で開始）
     [SerializeField] private float randomOffsetRangePixels = 1000f; // ランダムオフセットの範囲（ピクセル単位）
     [SerializeField] private float pixelsPerUnit = 100f; // スプライトのPixels Per Unit（通常は100）
+    
+    private float baseSpawnInterval; // 基本スポーン間隔（Stage 1の時の値）
     
     [Header("スポーン制限")]
     [SerializeField] private int maxEnemiesOnScreen = 10; // 画面上の最大敵数
@@ -52,6 +54,9 @@ public class EnemySpawner : MonoBehaviour
             spawnPoint = transform;
         }
         
+        // 基本スポーン間隔を保存
+        baseSpawnInterval = spawnInterval;
+        
         // ゲームモード選択前は自動スポーンしない（ゲームモード選択後に手動でStartSpawning()を呼ぶ）
         // InspectorでautoSpawnがtrueに設定されていても、強制的にfalseにする
         autoSpawn = false;
@@ -80,8 +85,31 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     public void StartSpawning()
     {
+        // StageManagerから現在のStageに応じた倍率を取得してスポーン間隔を調整
+        UpdateSpawnIntervalForStage();
+        
         autoSpawn = true;
         spawnTimer = 0f;
+    }
+    
+    /// <summary>
+    /// Stageに応じてスポーン間隔を更新
+    /// </summary>
+    private void UpdateSpawnIntervalForStage()
+    {
+        StageManager stageManager = StageManager.Instance;
+        if (stageManager != null)
+        {
+            float multiplier = stageManager.GetSpawnIntervalMultiplier();
+            spawnInterval = baseSpawnInterval * multiplier;
+            Debug.Log($"[EnemySpawner] Spawn interval updated for Stage {stageManager.CurrentStage}: {spawnInterval:F2}s (multiplier: {multiplier:F2})");
+        }
+        else
+        {
+            // StageManagerが見つからない場合は基本値を使用
+            spawnInterval = baseSpawnInterval;
+            Debug.LogWarning("[EnemySpawner] StageManagerが見つかりません。基本スポーン間隔を使用します。");
+        }
     }
     
     /// <summary>

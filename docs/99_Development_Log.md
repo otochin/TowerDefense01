@@ -288,6 +288,30 @@
 **優先度**: 中  
 **見積もり**: 2時間
 
+#### 6.5 ステージシステム
+- [x] `StageManager.cs` の実装
+  - ステージ数の管理（シングルトンパターン）
+  - 勝利時のStage進行（`AdvanceStage()`）
+  - 敗北時のStageリセット（`ResetStage()`）
+  - Stageに応じたスポーン間隔倍率の計算（`GetSpawnIntervalMultiplier()`）
+- [x] `StageUI.cs` の実装
+  - 画面右上に「Stage: X」を表示
+  - StageManagerの変更イベントを購読して自動更新
+- [x] `GameEndHandler.cs` 修正
+  - 勝利/敗北フラグ（`isVictory`）を追加
+  - `IsVictory`プロパティで外部から状態を取得可能に
+- [x] `GameModeSelectUI.cs` 修正
+  - ゲームモード選択時に`HandleStageManagement()`を呼び出し
+  - 勝利時はStageを進める、敗北時はStageをリセット
+- [x] `EnemySpawner.cs` 修正
+  - `baseSpawnInterval`を保存
+  - `StartSpawning()`時にStageに応じてスポーン間隔を調整
+  - Stage 1: 1.0倍、Stage 2: 0.9倍、Stage 3: 0.81倍、Stage 4: 0.729倍...
+- [x] Unity Editorセットアップガイド作成（`docs/22_StageSystem_Setup.md`）
+
+**優先度**: 高  
+**見積もり**: 3時間
+
 ### Phase 7: セーブシステム実装
 
 #### 7.1 セーブマネージャー
@@ -616,6 +640,7 @@
 - **正解時のパワー計算**: 残りタイマー秒数×倍率（`powerRewardMultiplier`、デフォルト10）でパワーを計算。少数は四捨五入（`Mathf.RoundToInt()`）
 - **間違えた問題リスト機能**: ゲーム終了時に間違えた問題を回数順（多い順）で表示する機能を実装。`WordLearningSystem`で間違えた回数を記録し、`IncorrectAnswersListUI`でリスト表示。`IncorrectAnswerListItemUI`で各アイテムの英語・日本語・回数を表示。アイテム全体をクリックすると`MacOSTextToSpeech`を使用して英語を読み上げる機能を実装。
 - **シーン管理**: `GameSceneManager.cs`を作成（シーン間の遷移を管理するクラス）。ただし、現在はタイトルシーンを使用しないため、`SampleScene`のみで完結する構成に戻している。
+- **ステージシステム**: `StageManager`でステージ数を管理（シングルトンパターン）。画面右上に`StageUI`で「Stage: X」を表示。勝利後、ゲームモード選択時にStageを進める。敗北後、ゲームモード選択時にStage1にリセット。`EnemySpawner`がStageに応じてスポーン間隔を調整（Stageが1進むごとに0.9倍）。`GameEndHandler`で勝利/敗北フラグを管理し、`GameModeSelectUI`でゲームモード選択時にステージ管理を実行。
 - **城破壊時の効果音**: `EnemyCastle`と`PlayerCastle`に城破壊時の効果音機能を追加（`destroyedSound`、`audioSource`）
 - **歩行エフェクト**: `CharacterMovementController`と`EnemyController`に歩行エフェクトを実装。上下の揺れ（Y軸）のみを適用し、`LateUpdate`で`rb2D.position`のY座標を変更することで物理演算と競合しないように実装。移動速度に応じてタイマーを調整し、歩行リズムを表現。Inspectorでパラメータ（揺れ幅、速度、有効/無効）を調整可能。Z軸の回転（傾き）は削除し、上下の揺れのみで歩行しているように見えるようにした。
 
@@ -645,7 +670,7 @@
 
 ## 最終更新日
 
-2026年1月18日（歩行エフェクト実装完了：上下の揺れのみで歩行しているように見えるエフェクトをキャラクター・エネミーに実装）
+2026年1月19日（ステージシステム実装完了：画面右上にステージ数表示、勝利時のStage進行、敗北時のStageリセット、Stageに応じた難易度調整機能を実装）
 
 ## 変更履歴
 
@@ -731,3 +756,4 @@
 | 2026-01-18 | 間違えた問題リスト機能実装完了（IncorrectAnswersListUI、IncorrectAnswerListItemUI、WordLearningSystemの記録機能、GameEndHandlerとの統合、Unity Editorセットアップガイド作成） | - |
 | 2026-01-18 | GameEndHandler修正：ResetGameState()に間違えた問題リストの非表示とカウントリセット処理を追加 | - |
 | 2026-01-19 | 開発ログ・仕様書更新：間違えた問題リスト機能の音声読み上げ機能実装、IPointerClickHandler実装、GameSceneManager作成、タイトルシーンを使用しない構成への変更を記録 | - |
+| 2026-01-19 | ステージシステム実装完了：StageManager作成（ステージ数の管理、勝利時の増加、敗北時のリセット）、StageUI作成（画面右上に「Stage: X」を表示）、GameEndHandler修正（勝利/敗北フラグの管理）、GameModeSelectUI修正（ゲームモード選択時にステージ管理を実行）、EnemySpawner修正（Stageに応じてスポーン間隔を0.9倍に調整）、Unity Editorセットアップガイド作成（docs/22_StageSystem_Setup.md） | - |

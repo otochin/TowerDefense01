@@ -24,6 +24,7 @@ public class GameEndHandler : MonoBehaviour
     [SerializeField] private float bgmVolume = 0.5f; // BGMの音量（0.0〜1.0）
     
     private bool isGameEnded = false;
+    private bool isVictory = false; // 勝利フラグ（ゲームモード選択時にStageを進めるため）
     
     private void Start()
     {
@@ -128,6 +129,7 @@ public class GameEndHandler : MonoBehaviour
             return;
         }
         isGameEnded = true;
+        isVictory = false; // 敗北フラグを設定
         
         Debug.Log("[GameEndHandler] Player Castle destroyed. Game Over! CurrentHealth: " + (playerCastle != null ? playerCastle.CurrentHealth.ToString() : "null"));
         
@@ -163,6 +165,7 @@ public class GameEndHandler : MonoBehaviour
             return;
         }
         isGameEnded = true;
+        isVictory = true; // 勝利フラグを設定
         
         Debug.Log("[GameEndHandler] Enemy Castle destroyed. Victory!");
         
@@ -344,4 +347,9 @@ public class GameEndHandler : MonoBehaviour
         // Time.timeScaleもリセット（念のため）
         Time.timeScale = 1f;
     }
+    
+    /// <summary>
+    /// 勝利フラグを取得（ゲームモード選択時にStageを進めるため）
+    /// </summary>
+    public bool IsVictory => isVictory;
 }
