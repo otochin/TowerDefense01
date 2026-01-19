@@ -15,6 +15,7 @@ public class GameEndHandler : MonoBehaviour
     [SerializeField] private EnemySpawner enemySpawner;
     [SerializeField] private GameModeSelectUI gameModeSelectUI;
     [SerializeField] private ResourceManager resourceManager;
+    [SerializeField] private IncorrectAnswersListUI incorrectAnswersListUI; // 間違えた問題リストUI
     
     [Header("待機画面BGM設定")]
     [SerializeField] private AudioClip victoryBGM; // 勝利時の待機画面BGM
@@ -60,6 +61,12 @@ public class GameEndHandler : MonoBehaviour
         if (resourceManager == null)
         {
             resourceManager = ResourceManager.Instance;
+        }
+        
+        // IncorrectAnswersListUIを自動検出
+        if (incorrectAnswersListUI == null)
+        {
+            incorrectAnswersListUI = FindObjectOfType<IncorrectAnswersListUI>(true);
         }
         
         // BGM用のAudioSourceを自動検出または作成
@@ -133,6 +140,9 @@ public class GameEndHandler : MonoBehaviour
         // ゲームを停止
         StopGame();
         
+        // 間違えた問題リストを表示
+        ShowIncorrectAnswersList();
+        
         // 負け時の待機画面BGMを再生
         PlayDefeatBGM();
         
@@ -165,6 +175,9 @@ public class GameEndHandler : MonoBehaviour
         // ゲームを停止
         StopGame();
         
+        // 間違えた問題リストを表示
+        ShowIncorrectAnswersList();
+        
         // 勝利時の待機画面BGMを再生
         PlayVictoryBGM();
         
@@ -191,6 +204,30 @@ public class GameEndHandler : MonoBehaviour
         
         // すべてのキャラクターとエネミーの動きを停止（Time.timeScaleを使用）
         Time.timeScale = 0f;
+    }
+    
+    /// <summary>
+    /// 間違えた問題リストを表示（ゲーム終了時）
+    /// </summary>
+    private void ShowIncorrectAnswersList()
+    {
+        if (incorrectAnswersListUI != null)
+        {
+            incorrectAnswersListUI.ShowIncorrectAnswersList();
+        }
+        else
+        {
+            // 再検索を試みる
+            incorrectAnswersListUI = FindObjectOfType<IncorrectAnswersListUI>(true);
+            if (incorrectAnswersListUI != null)
+            {
+                incorrectAnswersListUI.ShowIncorrectAnswersList();
+            }
+            else
+            {
+                Debug.Log("[GameEndHandler] IncorrectAnswersListUIが見つかりません。間違いリストは表示されません。");
+            }
+        }
     }
     
     /// <summary>
@@ -293,6 +330,16 @@ public class GameEndHandler : MonoBehaviour
     {
         isGameEnded = false;
         Debug.Log("[GameEndHandler] Game state reset. isGameEnded: false");
+        
+        // 間違えた問題リストを非表示にし、カウントをリセット
+        if (incorrectAnswersListUI != null)
+        {
+            incorrectAnswersListUI.HidePanel();
+        }
+        if (wordLearningSystem != null)
+        {
+            wordLearningSystem.ClearIncorrectAnswers();
+        }
         
         // Time.timeScaleもリセット（念のため）
         Time.timeScale = 1f;

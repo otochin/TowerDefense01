@@ -14,8 +14,9 @@ public class WordLearningSystem : MonoBehaviour
     [SerializeField] private GameMode currentGameMode = GameMode.EnglishToJapanese;
     
     [Header("データ設定")]
-    [SerializeField] private TextAsset wordDataCsvFile; // CSVファイルをUnityのTextAssetとして読み込む
-    [SerializeField] private string wordDataCsvPath = "Data/WordData"; // Resourcesフォルダからの相対パス（拡張子なし）
+    [SerializeField] private TextAsset wordDataCsvFile; // CSVファイルをUnityのTextAssetとして読み込む（未設定時は自動選択）
+    [SerializeField] private string wordDataCsvPath = "Data/WordData"; // Resourcesフォルダからの相対パス（拡張子なし、ゲームモードで自動選択）
+    [SerializeField] private string phraseDataCsvPath = "Data/PhraseData"; // 英熟語データのパス（Resourcesフォルダからの相対パス、拡張子なし）
     
     [Header("リワード設定")]
     [SerializeField] private float powerRewardMultiplier = 10f; // 正解時のパワー倍率（残りタイマー秒数×この値）
@@ -50,6 +51,9 @@ public class WordLearningSystem : MonoBehaviour
     // 間違えた問題のキュー（再出題用）
     private Queue<WordData> incorrectQuestionsQueue = new Queue<WordData>();
     private int questionCount = 0; // 問題カウンター
+    
+    // 間違えた問題の回数を記録（WordDataをキーとして間違えた回数を記録）
+    private Dictionary<WordData, int> incorrectAnswersCount = new Dictionary<WordData, int>();
     
     // ResourceManagerへの参照
     private ResourceManager resourceManager;
@@ -352,7 +356,11 @@ public class WordLearningSystem : MonoBehaviour
     /// </summary>
     private string GetQuestionText(WordData wordData)
     {
-        return currentGameMode == GameMode.EnglishToJapanese ? wordData.English : wordData.Japanese;
+        // EnglishToJapanese または PhraseEnglishToJapanese の場合は英語/英熟語を表示
+        // それ以外は日本語を表示
+        return (currentGameMode == GameMode.EnglishToJapanese || currentGameMode == GameMode.PhraseEnglishToJapanese) 
+            ? wordData.English 
+            : wordData.Japanese;
     }
     
     /// <summary>
@@ -360,7 +368,11 @@ public class WordLearningSystem : MonoBehaviour
     /// </summary>
     private string GetCorrectAnswer(WordData wordData)
     {
-        return currentGameMode == GameMode.EnglishToJapanese ? wordData.Japanese : wordData.English;
+        // EnglishToJapanese または PhraseEnglishToJapanese の場合は日本語が正解
+        // それ以外は英語/英熟語が正解
+        return (currentGameMode == GameMode.EnglishToJapanese || currentGameMode == GameMode.PhraseEnglishToJapanese) 
+            ? wordData.Japanese 
+            : wordData.English;
     }
     
     /// <summary>
@@ -368,7 +380,8 @@ public class WordLearningSystem : MonoBehaviour
     /// </summary>
     private string GetWrongAnswer(WordData wordData)
     {
-        return currentGameMode == GameMode.EnglishToJapanese ? wordData.Japanese : wordData.English;
+        // GetCorrectAnswerと同じロジック（現在は未使用の可能性あり）
+        return GetCorrectAnswer(wordData);
     }
     
     /// <summary>
@@ -434,6 +447,20 @@ public class WordLearningSystem : MonoBehaviour
     /// </summary>
     private void OnIncorrectAnswer()
     {
+        // 間違えた問題の回数をカウント
+        if (currentQuestion != null)
+        {
+            if (incorrectAnswersCount.ContainsKey(currentQuestion))
+            {
+                incorrectAnswersCount[currentQuestion]++;
+            }
+            else
+            {
+                incorrectAnswersCount[currentQuestion] = 1;
+            }
+            Debug.Log($"[WordLearningSystem] Incorrect answer count for '{GetQuestionText(currentQuestion)}': {incorrectAnswersCount[currentQuestion]}");
+        }
+        
         // 間違えた問題をキューに追加（再出題用）
         if (enableRetryIncorrectQuestions && currentQuestion != null)
         {
@@ -477,7 +504,21 @@ public class WordLearningSystem : MonoBehaviour
         isShowingCorrectAnswer = true;
         currentTimer = correctAnswerDisplayTime;
         
-        // 間違えた問題をキューに追加（時間切れも不正解として扱う）
+        // 間違えた問題の回数をカウント（時間切れも不正解として扱う）
+        if (currentQuestion != null)
+        {
+            if (incorrectAnswersCount.ContainsKey(currentQuestion))
+            {
+                incorrectAnswersCount[currentQuestion]++;
+            }
+            else
+            {
+                incorrectAnswersCount[currentQuestion] = 1;
+            }
+            Debug.Log($"[WordLearningSystem] Time-over answer count for '{GetQuestionText(currentQuestion)}': {incorrectAnswersCount[currentQuestion]}");
+        }
+        
+        // 間違えた問題をキューに追加（再出題用）
         if (enableRetryIncorrectQuestions && currentQuestion != null)
         {
             // 既にキューに同じ問題が含まれていない場合のみ追加
@@ -515,11 +556,52 @@ public class WordLearningSystem : MonoBehaviour
     }
     
     /// <summary>
-    /// ゲームモードを設定
+    /// ゲームモードを設定し、対応するCSVファイルを読み込む
     /// </summary>
     public void SetGameMode(GameMode mode)
     {
         currentGameMode = mode;
+        
+        // ゲームモードに応じてCSVファイルパスを設定
+        switch (mode)
+        {
+            case GameMode.EnglishToJapanese:
+            case GameMode.JapaneseToEnglish:
+                // 英単語データを使用
+                wordDataCsvPath = "Data/WordData";
+                break;
+            case GameMode.PhraseEnglishToJapanese:
+            case GameMode.PhraseJapaneseToEnglish:
+                // 英熟語データを使用
+                wordDataCsvPath = phraseDataCsvPath;
+                break;
+        }
+        
+        // データを再読み込み
+        LoadWordDataFromCsv();
+        
+        Debug.Log($"[WordLearningSystem] Game mode set to: {mode}, CSV path: {wordDataCsvPath}");
+    }
+    
+    /// <summary>
+    /// 間違えた問題の回数をクリア（ゲーム開始時に呼び出す）
+    /// </summary>
+    public void ClearIncorrectAnswers()
+    {
+        incorrectAnswersCount.Clear();
+        Debug.Log("[WordLearningSystem] Incorrect answers count cleared.");
+    }
+    
+    /// <summary>
+    /// 間違えた問題を回数順でソートして返す（間違えた回数が多い順）
+    /// </summary>
+    /// <returns>間違えた問題のリスト（WordData, 間違えた回数）</returns>
+    public List<(WordData wordData, int count)> GetIncorrectAnswersSorted()
+    {
+        return incorrectAnswersCount
+            .OrderByDescending(x => x.Value) // 間違えた回数が多い順
+            .Select(x => (x.Key, x.Value))
+            .ToList();
     }
     
     /// <summary>
@@ -528,6 +610,9 @@ public class WordLearningSystem : MonoBehaviour
     public void StartGame()
     {
         Debug.Log($"[WordLearningSystem] StartGame called. Current mode: {currentGameMode}");
+        
+        // 間違えた問題の記録をクリア（新しいゲーム開始時）
+        ClearIncorrectAnswers();
         
         // 英単語データが読み込まれているか確認
         if (wordDataList.Count == 0)

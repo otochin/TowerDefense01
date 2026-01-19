@@ -7,9 +7,13 @@ using UnityEngine.UI;
 /// </summary>
 public class GameModeSelectUI : MonoBehaviour
 {
-    [Header("ゲームモード選択ボタン")]
+    [Header("ゲームモード選択ボタン（英単語）")]
     [SerializeField] private Button englishToJapaneseButton;
     [SerializeField] private Button japaneseToEnglishButton;
+    
+    [Header("ゲームモード選択ボタン（英熟語）")]
+    [SerializeField] private Button phraseEnglishToJapaneseButton;
+    [SerializeField] private Button phraseJapaneseToEnglishButton;
     
     [Header("参照")]
     [SerializeField] private WordLearningSystem wordLearningSystem;
@@ -80,6 +84,25 @@ public class GameModeSelectUI : MonoBehaviour
         else
         {
             Debug.LogWarning("[GameModeSelectUI] JapaneseToEnglishButtonが設定されていません。");
+        }
+        
+        // 英熟語用ボタンのクリックイベントを設定
+        if (phraseEnglishToJapaneseButton != null)
+        {
+            phraseEnglishToJapaneseButton.onClick.AddListener(() => OnModeSelected(GameMode.PhraseEnglishToJapanese));
+        }
+        else
+        {
+            Debug.LogWarning("[GameModeSelectUI] PhraseEnglishToJapaneseButtonが設定されていません。");
+        }
+        
+        if (phraseJapaneseToEnglishButton != null)
+        {
+            phraseJapaneseToEnglishButton.onClick.AddListener(() => OnModeSelected(GameMode.PhraseJapaneseToEnglish));
+        }
+        else
+        {
+            Debug.LogWarning("[GameModeSelectUI] PhraseJapaneseToEnglishButtonが設定されていません。");
         }
     }
     

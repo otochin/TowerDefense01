@@ -13,7 +13,6 @@ public class EnemyController : MonoBehaviour
     [Header("歩行エフェクト設定")]
     [SerializeField] private float walkBobbingAmount = 0.08f; // 上下の揺れ幅
     [SerializeField] private float walkBobbingSpeed = 5f; // 揺れの速度
-    [SerializeField] private float walkWobbleAngle = 1.5f; // 傾き角度（度）
     [SerializeField] private bool enableWalkEffect = true; // 歩行エフェクトを有効にするか
     
     [Header("参照")]

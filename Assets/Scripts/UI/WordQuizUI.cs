@@ -27,6 +27,9 @@ public class WordQuizUI : MonoBehaviour
     // WordLearningSystemへの参照
     private WordLearningSystem wordLearningSystem;
     
+    // MacOSTextToSpeechへの参照
+    private MacOSTextToSpeech textToSpeech;
+    
     private void Awake()
     {
         // WordLearningSystemを検索
@@ -35,6 +38,14 @@ public class WordQuizUI : MonoBehaviour
         if (wordLearningSystem == null)
         {
             Debug.LogWarning("[WordQuizUI] WordLearningSystemが見つかりません。UIの設定を確認してください。");
+        }
+        
+        // MacOSTextToSpeechを検索（存在しない場合は作成）
+        textToSpeech = FindObjectOfType<MacOSTextToSpeech>();
+        if (textToSpeech == null)
+        {
+            // WordQuizUIと同じGameObjectにMacOSTextToSpeechを追加
+            textToSpeech = gameObject.AddComponent<MacOSTextToSpeech>();
         }
         
         // WordQuizPanel全体を初期状態で非表示にする（ゲームモード選択後に表示される）
@@ -255,9 +266,50 @@ public class WordQuizUI : MonoBehaviour
     /// </summary>
     public void DisplayQuestion(string question)
     {
+        // まず問題テキストを表示（即座に表示）
         if (questionText != null)
         {
             questionText.text = question;
+        }
+        
+        // テキスト読み上げ（表示後に少し遅延してから開始）
+        if (textToSpeech == null)
+        {
+            // textToSpeechがnullの場合は再検索を試みる
+            textToSpeech = FindObjectOfType<MacOSTextToSpeech>();
+            if (textToSpeech == null)
+            {
+                // 見つからない場合は、このGameObjectに追加
+                textToSpeech = gameObject.AddComponent<MacOSTextToSpeech>();
+                Debug.Log("[WordQuizUI] MacOSTextToSpeech component created in DisplayQuestion");
+            }
+            else
+            {
+                Debug.Log("[WordQuizUI] MacOSTextToSpeech component found in DisplayQuestion");
+            }
+        }
+        
+        if (textToSpeech != null)
+        {
+            Debug.Log($"[WordQuizUI] Calling Speak: {question}");
+            // 少し遅延してから音声を再生（問題表示が先に完了してから）
+            StartCoroutine(SpeakWithDelay(question, 0.1f));
+        }
+        else
+        {
+            Debug.LogWarning("[WordQuizUI] textToSpeech is null! Cannot speak text.");
+        }
+    }
+    
+    /// <summary>
+    /// 遅延後に音声を再生するコルーチン
+    /// </summary>
+    private System.Collections.IEnumerator SpeakWithDelay(string text, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (textToSpeech != null)
+        {
+            textToSpeech.Speak(text);
         }
     }
     

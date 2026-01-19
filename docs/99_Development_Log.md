@@ -469,6 +469,10 @@
   - `ResourceManager.cs` - 時間経過によるお金の自動増加を無効化（enableAutoMoneyGenerationフラグ追加）
   - サンプルCSVファイル作成（`Assets/Resources/Data/WordData.csv`）
   - Unity Editorセットアップガイド作成（`docs/09_Japanese_Font_Fix.md` - 日本語フォント文字化け対処法）
+  - 間違えた問題リスト機能実装（`IncorrectAnswersListUI.cs`、`IncorrectAnswerListItemUI.cs`）
+    - `WordLearningSystem.cs`に間違えた問題の記録機能を追加（`incorrectAnswersCount`ディクショナリ、`OnIncorrectAnswer()`でカウント、`GetIncorrectAnswersSorted()`で回数順にソート）
+    - `GameEndHandler.cs`に間違えた問題リスト表示機能を統合（ゲーム終了時に`ShowIncorrectAnswersList()`を呼び出し、`ResetGameState()`でリセット）
+    - Unity Editorセットアップガイド作成（`docs/11_IncorrectAnswersList_Setup.md` - 間違えた問題リストUIセットアップ手順）
 
 ### 解決済みの問題
 - **ResourceUIの表示問題**: 解決済み
@@ -519,14 +523,16 @@
     2. `Start()`でも確実に`initialMoney`を反映するように、`instance == this`の場合に`currentMoney = initialMoney;`を実行
 
 ### 次回の作業内容
-1. Phase 5（戦闘システム実装）に進む
+1. 間違えた問題リスト機能の動作確認・デバッグ
+   - ゲーム終了時に間違えた問題リストが正しく表示されるか確認
+   - 間違えた問題が回数順（多い順）でソートされているか確認
+   - 英語/英熟語、日本語、間違えた回数が正しく表示されるか確認
+   - ゲーム再開時にリストがリセットされているか確認
+   - 症状が変わらない原因を特定・修正
+2. Phase 5（戦闘システム実装）に進む（間違えた問題リスト機能が動作確認完了後）
    - `DamageSystem.cs`の実装
    - 投射物システム（`Projectile.cs`）の実装
    - 衝突検出システムの実装
-3. ゲーム終了処理の動作確認
-   - Win/Lost表示の動作確認
-   - ゲーム停止・再開の動作確認
-   - Power・城のHPリセットの動作確認
 
 ### 技術的なメモ
 - `Money Format`のデフォルト値を英語（`Money: {0}`）に設定済み（日本語文字化け対策）
@@ -714,3 +720,5 @@
 | 2026-01-18 | PlayerCastle修正：城破壊時の効果音機能追加（destroyedSound、audioSource） | - |
 | 2026-01-18 | CharacterMovementController修正：歩行エフェクト実装完了（上下の揺れのみ、Z軸回転は削除、LateUpdateでrb2D.positionのY座標を変更して歩行しているように見えるエフェクトを実装） | - |
 | 2026-01-18 | EnemyController修正：歩行エフェクト実装完了（上下の揺れのみ、Z軸回転は削除、LateUpdateでrb2D.positionのY座標を変更して歩行しているように見えるエフェクトを実装） | - |
+| 2026-01-18 | 間違えた問題リスト機能実装完了（IncorrectAnswersListUI、IncorrectAnswerListItemUI、WordLearningSystemの記録機能、GameEndHandlerとの統合、Unity Editorセットアップガイド作成） | - |
+| 2026-01-18 | GameEndHandler修正：ResetGameState()に間違えた問題リストの非表示とカウントリセット処理を追加 | - |
