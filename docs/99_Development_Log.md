@@ -473,6 +473,8 @@
     - `WordLearningSystem.cs`に間違えた問題の記録機能を追加（`incorrectAnswersCount`ディクショナリ、`OnIncorrectAnswer()`でカウント、`GetIncorrectAnswersSorted()`で回数順にソート）
     - `GameEndHandler.cs`に間違えた問題リスト表示機能を統合（ゲーム終了時に`ShowIncorrectAnswersList()`を呼び出し、`ResetGameState()`でリセット）
     - Unity Editorセットアップガイド作成（`docs/11_IncorrectAnswersList_Setup.md` - 間違えた問題リストUIセットアップ手順）
+    - 音声読み上げ機能実装：`IncorrectAnswerListItemUI.cs`に`MacOSTextToSpeech`を使用した音声読み上げ機能を追加（アイテム全体をクリックすると英語を読み上げる）
+    - `IncorrectAnswerListItemUI.cs`修正：`IPointerClickHandler`を実装してアイテム全体をクリック可能に変更
 
 ### 解決済みの問題
 - **ResourceUIの表示問題**: 解決済み
@@ -612,6 +614,8 @@
 - **勝利判定バグ修正**: `EnemyCastle`に`isDestroyedHandled`フラグを追加し、重複呼び出しを防止。`HandleHealthChanged()`にフォールバック検出を追加
 - **ゲーム再開処理**: `GameEndHandler.ResetGameState()`メソッドを追加し、ゲーム再開時に`isGameEnded`フラグをリセット。`GameModeSelectUI.ResetGame()`から呼び出される
 - **正解時のパワー計算**: 残りタイマー秒数×倍率（`powerRewardMultiplier`、デフォルト10）でパワーを計算。少数は四捨五入（`Mathf.RoundToInt()`）
+- **間違えた問題リスト機能**: ゲーム終了時に間違えた問題を回数順（多い順）で表示する機能を実装。`WordLearningSystem`で間違えた回数を記録し、`IncorrectAnswersListUI`でリスト表示。`IncorrectAnswerListItemUI`で各アイテムの英語・日本語・回数を表示。アイテム全体をクリックすると`MacOSTextToSpeech`を使用して英語を読み上げる機能を実装。
+- **シーン管理**: `GameSceneManager.cs`を作成（シーン間の遷移を管理するクラス）。ただし、現在はタイトルシーンを使用しないため、`SampleScene`のみで完結する構成に戻している。
 - **城破壊時の効果音**: `EnemyCastle`と`PlayerCastle`に城破壊時の効果音機能を追加（`destroyedSound`、`audioSource`）
 - **歩行エフェクト**: `CharacterMovementController`と`EnemyController`に歩行エフェクトを実装。上下の揺れ（Y軸）のみを適用し、`LateUpdate`で`rb2D.position`のY座標を変更することで物理演算と競合しないように実装。移動速度に応じてタイマーを調整し、歩行リズムを表現。Inspectorでパラメータ（揺れ幅、速度、有効/無効）を調整可能。Z軸の回転（傾き）は削除し、上下の揺れのみで歩行しているように見えるようにした。
 
@@ -637,7 +641,7 @@
 - [x] 城への攻撃機能の動作確認：キャラクター・エネミーが城に攻撃できることを確認
 - [x] 城のダメージフラッシュエフェクトの動作確認：城が攻撃を受けた時に一瞬赤色にフラッシュすることを確認
 
----
+2026年1月19日（開発ログ・仕様書更新：間違えた問題リスト機能の音声読み上げ機能実装、IPointerClickHandler実装、GameSceneManager作成、タイトルシーンを使用しない構成への変更を記録）
 
 ## 最終更新日
 
@@ -718,7 +722,12 @@
 | 2026-01-18 | WordLearningSystem修正：正解時のパワー計算を残りタイマー秒数×倍率に変更（moneyRewardOnCorrectをpowerRewardMultiplierに変更、四捨五入処理追加） | - |
 | 2026-01-18 | EnemyCastle修正：城破壊時の効果音機能追加（destroyedSound、audioSource） | - |
 | 2026-01-18 | PlayerCastle修正：城破壊時の効果音機能追加（destroyedSound、audioSource） | - |
+| 2026-01-18 | IncorrectAnswerListItemUI修正：MacOSTextToSpeechを使用した音声読み上げ機能を追加（アイテム全体をクリックすると英語を読み上げる） | - |
+| 2026-01-18 | IncorrectAnswerListItemUI修正：IPointerClickHandlerを実装してアイテム全体をクリック可能に変更 | - |
+| 2026-01-18 | GameSceneManager作成：シーン管理システムを作成（タイトルシーンとゲームシーン間の遷移を管理）。ただし、最終的にタイトルシーンは使用しない方針に変更 | - |
+| 2026-01-18 | GameEndHandler/GameModeSelectUI修正：タイトルシーンを使用しない構成に戻す（SampleSceneのみで完結） | - |
 | 2026-01-18 | CharacterMovementController修正：歩行エフェクト実装完了（上下の揺れのみ、Z軸回転は削除、LateUpdateでrb2D.positionのY座標を変更して歩行しているように見えるエフェクトを実装） | - |
 | 2026-01-18 | EnemyController修正：歩行エフェクト実装完了（上下の揺れのみ、Z軸回転は削除、LateUpdateでrb2D.positionのY座標を変更して歩行しているように見えるエフェクトを実装） | - |
 | 2026-01-18 | 間違えた問題リスト機能実装完了（IncorrectAnswersListUI、IncorrectAnswerListItemUI、WordLearningSystemの記録機能、GameEndHandlerとの統合、Unity Editorセットアップガイド作成） | - |
 | 2026-01-18 | GameEndHandler修正：ResetGameState()に間違えた問題リストの非表示とカウントリセット処理を追加 | - |
+| 2026-01-19 | 開発ログ・仕様書更新：間違えた問題リスト機能の音声読み上げ機能実装、IPointerClickHandler実装、GameSceneManager作成、タイトルシーンを使用しない構成への変更を記録 | - |
