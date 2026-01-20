@@ -312,6 +312,31 @@
 **優先度**: 高  
 **見積もり**: 3時間
 
+#### 6.6 背景システム（完了）
+- [x] `BackgroundManager.cs` の実装
+  - ステージごとに背景を切り替える機能
+  - `StageManager`の`OnStageChanged`イベントを購読して自動切り替え
+  - `Background` GameObjectのSpriteRendererを使用したシンプルな背景切り替え機能
+  - タイル表示機能を削除し、シンプルなSprite切り替えに変更
+- [x] Unity Editorセットアップ完了
+  - `BackgroundManager` GameObject作成済み
+  - `Background` GameObject作成済み（SpriteRendererコンポーネント付き）
+  - `Background Manager`スクリプトアタッチ済み
+  - `Stage Backgrounds`にステージ1の背景画像（`maptile_tsuchi_01`）設定済み
+  - `Background` GameObjectの自動検出機能実装済み
+- [x] Unity Editorセットアップガイド作成（`docs/23_BackgroundSystem_Setup.md`）
+- [x] 調査ドキュメント作成（`docs/24_BackgroundTile_Investigation.md`）
+
+**優先度**: 中  
+**見積もり**: 2時間（完了）
+
+**実装内容（2026年1月20日）**:
+- 背景システムのスクリプト実装完了
+- タイル表示機能を削除し、シンプルなSprite切り替え機能に変更
+- `Background` GameObjectを自動検出する機能を実装
+- ステージ変更時に自動的に背景が切り替わる機能を実装
+- Unity Editorでのセットアップ完了
+
 ### Phase 7: セーブシステム実装
 
 #### 7.1 セーブマネージャー
@@ -643,6 +668,7 @@
 - **ステージシステム**: `StageManager`でステージ数を管理（シングルトンパターン）。画面右上に`StageUI`で「Stage: X」を表示。勝利後、ゲームモード選択時にStageを進める。敗北後、ゲームモード選択時にStage1にリセット。`EnemySpawner`がStageに応じてスポーン間隔を調整（Stageが1進むごとに0.9倍）。`GameEndHandler`で勝利/敗北フラグを管理し、`GameModeSelectUI`でゲームモード選択時にステージ管理を実行。
 - **城破壊時の効果音**: `EnemyCastle`と`PlayerCastle`に城破壊時の効果音機能を追加（`destroyedSound`、`audioSource`）
 - **歩行エフェクト**: `CharacterMovementController`と`EnemyController`に歩行エフェクトを実装。上下の揺れ（Y軸）のみを適用し、`LateUpdate`で`rb2D.position`のY座標を変更することで物理演算と競合しないように実装。移動速度に応じてタイマーを調整し、歩行リズムを表現。Inspectorでパラメータ（揺れ幅、速度、有効/無効）を調整可能。Z軸の回転（傾き）は削除し、上下の揺れのみで歩行しているように見えるようにした。
+- **背景システム**: `BackgroundManager`でステージごとに背景を切り替える機能を実装。`StageManager`の`OnStageChanged`イベントを購読して自動切り替え。`Background` GameObjectのSpriteRendererを使用したシンプルな背景切り替え機能。タイル表示機能は削除し、シンプルなSprite切り替えに変更。`Background` GameObjectを自動検出する機能を実装（`GameObject.Find("Background")`を使用）。Inspectorで設定されていても、常に`Background` GameObjectのSpriteRendererを参照するように修正。
 
 ### 動作確認済み項目
 - [x] ResourceManagerの動作確認：お金が時間経過で自動増加することを確認
@@ -670,7 +696,7 @@
 
 ## 最終更新日
 
-2026年1月19日（ステージシステム実装完了：画面右上にステージ数表示、勝利時のStage進行、敗北時のStageリセット、Stageに応じた難易度調整機能を実装）
+2026年1月20日（背景システム実装完了：BackgroundManager修正、タイル表示機能を削除してシンプルなSprite切り替え機能に変更、Background GameObjectの自動検出機能実装、Unity Editorセットアップ完了）
 
 ## 変更履歴
 
@@ -757,3 +783,5 @@
 | 2026-01-18 | GameEndHandler修正：ResetGameState()に間違えた問題リストの非表示とカウントリセット処理を追加 | - |
 | 2026-01-19 | 開発ログ・仕様書更新：間違えた問題リスト機能の音声読み上げ機能実装、IPointerClickHandler実装、GameSceneManager作成、タイトルシーンを使用しない構成への変更を記録 | - |
 | 2026-01-19 | ステージシステム実装完了：StageManager作成（ステージ数の管理、勝利時の増加、敗北時のリセット）、StageUI作成（画面右上に「Stage: X」を表示）、GameEndHandler修正（勝利/敗北フラグの管理）、GameModeSelectUI修正（ゲームモード選択時にステージ管理を実行）、EnemySpawner修正（Stageに応じてスポーン間隔を0.9倍に調整）、Unity Editorセットアップガイド作成（docs/22_StageSystem_Setup.md） | - |
+| 2026-01-19 | 背景システム実装開始：BackgroundManager.cs作成（ステージごとの背景切り替え、タイル表示機能）、Unity Editorセットアップガイド作成（docs/23_BackgroundSystem_Setup.md）、調査ドキュメント作成（docs/24_BackgroundTile_Investigation.md）。問題：DrawModeがTiledからSlicedに変わってしまう、タイルが2枚分しか表示されない。原因調査中：Mesh TypeはFull Rectに設定済み、Background Rendererの参照設定が必要。次のステップ：Background Rendererの参照設定、Unity Editorで手動でDrawModeをTiledに設定、Sizeプロパティを適切に設定 | - |
+| 2026-01-20 | 背景システム実装完了：BackgroundManager修正（タイル表示機能を削除、Background GameObjectのSpriteRendererを使用したシンプルな背景切り替え機能に変更）、Background GameObjectの自動検出機能実装（GameObject.Find("Background")を使用）、Awake()とUpdateBackground()で常にBackground GameObjectを検索して正しいSpriteRendererを参照するように修正、ステージ変更時に自動的に背景が切り替わる機能を実装、Unity Editorセットアップ完了 | - |
