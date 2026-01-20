@@ -164,6 +164,15 @@ public class GameModeSelectUI : MonoBehaviour
             Debug.LogError("[GameModeSelectUI] CharacterSelectUIが見つかりません。CharacterSelectPanelを表示できません。");
         }
         
+        // CharacterUpgradePanelを非表示にする（ゲーム開始時）
+        CharacterUpgradeUI characterUpgradeUI = FindObjectOfType<CharacterUpgradeUI>(true);
+        if (characterUpgradeUI != null)
+        {
+            characterUpgradeUI.SetPanelVisible(false);
+            characterUpgradeUI.ResetSelection();
+            Debug.Log("[GameModeSelectUI] CharacterUpgradePanel hidden.");
+        }
+        
         // EnemySpawnerのスポーンを開始（ゲームモード選択後）
         if (enemySpawner != null)
         {

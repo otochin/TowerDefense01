@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 /// <summary>
 /// 背景管理システム
-/// ステージごとに背景を切り替える
+/// ステージごとにBackground GameObjectのSpriteを切り替える
 /// </summary>
 public class BackgroundManager : MonoBehaviour
 {
@@ -24,68 +24,16 @@ public class BackgroundManager : MonoBehaviour
     [Tooltip("ステージごとの背景設定")]
     [SerializeField] private List<StageBackground> stageBackgrounds = new List<StageBackground>();
     
-    [Header("背景オブジェクト参照")]
-    [Tooltip("背景を表示するSpriteRenderer（Background GameObjectのSpriteRendererを設定）")]
-    [SerializeField] private SpriteRenderer backgroundRenderer;
-    
     [Header("カメラ参照")]
     [Tooltip("背景色を設定するカメラ（自動検出も可能）")]
     [SerializeField] private Camera mainCamera;
     
+    private SpriteRenderer backgroundRenderer;
+    
     private void Awake()
     {
-        Debug.Log("[BackgroundManager] Awake() called");
-        
-        // 常に「Background」という名前のGameObjectを探す
-        GameObject backgroundObject = GameObject.Find("Background");
-        if (backgroundObject != null)
-        {
-            Debug.Log($"[BackgroundManager] Background GameObject found: {backgroundObject.name}, Active: {backgroundObject.activeSelf}, ActiveInHierarchy: {backgroundObject.activeInHierarchy}");
-            
-            // Background GameObjectの子オブジェクトを確認
-            int childCount = backgroundObject.transform.childCount;
-            Debug.Log($"[BackgroundManager] Background GameObject has {childCount} child(ren)");
-            for (int i = 0; i < childCount; i++)
-            {
-                Transform child = backgroundObject.transform.GetChild(i);
-                Debug.Log($"[BackgroundManager]   Child {i}: {child.name}, Active: {child.gameObject.activeSelf}, ActiveInHierarchy: {child.gameObject.activeInHierarchy}");
-            }
-            
-            // まず自分自身から検索、見つからなければ子オブジェクトから検索（非アクティブも含む）
-            SpriteRenderer foundRenderer = backgroundObject.GetComponent<SpriteRenderer>();
-            if (foundRenderer == null)
-            {
-                Debug.Log("[BackgroundManager] SpriteRenderer not found on Background GameObject itself, searching in children (including inactive)...");
-                foundRenderer = backgroundObject.GetComponentInChildren<SpriteRenderer>(true); // includeInactive = true
-            }
-            
-            if (foundRenderer != null)
-            {
-                // 設定されているbackgroundRendererが正しいか確認
-                if (backgroundRenderer == null || backgroundRenderer.gameObject.name != "Background")
-                {
-                    Debug.Log($"[BackgroundManager] Updating Background Renderer reference. Old: {(backgroundRenderer != null ? backgroundRenderer.gameObject.name : "null")}, New: {foundRenderer.gameObject.name}");
-                    backgroundRenderer = foundRenderer;
-                    Debug.Log($"[BackgroundManager] SpriteRenderer found on Background GameObject (or child). GameObject: {foundRenderer.gameObject.name}, Current sprite: {(backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null")}");
-                }
-                else
-                {
-                    Debug.Log($"[BackgroundManager] Background Renderer already correctly set to Background GameObject. Current sprite: {(backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null")}");
-                }
-            }
-            else
-            {
-                Debug.LogWarning("[BackgroundManager] Background GameObject found but SpriteRenderer component not found (neither on GameObject nor in children, including inactive).");
-                Debug.Log("[BackgroundManager] Automatically adding SpriteRenderer component to Background GameObject...");
-                foundRenderer = backgroundObject.AddComponent<SpriteRenderer>();
-                backgroundRenderer = foundRenderer;
-                Debug.Log($"[BackgroundManager] SpriteRenderer component added to Background GameObject. Current sprite: {(backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null")}");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("[BackgroundManager] Background GameObject not found. Please create a GameObject named 'Background' with a SpriteRenderer component.");
-        }
+        // Background GameObjectを検索
+        FindBackgroundRenderer();
         
         // カメラの自動検出
         if (mainCamera == null)
@@ -96,32 +44,19 @@ public class BackgroundManager : MonoBehaviour
                 mainCamera = FindObjectOfType<Camera>();
             }
         }
-        
-        Debug.Log($"[BackgroundManager] Main Camera: {(mainCamera != null ? mainCamera.name : "null")}");
     }
     
     private void Start()
     {
-        Debug.Log("[BackgroundManager] Start() called");
-        Debug.Log($"[BackgroundManager] Stage Backgrounds count: {stageBackgrounds.Count}");
-        for (int i = 0; i < stageBackgrounds.Count; i++)
-        {
-            var bg = stageBackgrounds[i];
-            Debug.Log($"[BackgroundManager] Stage {bg.stageNumber}: Sprite={(bg.backgroundSprite != null ? bg.backgroundSprite.name : "null")}, Color={bg.backgroundColor}");
-        }
-        
         // StageManagerのイベントを購読
         if (StageManager.Instance != null)
         {
-            Debug.Log($"[BackgroundManager] StageManager found. Current Stage: {StageManager.Instance.CurrentStage}");
             StageManager.Instance.OnStageChanged += OnStageChanged;
-            Debug.Log("[BackgroundManager] Subscribed to StageManager.OnStageChanged event");
             // 初期ステージの背景を設定
             UpdateBackground(StageManager.Instance.CurrentStage);
         }
         else
         {
-            Debug.LogWarning("[BackgroundManager] StageManager not found. Background will not update automatically.");
             // StageManagerが見つからない場合、デフォルトでステージ1の背景を設定
             UpdateBackground(1);
         }
@@ -137,11 +72,36 @@ public class BackgroundManager : MonoBehaviour
     }
     
     /// <summary>
+    /// Background GameObjectのSpriteRendererを検索
+    /// </summary>
+    private void FindBackgroundRenderer()
+    {
+        GameObject backgroundObject = GameObject.Find("Background");
+        if (backgroundObject == null)
+        {
+            Debug.LogWarning("[BackgroundManager] Background GameObject not found. Please create a GameObject named 'Background' with a SpriteRenderer component.");
+            return;
+        }
+        
+        // まず自分自身から検索、見つからなければ子オブジェクトから検索（非アクティブも含む）
+        backgroundRenderer = backgroundObject.GetComponent<SpriteRenderer>();
+        if (backgroundRenderer == null)
+        {
+            backgroundRenderer = backgroundObject.GetComponentInChildren<SpriteRenderer>(true);
+        }
+        
+        if (backgroundRenderer == null)
+        {
+            Debug.LogWarning("[BackgroundManager] SpriteRenderer component not found on Background GameObject. Automatically adding SpriteRenderer component...");
+            backgroundRenderer = backgroundObject.AddComponent<SpriteRenderer>();
+        }
+    }
+    
+    /// <summary>
     /// ステージ変更時のコールバック
     /// </summary>
     private void OnStageChanged(int newStage)
     {
-        Debug.Log($"[BackgroundManager] OnStageChanged called with stage: {newStage}");
         UpdateBackground(newStage);
     }
     
@@ -150,50 +110,23 @@ public class BackgroundManager : MonoBehaviour
     /// </summary>
     public void UpdateBackground(int stageNumber)
     {
-        Debug.Log($"[BackgroundManager] UpdateBackground called with stageNumber: {stageNumber}");
-        
-        // 常に「Background」という名前のGameObjectを探して確認
-        GameObject backgroundObject = GameObject.Find("Background");
-        if (backgroundObject != null)
+        // Background GameObjectのSpriteRendererを再検索（念のため）
+        if (backgroundRenderer == null)
         {
-            // まず自分自身から検索、見つからなければ子オブジェクトから検索（非アクティブも含む）
-            SpriteRenderer foundRenderer = backgroundObject.GetComponent<SpriteRenderer>();
-            if (foundRenderer == null)
-            {
-                Debug.Log("[BackgroundManager] SpriteRenderer not found on Background GameObject itself, searching in children (including inactive)...");
-                foundRenderer = backgroundObject.GetComponentInChildren<SpriteRenderer>(true); // includeInactive = true
-            }
-            
-            if (foundRenderer == null)
-            {
-                Debug.LogWarning("[BackgroundManager] Background GameObject found but SpriteRenderer component not found (neither on GameObject nor in children, including inactive).");
-                Debug.Log("[BackgroundManager] Automatically adding SpriteRenderer component to Background GameObject...");
-                foundRenderer = backgroundObject.AddComponent<SpriteRenderer>();
-                Debug.Log("[BackgroundManager] SpriteRenderer component added to Background GameObject.");
-            }
-            
-            // 設定されているbackgroundRendererが正しいか確認
-            if (backgroundRenderer == null || backgroundRenderer.gameObject.name != "Background")
-            {
-                Debug.Log($"[BackgroundManager] Updating Background Renderer reference. Old: {(backgroundRenderer != null ? backgroundRenderer.gameObject.name : "null")}, New: {foundRenderer.gameObject.name}");
-                backgroundRenderer = foundRenderer;
-            }
-            
-            Debug.Log($"[BackgroundManager] Background Renderer is set: {backgroundRenderer.gameObject.name}. Current sprite before update: {(backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null")}");
+            FindBackgroundRenderer();
         }
-        else
+        
+        if (backgroundRenderer == null)
         {
-            Debug.LogError("[BackgroundManager] Background GameObject not found. Please create a GameObject named 'Background' with a SpriteRenderer component.");
+            Debug.LogError("[BackgroundManager] Background Renderer not found. Cannot update background.");
             return;
         }
         
         // ステージに対応する背景を検索
-        Debug.Log($"[BackgroundManager] Searching for background for stage {stageNumber} in {stageBackgrounds.Count} configured backgrounds...");
         StageBackground stageBg = stageBackgrounds.Find(bg => bg.stageNumber == stageNumber);
         
         if (stageBg == null)
         {
-            Debug.LogWarning($"[BackgroundManager] Background not found for stage {stageNumber}. Using default.");
             // デフォルトでステージ1の背景を使用
             stageBg = stageBackgrounds.Find(bg => bg.stageNumber == 1);
         }
@@ -204,24 +137,17 @@ public class BackgroundManager : MonoBehaviour
             return;
         }
         
-        Debug.Log($"[BackgroundManager] Found stage background: Stage={stageBg.stageNumber}, Sprite={(stageBg.backgroundSprite != null ? stageBg.backgroundSprite.name : "null")}, Color={stageBg.backgroundColor}");
-        
         // 背景画像を設定
         if (stageBg.backgroundSprite != null)
         {
-            string oldSpriteName = backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null";
             backgroundRenderer.sprite = stageBg.backgroundSprite;
             backgroundRenderer.color = Color.white;
-            string newSpriteName = backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null";
-            Debug.Log($"[BackgroundManager] Background sprite updated for stage {stageNumber}: {oldSpriteName} -> {newSpriteName}");
-            Debug.Log($"[BackgroundManager] SpriteRenderer.sprite after update: {(backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null")}");
         }
         else
         {
             // 背景画像がない場合、背景色を使用
             backgroundRenderer.sprite = null;
             backgroundRenderer.color = stageBg.backgroundColor;
-            Debug.Log($"[BackgroundManager] Background color updated for stage {stageNumber}: {stageBg.backgroundColor}");
         }
         
         // カメラの背景色を設定（背景画像がない場合のフォールバック）
@@ -229,10 +155,7 @@ public class BackgroundManager : MonoBehaviour
         {
             mainCamera.backgroundColor = stageBg.backgroundColor;
         }
-        
-        Debug.Log($"[BackgroundManager] Background update completed for stage {stageNumber}");
     }
-    
     
     /// <summary>
     /// 背景を手動で設定（デバッグ用）

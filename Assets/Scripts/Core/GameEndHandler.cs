@@ -16,6 +16,7 @@ public class GameEndHandler : MonoBehaviour
     [SerializeField] private GameModeSelectUI gameModeSelectUI;
     [SerializeField] private ResourceManager resourceManager;
     [SerializeField] private IncorrectAnswersListUI incorrectAnswersListUI; // 間違えた問題リストUI
+    [SerializeField] private CharacterUpgradeUI characterUpgradeUI; // キャラクター強化UI
     
     [Header("待機画面BGM設定")]
     [SerializeField] private AudioClip victoryBGM; // 勝利時の待機画面BGM
@@ -68,6 +69,24 @@ public class GameEndHandler : MonoBehaviour
         if (incorrectAnswersListUI == null)
         {
             incorrectAnswersListUI = FindObjectOfType<IncorrectAnswersListUI>(true);
+        }
+        
+        // CharacterUpgradeUIを自動検出
+        if (characterUpgradeUI == null)
+        {
+            characterUpgradeUI = FindObjectOfType<CharacterUpgradeUI>(true);
+            if (characterUpgradeUI != null)
+            {
+                Debug.Log($"[GameEndHandler] CharacterUpgradeUI found in Start: {characterUpgradeUI.gameObject.name}");
+            }
+            else
+            {
+                Debug.LogWarning("[GameEndHandler] CharacterUpgradeUI not found in Start. It will be searched again when game ends.");
+            }
+        }
+        else
+        {
+            Debug.Log($"[GameEndHandler] CharacterUpgradeUI already set in Start: {characterUpgradeUI.gameObject.name}");
         }
         
         // BGM用のAudioSourceを自動検出または作成
@@ -148,6 +167,9 @@ public class GameEndHandler : MonoBehaviour
         // 負け時の待機画面BGMを再生
         PlayDefeatBGM();
         
+        // キャラクター強化UIを表示
+        ShowCharacterUpgradeUI();
+        
         // すぐにゲームモード選択パネルを表示（Win/Lost表示は維持したまま）
         ShowModeSelectionPanel();
     }
@@ -183,6 +205,9 @@ public class GameEndHandler : MonoBehaviour
         
         // 勝利時の待機画面BGMを再生
         PlayVictoryBGM();
+        
+        // キャラクター強化UIを表示
+        ShowCharacterUpgradeUI();
         
         // すぐにゲームモード選択パネルを表示（Win/Lost表示は維持したまま）
         ShowModeSelectionPanel();
@@ -229,6 +254,35 @@ public class GameEndHandler : MonoBehaviour
             else
             {
                 Debug.Log("[GameEndHandler] IncorrectAnswersListUIが見つかりません。間違いリストは表示されません。");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// キャラクター強化UIを表示（ゲーム終了時）
+    /// </summary>
+    private void ShowCharacterUpgradeUI()
+    {
+        Debug.Log("[GameEndHandler] ShowCharacterUpgradeUI called.");
+        
+        if (characterUpgradeUI != null)
+        {
+            Debug.Log($"[GameEndHandler] CharacterUpgradeUI reference exists: {characterUpgradeUI.gameObject.name}");
+            characterUpgradeUI.SetPanelVisible(true);
+        }
+        else
+        {
+            Debug.Log("[GameEndHandler] CharacterUpgradeUI reference is null. Searching...");
+            // 再検索を試みる
+            characterUpgradeUI = FindObjectOfType<CharacterUpgradeUI>(true);
+            if (characterUpgradeUI != null)
+            {
+                Debug.Log($"[GameEndHandler] CharacterUpgradeUI found: {characterUpgradeUI.gameObject.name}");
+                characterUpgradeUI.SetPanelVisible(true);
+            }
+            else
+            {
+                Debug.LogError("[GameEndHandler] CharacterUpgradeUIが見つかりません。強化UIは表示されません。シーンにCharacterUpgradePanelを配置し、CharacterUpgradeUIコンポーネントをアタッチしてください。");
             }
         }
     }
@@ -342,6 +396,13 @@ public class GameEndHandler : MonoBehaviour
         if (wordLearningSystem != null)
         {
             wordLearningSystem.ClearIncorrectAnswers();
+        }
+        
+        // キャラクター強化UIを非表示にし、選択状態をリセット
+        if (characterUpgradeUI != null)
+        {
+            characterUpgradeUI.SetPanelVisible(false);
+            characterUpgradeUI.ResetSelection();
         }
         
         // Time.timeScaleもリセット（念のため）

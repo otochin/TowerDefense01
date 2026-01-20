@@ -32,10 +32,46 @@ public class CharacterBase : MonoBehaviour, IDamageable
     public CharacterData CharacterData => characterData;
     public int MaxHealth => healthSystem != null ? healthSystem.MaxHealth : 0;
     public int CurrentHealth => healthSystem != null ? healthSystem.CurrentHealth : 0;
-    public int AttackPower => characterData != null ? characterData.AttackPower : 0;
+    public int AttackPower
+    {
+        get
+        {
+            if (characterData == null) return 0;
+            // 強化された攻撃力を取得
+            if (CharacterUpgradeManager.Instance != null)
+            {
+                return CharacterUpgradeManager.Instance.GetUpgradedAttackPower(characterData.CharacterType, characterData.AttackPower);
+            }
+            return characterData.AttackPower;
+        }
+    }
     public float AttackRange => characterData != null ? characterData.AttackRange : 0;
-    public float AttackSpeed => characterData != null ? characterData.AttackSpeed : 1.0f;
-    public float MoveSpeed => characterData != null ? characterData.MoveSpeed : 2.0f;
+    public float AttackSpeed
+    {
+        get
+        {
+            if (characterData == null) return 1.0f;
+            // 強化された攻撃速度を取得
+            if (CharacterUpgradeManager.Instance != null)
+            {
+                return CharacterUpgradeManager.Instance.GetUpgradedAttackSpeed(characterData.CharacterType, characterData.AttackSpeed);
+            }
+            return characterData.AttackSpeed;
+        }
+    }
+    public float MoveSpeed
+    {
+        get
+        {
+            if (characterData == null) return 2.0f;
+            // 強化された移動速度を取得
+            if (CharacterUpgradeManager.Instance != null)
+            {
+                return CharacterUpgradeManager.Instance.GetUpgradedMoveSpeed(characterData.CharacterType, characterData.MoveSpeed);
+            }
+            return characterData.MoveSpeed;
+        }
+    }
     public int Defense => characterData != null ? characterData.Defense : 0;
     public bool IsDead => healthSystem != null && healthSystem.IsDead;
     
@@ -109,10 +145,18 @@ public class CharacterBase : MonoBehaviour, IDamageable
             return;
         }
         
-        // HealthSystemの最大HPを設定
+        // HealthSystemの最大HPを設定（強化されたHPを適用）
         if (healthSystem != null)
         {
-            healthSystem.SetMaxHealth(characterData.MaxHealth);
+            int maxHealth = characterData.MaxHealth;
+            
+            // 強化されたHPを取得
+            if (CharacterUpgradeManager.Instance != null)
+            {
+                maxHealth = CharacterUpgradeManager.Instance.GetUpgradedHealth(characterData.CharacterType, characterData.MaxHealth);
+            }
+            
+            healthSystem.SetMaxHealth(maxHealth);
         }
     }
     
