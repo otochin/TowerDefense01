@@ -40,16 +40,33 @@ public class BackgroundManager : MonoBehaviour
         GameObject backgroundObject = GameObject.Find("Background");
         if (backgroundObject != null)
         {
-            Debug.Log($"[BackgroundManager] Background GameObject found: {backgroundObject.name}");
+            Debug.Log($"[BackgroundManager] Background GameObject found: {backgroundObject.name}, Active: {backgroundObject.activeSelf}, ActiveInHierarchy: {backgroundObject.activeInHierarchy}");
+            
+            // Background GameObjectの子オブジェクトを確認
+            int childCount = backgroundObject.transform.childCount;
+            Debug.Log($"[BackgroundManager] Background GameObject has {childCount} child(ren)");
+            for (int i = 0; i < childCount; i++)
+            {
+                Transform child = backgroundObject.transform.GetChild(i);
+                Debug.Log($"[BackgroundManager]   Child {i}: {child.name}, Active: {child.gameObject.activeSelf}, ActiveInHierarchy: {child.gameObject.activeInHierarchy}");
+            }
+            
+            // まず自分自身から検索、見つからなければ子オブジェクトから検索（非アクティブも含む）
             SpriteRenderer foundRenderer = backgroundObject.GetComponent<SpriteRenderer>();
+            if (foundRenderer == null)
+            {
+                Debug.Log("[BackgroundManager] SpriteRenderer not found on Background GameObject itself, searching in children (including inactive)...");
+                foundRenderer = backgroundObject.GetComponentInChildren<SpriteRenderer>(true); // includeInactive = true
+            }
+            
             if (foundRenderer != null)
             {
                 // 設定されているbackgroundRendererが正しいか確認
                 if (backgroundRenderer == null || backgroundRenderer.gameObject.name != "Background")
                 {
-                    Debug.Log($"[BackgroundManager] Updating Background Renderer reference. Old: {(backgroundRenderer != null ? backgroundRenderer.gameObject.name : "null")}, New: {backgroundObject.name}");
+                    Debug.Log($"[BackgroundManager] Updating Background Renderer reference. Old: {(backgroundRenderer != null ? backgroundRenderer.gameObject.name : "null")}, New: {foundRenderer.gameObject.name}");
                     backgroundRenderer = foundRenderer;
-                    Debug.Log($"[BackgroundManager] SpriteRenderer found on Background GameObject. Current sprite: {(backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null")}");
+                    Debug.Log($"[BackgroundManager] SpriteRenderer found on Background GameObject (or child). GameObject: {foundRenderer.gameObject.name}, Current sprite: {(backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null")}");
                 }
                 else
                 {
@@ -58,7 +75,11 @@ public class BackgroundManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("[BackgroundManager] Background GameObject found but SpriteRenderer component not found.");
+                Debug.LogWarning("[BackgroundManager] Background GameObject found but SpriteRenderer component not found (neither on GameObject nor in children, including inactive).");
+                Debug.Log("[BackgroundManager] Automatically adding SpriteRenderer component to Background GameObject...");
+                foundRenderer = backgroundObject.AddComponent<SpriteRenderer>();
+                backgroundRenderer = foundRenderer;
+                Debug.Log($"[BackgroundManager] SpriteRenderer component added to Background GameObject. Current sprite: {(backgroundRenderer.sprite != null ? backgroundRenderer.sprite.name : "null")}");
             }
         }
         else
@@ -135,17 +156,26 @@ public class BackgroundManager : MonoBehaviour
         GameObject backgroundObject = GameObject.Find("Background");
         if (backgroundObject != null)
         {
+            // まず自分自身から検索、見つからなければ子オブジェクトから検索（非アクティブも含む）
             SpriteRenderer foundRenderer = backgroundObject.GetComponent<SpriteRenderer>();
             if (foundRenderer == null)
             {
-                Debug.LogError("[BackgroundManager] Background GameObject found but SpriteRenderer component not found. Please add SpriteRenderer component to Background GameObject.");
-                return;
+                Debug.Log("[BackgroundManager] SpriteRenderer not found on Background GameObject itself, searching in children (including inactive)...");
+                foundRenderer = backgroundObject.GetComponentInChildren<SpriteRenderer>(true); // includeInactive = true
+            }
+            
+            if (foundRenderer == null)
+            {
+                Debug.LogWarning("[BackgroundManager] Background GameObject found but SpriteRenderer component not found (neither on GameObject nor in children, including inactive).");
+                Debug.Log("[BackgroundManager] Automatically adding SpriteRenderer component to Background GameObject...");
+                foundRenderer = backgroundObject.AddComponent<SpriteRenderer>();
+                Debug.Log("[BackgroundManager] SpriteRenderer component added to Background GameObject.");
             }
             
             // 設定されているbackgroundRendererが正しいか確認
             if (backgroundRenderer == null || backgroundRenderer.gameObject.name != "Background")
             {
-                Debug.Log($"[BackgroundManager] Updating Background Renderer reference. Old: {(backgroundRenderer != null ? backgroundRenderer.gameObject.name : "null")}, New: {backgroundObject.name}");
+                Debug.Log($"[BackgroundManager] Updating Background Renderer reference. Old: {(backgroundRenderer != null ? backgroundRenderer.gameObject.name : "null")}, New: {foundRenderer.gameObject.name}");
                 backgroundRenderer = foundRenderer;
             }
             
