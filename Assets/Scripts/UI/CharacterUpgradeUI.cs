@@ -174,23 +174,69 @@ public class CharacterUpgradeUI : MonoBehaviour
     }
     
     /// <summary>
-    /// パネルを非表示にして、ゲームモード選択パネルを表示
+    /// パネルを非表示にして、ゲームモード選択パネルを表示（敗北時）または次のステージへ進む（勝利時）
     /// </summary>
     private void HidePanelAndShowModeSelection()
     {
         // パネルを非表示
         SetPanelVisible(false);
         
-        // GameEndHandlerを検索して、ゲームモード選択パネルを表示
+        // GameEndHandlerを検索
         GameEndHandler gameEndHandler = FindObjectOfType<GameEndHandler>();
-        if (gameEndHandler != null)
+        if (gameEndHandler == null)
         {
-            gameEndHandler.ShowGameModeSelection();
-            Debug.Log("[CharacterUpgradeUI] GameModeSelectPanel shown after upgrade selection.");
+            Debug.LogWarning("[CharacterUpgradeUI] GameEndHandlerが見つかりません。");
+            return;
+        }
+        
+        // 勝利時はゲームモード選択パネルを表示せず、直接次のステージへ進む
+        if (gameEndHandler.IsVictory)
+        {
+            Debug.Log("[CharacterUpgradeUI] Victory detected. Proceeding to next stage without showing game mode selection panel.");
+            StartNextStageWithCurrentMode();
         }
         else
         {
-            Debug.LogWarning("[CharacterUpgradeUI] GameEndHandlerが見つかりません。ゲームモード選択パネルを表示できません。");
+            // 敗北時はゲームモード選択パネルを表示
+            gameEndHandler.ShowGameModeSelection();
+            Debug.Log("[CharacterUpgradeUI] Defeat detected. GameModeSelectPanel shown after upgrade selection.");
+        }
+    }
+    
+    /// <summary>
+    /// 現在のゲームモードのまま次のステージへ進む（勝利時）
+    /// </summary>
+    private void StartNextStageWithCurrentMode()
+    {
+        // WordLearningSystemから現在のゲームモードを取得
+        WordLearningSystem wordLearningSystem = FindObjectOfType<WordLearningSystem>();
+        if (wordLearningSystem == null)
+        {
+            Debug.LogError("[CharacterUpgradeUI] WordLearningSystemが見つかりません。次のステージへ進めません。");
+            return;
+        }
+        
+        GameMode currentMode = wordLearningSystem.CurrentGameMode;
+        Debug.Log($"[CharacterUpgradeUI] Starting next stage with current game mode: {currentMode}");
+        
+        // ステージ管理（勝利時はStageを進める）
+        StageManager stageManager = StageManager.Instance;
+        if (stageManager != null)
+        {
+            stageManager.AdvanceStage();
+            Debug.Log($"[CharacterUpgradeUI] Stage advanced to: {stageManager.CurrentStage}");
+        }
+        
+        // ゲーム再開処理（現在のゲームモードのまま）
+        GameModeSelectUI gameModeSelectUI = FindObjectOfType<GameModeSelectUI>(true);
+        if (gameModeSelectUI != null)
+        {
+            // 現在のゲームモードのままゲームを再開（ステージ管理は既に実行済み）
+            gameModeSelectUI.StartGameWithMode(currentMode);
+        }
+        else
+        {
+            Debug.LogError("[CharacterUpgradeUI] GameModeSelectUIが見つかりません。次のステージへ進めません。");
         }
     }
     
@@ -215,6 +261,14 @@ public class CharacterUpgradeUI : MonoBehaviour
             
             // パネルが表示される時、選択状態をリセット
             isUpgradeSelected = false;
+            
+            // CharacterSelectPanelを非表示にする
+            CharacterSelectUI characterSelectUI = FindObjectOfType<CharacterSelectUI>(true);
+            if (characterSelectUI != null)
+            {
+                characterSelectUI.SetPanelVisible(false);
+                Debug.Log("[CharacterUpgradeUI] CharacterSelectPanel hidden while CharacterUpgradePanel is shown.");
+            }
         }
         
         gameObject.SetActive(visible);

@@ -23,10 +23,16 @@ public class EnemyBase : MonoBehaviour, IDamageable
     [SerializeField] private GameObject healthBarPrefab; // SimpleHealthBarプレハブ（またはWorldSpaceHealthBarUIプレハブ）
     [SerializeField] private bool autoCreateHealthBar = true; // 自動生成するか
     
+    [Header("ダメージ表示設定")]
+    [SerializeField] private GameObject damagePrefab; // ダメージ表示プレハブ
+    [SerializeField] private float damageDisplayOffset = 0.5f; // ライフゲージからのオフセット（上方向）
+    [SerializeField] private float damageDisplayOffsetX = 0f; // ライフゲージからのオフセット（左右方向、正の値で右、負の値で左）
+    
     private Color originalColor;
     private int previousHealth;
     private SimpleHealthBar simpleHealthBar;
     private WorldSpaceHealthBarUI healthBarUI;
+    private bool isInitializing = false; // 初期化中フラグ（SetMaxHealth呼び出し時はダメージ表示をスキップ）
     
     // プロパティ
     public EnemyData EnemyData => enemyData;
@@ -112,7 +118,10 @@ public class EnemyBase : MonoBehaviour, IDamageable
         // HealthSystemの最大HPを設定
         if (healthSystem != null)
         {
+            // 初期化中フラグを設定（SetMaxHealth呼び出し時はダメージ表示をスキップ）
+            isInitializing = true;
             healthSystem.SetMaxHealth(enemyData.MaxHealth);
+            isInitializing = false;
         }
     }
     
@@ -142,14 +151,103 @@ public class EnemyBase : MonoBehaviour, IDamageable
     /// </summary>
     protected virtual void HandleHealthChanged(int currentHealth, int maxHealth)
     {
+        // 初期化中（SetMaxHealth呼び出し時）はダメージ表示をスキップ
+        if (isInitializing)
+        {
+            previousHealth = currentHealth;
+            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            return;
+        }
+        
         // HPが減った場合（ダメージを受けた場合）に赤くする
         if (currentHealth < previousHealth && spriteRenderer != null)
         {
             StartCoroutine(FlashDamageColor());
+            
+            // ダメージ表示
+            int damageAmount = previousHealth - currentHealth;
+            if (damageAmount > 0)
+            {
+                ShowDamageDisplay(damageAmount);
+            }
         }
         
         previousHealth = currentHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+    
+    /// <summary>
+    /// ダメージ表示を表示
+    /// </summary>
+    private void ShowDamageDisplay(int damage)
+    {
+        if (damagePrefab == null)
+        {
+            Debug.LogWarning($"[EnemyBase] DamagePrefab is not set for {gameObject.name}. Please assign DamagePrefab in the inspector.");
+            return;
+        }
+        
+        Debug.Log($"[EnemyBase] ShowDamageDisplay called: damage={damage}, damagePrefab={damagePrefab.name}");
+        
+        // ライフゲージの位置を取得
+        Vector3 displayPosition = transform.position;
+        
+        // ライフゲージが存在する場合、その位置を基準にする
+        if (healthBarUI != null)
+        {
+            RectTransform healthBarRect = healthBarUI.GetComponent<RectTransform>();
+            if (healthBarRect != null)
+            {
+                displayPosition = healthBarRect.position;
+                Debug.Log($"[EnemyBase] Using healthBarUI position: {displayPosition}");
+            }
+        }
+        else if (simpleHealthBar != null)
+        {
+            Transform healthBarTransform = simpleHealthBar.transform;
+            if (healthBarTransform != null)
+            {
+                displayPosition = healthBarTransform.position;
+                Debug.Log($"[EnemyBase] Using simpleHealthBar position: {displayPosition}");
+            }
+        }
+        else
+        {
+            Debug.Log($"[EnemyBase] No health bar found, using enemy position: {displayPosition}");
+        }
+        
+        // ライフゲージの少し上に配置（上下と左右のオフセットを適用）
+        displayPosition += Vector3.up * damageDisplayOffset;
+        displayPosition += Vector3.right * damageDisplayOffsetX;
+        Debug.Log($"[EnemyBase] Final display position: {displayPosition} (offset Y: {damageDisplayOffset}, offset X: {damageDisplayOffsetX})");
+        
+        // ダメージ表示をインスタンス化
+        GameObject damageObj = Instantiate(damagePrefab, displayPosition, Quaternion.identity);
+        Debug.Log($"[EnemyBase] Damage object instantiated: {damageObj.name} at {displayPosition}");
+        
+        // World Space Canvasの場合、RectTransformの位置を設定
+        Canvas canvas = damageObj.GetComponent<Canvas>();
+        if (canvas != null && canvas.renderMode == RenderMode.WorldSpace)
+        {
+            RectTransform rectTransform = damageObj.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                rectTransform.position = displayPosition;
+                Debug.Log($"[EnemyBase] World Space Canvas detected, set RectTransform position: {displayPosition}");
+            }
+        }
+        
+        // DamageDisplayコンポーネントを検索（子要素も含む）
+        DamageDisplay damageDisplay = damageObj.GetComponentInChildren<DamageDisplay>();
+        if (damageDisplay != null)
+        {
+            Debug.Log($"[EnemyBase] DamageDisplay component found, showing damage: {damage}");
+            damageDisplay.ShowDamage(damage);
+        }
+        else
+        {
+            Debug.LogError($"[EnemyBase] DamageDisplay component not found on {damagePrefab.name} or its children. Please add DamageDisplay component to the prefab.");
+        }
     }
     
     /// <summary>

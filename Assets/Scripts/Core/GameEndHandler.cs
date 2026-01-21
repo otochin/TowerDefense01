@@ -167,10 +167,9 @@ public class GameEndHandler : MonoBehaviour
         // 負け時の待機画面BGMを再生
         PlayDefeatBGM();
         
-        // キャラクター強化UIを表示
-        ShowCharacterUpgradeUI();
+        // 敗北時はキャラクター強化UIを表示しない（ゲームモード選択パネルのみ表示）
         
-        // すぐにゲームモード選択パネルを表示（Win/Lost表示は維持したまま）
+        // ゲームモード選択パネルを表示（Win/Lost表示は維持したまま）
         ShowModeSelectionPanel();
     }
     
@@ -209,8 +208,7 @@ public class GameEndHandler : MonoBehaviour
         // キャラクター強化UIを表示
         ShowCharacterUpgradeUI();
         
-        // すぐにゲームモード選択パネルを表示（Win/Lost表示は維持したまま）
-        ShowModeSelectionPanel();
+        // 勝利時はゲームモード選択パネルを表示しない（キャラクター強化UIから直接次のステージへ進む）
     }
     
     /// <summary>

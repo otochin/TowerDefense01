@@ -21,6 +21,11 @@ public class EnemyCastle : MonoBehaviour, IDamageable
     [SerializeField] private float damageFlashDuration = 0.1f; // ダメージを受けた時の赤色表示時間（秒）
     [SerializeField] private Color damageFlashColor = Color.red; // ダメージを受けた時の色
     
+    [Header("ダメージ表示設定")]
+    [SerializeField] private GameObject damagePrefab; // ダメージ表示プレハブ
+    [SerializeField] private float damageDisplayOffset = 0.5f; // ライフゲージからのオフセット（上方向）
+    [SerializeField] private float damageDisplayOffsetX = 0f; // ライフゲージからのオフセット（左右方向、正の値で右、負の値で左）
+    
     [Header("効果音設定")]
     [SerializeField] private AudioClip destroyedSound; // 城が破壊された時の効果音
     [SerializeField] private AudioSource audioSource; // 効果音再生用のAudioSource
@@ -28,6 +33,7 @@ public class EnemyCastle : MonoBehaviour, IDamageable
     private Color originalColor;
     private int previousHealth;
     private bool isDestroyedHandled = false; // HandleHealthDepletedが呼ばれたかどうか
+    private bool isInitializing = false; // 初期化中フラグ（SetMaxHealth呼び出し時はダメージ表示をスキップ）
     
     // プロパティ
     public int MaxHealth => healthSystem != null ? healthSystem.MaxHealth : maxHealth;
@@ -68,8 +74,10 @@ public class EnemyCastle : MonoBehaviour, IDamageable
             }
         }
         
-        // HealthSystemの初期化
+        // HealthSystemの初期化（初期化中フラグを設定）
+        isInitializing = true;
         healthSystem.SetMaxHealth(maxHealth);
+        isInitializing = false;
         
         // HealthSystemのイベントを購読
         healthSystem.OnHealthChanged += HandleHealthChanged;
@@ -137,10 +145,25 @@ public class EnemyCastle : MonoBehaviour, IDamageable
     /// </summary>
     private void HandleHealthChanged(int currentHealth, int maxHealth)
     {
+        // 初期化中（SetMaxHealth呼び出し時）はダメージ表示をスキップ
+        if (isInitializing)
+        {
+            previousHealth = currentHealth;
+            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            return;
+        }
+        
         // HPが減った場合（ダメージを受けた場合）に赤くする
         if (currentHealth < previousHealth && spriteRenderer != null)
         {
             StartCoroutine(FlashDamageColor());
+            
+            // ダメージ表示
+            int damageAmount = previousHealth - currentHealth;
+            if (damageAmount > 0)
+            {
+                ShowDamageDisplay(damageAmount);
+            }
         }
         
         // HPが0になったことを検出（OnHealthDepletedイベントが発火しなかった場合のフォールバック）
@@ -243,7 +266,9 @@ public class EnemyCastle : MonoBehaviour, IDamageable
         maxHealth = newMaxHealth;
         if (healthSystem != null)
         {
+            isInitializing = true;
             healthSystem.SetMaxHealth(maxHealth);
+            isInitializing = false;
         }
     }
     
@@ -269,7 +294,74 @@ public class EnemyCastle : MonoBehaviour, IDamageable
         
         if (healthSystem != null)
         {
+            isInitializing = true;
             healthSystem.SetMaxHealth(maxHealth);
+            isInitializing = false;
+        }
+    }
+    
+    /// <summary>
+    /// ダメージ表示を表示
+    /// </summary>
+    private void ShowDamageDisplay(int damage)
+    {
+        if (damagePrefab == null)
+        {
+            Debug.LogWarning($"[EnemyCastle] DamagePrefab is not set for {gameObject.name}. Please assign DamagePrefab in the inspector.");
+            return;
+        }
+        
+        Debug.Log($"[EnemyCastle] ShowDamageDisplay called: damage={damage}, damagePrefab={damagePrefab.name}");
+        
+        // ライフゲージの位置を取得
+        Vector3 displayPosition = transform.position;
+        
+        // ライフゲージが存在する場合、その位置を基準にする
+        if (healthBarUI != null)
+        {
+            RectTransform healthBarRect = healthBarUI.GetComponent<RectTransform>();
+            if (healthBarRect != null)
+            {
+                displayPosition = healthBarRect.position;
+                Debug.Log($"[EnemyCastle] Using healthBarUI position: {displayPosition}");
+            }
+        }
+        else
+        {
+            Debug.Log($"[EnemyCastle] No health bar found, using castle position: {displayPosition}");
+        }
+        
+        // ライフゲージの少し上に配置（上下と左右のオフセットを適用）
+        displayPosition += Vector3.up * damageDisplayOffset;
+        displayPosition += Vector3.right * damageDisplayOffsetX;
+        Debug.Log($"[EnemyCastle] Final display position: {displayPosition} (offset Y: {damageDisplayOffset}, offset X: {damageDisplayOffsetX})");
+        
+        // ダメージ表示をインスタンス化
+        GameObject damageObj = Instantiate(damagePrefab, displayPosition, Quaternion.identity);
+        Debug.Log($"[EnemyCastle] Damage object instantiated: {damageObj.name} at {displayPosition}");
+        
+        // World Space Canvasの場合、RectTransformの位置を設定
+        Canvas canvas = damageObj.GetComponent<Canvas>();
+        if (canvas != null && canvas.renderMode == RenderMode.WorldSpace)
+        {
+            RectTransform rectTransform = damageObj.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                rectTransform.position = displayPosition;
+                Debug.Log($"[EnemyCastle] World Space Canvas detected, set RectTransform position: {displayPosition}");
+            }
+        }
+        
+        // DamageDisplayコンポーネントを検索（子要素も含む）
+        DamageDisplay damageDisplay = damageObj.GetComponentInChildren<DamageDisplay>();
+        if (damageDisplay != null)
+        {
+            damageDisplay.ShowDamage(damage);
+            Debug.Log($"[EnemyCastle] DamageDisplay.ShowDamage called with damage: {damage}");
+        }
+        else
+        {
+            Debug.LogWarning($"[EnemyCastle] DamageDisplay component not found in {damageObj.name} or its children.");
         }
     }
 }

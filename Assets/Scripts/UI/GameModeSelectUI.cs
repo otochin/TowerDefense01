@@ -298,4 +298,71 @@ public class GameModeSelectUI : MonoBehaviour
             Debug.Log("[GameModeSelectUI] Stage reset to: 1");
         }
     }
+    
+    /// <summary>
+    /// 指定されたゲームモードでゲームを開始（勝利時、現在のゲームモードのまま次のステージへ進む）
+    /// </summary>
+    public void StartGameWithMode(GameMode mode)
+    {
+        Debug.Log($"[GameModeSelectUI] StartGameWithMode called with mode: {mode}");
+        
+        // ステージ管理は呼び出し元（CharacterUpgradeUI）で既に実行済みのため、ここではスキップ
+        
+        // ゲーム再開時のリセット処理
+        ResetGame();
+        
+        // WordLearningSystemにゲームモードを設定
+        if (wordLearningSystem != null)
+        {
+            // ゲームモードを設定
+            wordLearningSystem.SetGameMode(mode);
+            Debug.Log($"[GameModeSelectUI] Game mode set to: {mode}");
+            
+            // ゲームを開始
+            wordLearningSystem.StartGame();
+        }
+        else
+        {
+            Debug.LogError("[GameModeSelectUI] WordLearningSystemが見つかりません。ゲームを開始できません。");
+            return;
+        }
+        
+        // CharacterSelectPanelを表示して有効化
+        if (characterSelectUI == null)
+        {
+            CharacterSelectUI[] allSelectUIs = FindObjectsOfType<CharacterSelectUI>(true);
+            if (allSelectUIs.Length > 0)
+            {
+                characterSelectUI = allSelectUIs[0];
+            }
+        }
+        
+        if (characterSelectUI != null)
+        {
+            characterSelectUI.SetPanelVisible(true);
+            characterSelectUI.SetButtonsEnabled(true);
+        }
+        
+        // CharacterUpgradePanelを非表示にする（ゲーム開始時）
+        CharacterUpgradeUI characterUpgradeUI = FindObjectOfType<CharacterUpgradeUI>(true);
+        if (characterUpgradeUI != null)
+        {
+            characterUpgradeUI.SetPanelVisible(false);
+            characterUpgradeUI.ResetSelection();
+        }
+        
+        // EnemySpawnerのスポーンを開始
+        if (enemySpawner == null)
+        {
+            enemySpawner = FindObjectOfType<EnemySpawner>();
+        }
+        
+        if (enemySpawner != null)
+        {
+            enemySpawner.StartSpawning();
+        }
+        
+        // ゲームモード選択UIパネルは非表示のまま（勝利時は表示しない）
+        Debug.Log("[GameModeSelectUI] Game started with current mode. GameModeSelectPanel remains hidden.");
+    }
 }

@@ -712,7 +712,7 @@
 
 ## 最終更新日
 
-2026年1月20日（CharacterUpgradeManager修正：各キャラクターごとに強化値をInspectorで設定可能に、CharacterUpgradeButton修正：ラベル表示を実際の設定値を使用するように変更）
+2026年1月20日（ゲーム終了時の処理変更、城へのダメージ表示機能追加、ダメージ表示の左右オフセット機能追加、CharacterUpgradePanel表示中にCharacterSelectPanelを非表示にする機能追加）
 
 ## 変更履歴
 
@@ -803,3 +803,6 @@
 | 2026-01-20 | 背景システム実装完了：BackgroundManager修正（タイル表示機能を削除、Background GameObjectのSpriteRendererを使用したシンプルな背景切り替え機能に変更）、Background GameObjectの自動検出機能実装（GameObject.Find("Background")を使用）、Awake()とUpdateBackground()で常にBackground GameObjectを検索して正しいSpriteRendererを参照するように修正、ステージ変更時に自動的に背景が切り替わる機能を実装、Unity Editorセットアップ完了 | - |
 | 2026-01-20 | CharacterUpgradeUI修正：パネル表示時にボタンがクリックできない問題を修正（CharacterUpgradeUI.OnEnable()を追加してパネルがアクティブになったときにボタンを確実に有効化、CharacterUpgradeButton.OnEnable()を追加して各ボタンがアクティブになったときに有効化、SetPanelVisible()の改善でSetActive()の後にもボタンを有効化する処理を追加） | - |
 | 2026-01-20 | CharacterUpgradeUI修正：強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される機能を追加（CharacterUpgradeUI.HidePanelAndShowModeSelection()メソッド追加、GameEndHandler.ShowGameModeSelection()メソッド追加） | - ||| 2026-01-20 | CharacterUpgradeManager修正：各キャラクターごとに強化値をInspectorで設定できるように修正（CharacterUpgradeSettingsクラス追加、characterUpgradeSettings配列追加、GetHealthUpgradeAmount/GetAttackPowerUpgradeAmount/GetAttackSpeedUpgradeAmount/GetMoveSpeedUpgradeAmountメソッドをパブリック化）。CharacterUpgradeButton修正：ラベル表示をハードコード値からCharacterUpgradeManagerの実際の設定値を使用するように変更（GetUpgradeDescription()メソッド修正） | - |
+| 2026-01-20 | ゲーム終了時の処理変更：勝利時はゲームモード選択パネルを表示せずキャラクター強化パネルのみ表示、強化選択後は現在のゲームモードのまま次のステージへ進む機能を追加（GameEndHandler、CharacterUpgradeUI、GameModeSelectUI修正）。敗北時はゲームモード選択パネルのみ表示、キャラクター強化パネルは非表示、ゲームモード選択後はステージ1から開始する機能を追加 | - |
+| 2026-01-20 | ダメージ表示機能拡張：プレイヤーの城と敵の城にダメージ表示機能を追加（PlayerCastle、EnemyCastleにdamagePrefab、damageDisplayOffset、ShowDamageDisplay()メソッド追加、初期化時のダメージ表示を防ぐisInitializingフラグ追加）。キャラクター・エネミー・城のダメージ表示に左右オフセット機能を追加（damageDisplayOffsetXフィールド追加、CharacterBase、EnemyBase、PlayerCastle、EnemyCastleに実装） | - |
+| 2026-01-20 | CharacterUpgradeUI修正：CharacterUpgradePanel表示中にCharacterSelectPanelを非表示にする機能を追加（SetPanelVisible()メソッドでパネル表示時にCharacterSelectUIを検索して非表示にする処理を追加） | - |

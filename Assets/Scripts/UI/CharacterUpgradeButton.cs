@@ -93,11 +93,11 @@ public class CharacterUpgradeButton : MonoBehaviour
     /// </summary>
     private void InitializeUI()
     {
-        // キャラクター名を設定
-        if (characterNameText != null)
-        {
-            characterNameText.text = characterType.ToString();
-        }
+        // キャラクター名の設定は削除（UIで手動設定する）
+        // if (characterNameText != null)
+        // {
+        //     characterNameText.text = characterType.ToString();
+        // }
         
         // 強化内容を設定
         if (upgradeText != null)
