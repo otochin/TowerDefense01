@@ -141,9 +141,11 @@ public class CharacterBase : MonoBehaviour, IDamageable
     {
         if (characterData == null)
         {
-            Debug.LogWarning($"CharacterData is not set for {gameObject.name}.");
+            Debug.LogWarning($"[CharacterBase] CharacterData is not set for {gameObject.name}.");
             return;
         }
+        
+        Debug.Log($"[CharacterBase] InitializeFromCharacterData called for {gameObject.name}, CharacterType: {characterData.CharacterType}, BaseMaxHealth: {characterData.MaxHealth}");
         
         // HealthSystemの最大HPを設定（強化されたHPを適用）
         if (healthSystem != null)
@@ -151,12 +153,24 @@ public class CharacterBase : MonoBehaviour, IDamageable
             int maxHealth = characterData.MaxHealth;
             
             // 強化されたHPを取得
-            if (CharacterUpgradeManager.Instance != null)
+            CharacterUpgradeManager upgradeManager = CharacterUpgradeManager.Instance;
+            if (upgradeManager != null)
             {
-                maxHealth = CharacterUpgradeManager.Instance.GetUpgradedHealth(characterData.CharacterType, characterData.MaxHealth);
+                int baseHealth = characterData.MaxHealth;
+                maxHealth = upgradeManager.GetUpgradedHealth(characterData.CharacterType, baseHealth);
+                Debug.Log($"[CharacterBase] UpgradeManager found. BaseHealth: {baseHealth}, UpgradedHealth: {maxHealth} for {characterData.CharacterType}");
+            }
+            else
+            {
+                Debug.LogWarning($"[CharacterBase] CharacterUpgradeManager.Instance is null! Using base health: {maxHealth}");
             }
             
             healthSystem.SetMaxHealth(maxHealth);
+            Debug.Log($"[CharacterBase] HealthSystem.SetMaxHealth called with {maxHealth} for {gameObject.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"[CharacterBase] HealthSystem is null for {gameObject.name}!");
         }
     }
     

@@ -112,16 +112,35 @@ public class CharacterUpgradeButton : MonoBehaviour
     /// </summary>
     private string GetUpgradeDescription()
     {
+        CharacterUpgradeManager upgradeManager = CharacterUpgradeManager.Instance;
+        
+        if (upgradeManager == null)
+        {
+            return "Upgrade";
+        }
+        
         switch (upgradeType)
         {
             case CharacterUpgradeManager.UpgradeType.Health:
-                return "HP +10";
+                // CharacterUpgradeManagerから実際の強化量を取得
+                int healthAmount = upgradeManager.GetHealthUpgradeAmount(characterType);
+                return $"HP +{healthAmount}";
+                
             case CharacterUpgradeManager.UpgradeType.AttackPower:
-                return "Attack +5";
+                // CharacterUpgradeManagerから実際の強化量を取得
+                int attackAmount = upgradeManager.GetAttackPowerUpgradeAmount(characterType);
+                return $"Attack +{attackAmount}";
+                
             case CharacterUpgradeManager.UpgradeType.AttackSpeed:
-                return "Attack Speed +0.1";
+                // CharacterUpgradeManagerから実際の強化量を取得
+                float attackSpeedAmount = upgradeManager.GetAttackSpeedUpgradeAmount(characterType);
+                return $"Attack Speed +{attackSpeedAmount:F1}";
+                
             case CharacterUpgradeManager.UpgradeType.MoveSpeed:
-                return "Move Speed +0.5";
+                // CharacterUpgradeManagerから実際の強化量を取得
+                float moveSpeedAmount = upgradeManager.GetMoveSpeedUpgradeAmount(characterType);
+                return $"Move Speed +{moveSpeedAmount:F1}";
+                
             default:
                 return "Upgrade";
         }

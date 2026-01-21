@@ -99,7 +99,7 @@
 - **キャラクター**: 様々な種類のユニットを召喚可能。敵キャラクターだけでなく敵の城にも攻撃可能。攻撃時に突進アニメーションが発生
 - **敵キャラクター**: 自動的に左方向へ進軍し、プレイヤーキャラクターと戦闘。プレイヤーの城にも攻撃可能。攻撃時に突進アニメーションが発生
 - **ゲーム終了処理**: 城のHPが0になると、タイマー・スポーン・キャラクター・エネミーの動きが停止し、「Win!」または「Lost!」が表示される。その後、キャラクター強化UIが表示される
-- **キャラクター強化システム**: ゲーム終了時にキャラクター強化UIが表示され、3つのボタン（Warrior、Archer、Mage）から1つだけ選択して強化できる。強化タイプはHP、攻撃力、攻撃速度、移動速度。強化ボタンをクリックすると、強化が適用され、パネルが自動的に非表示になり、ゲームモード選択パネルが表示される
+- **キャラクター強化システム**: ゲーム終了時にキャラクター強化UIが表示され、3つのボタン（Warrior、Archer、Mage）から1つだけ選択して強化できる。強化タイプはHP、攻撃力、攻撃速度、移動速度。各キャラクターごとに強化値をInspectorで設定可能（Warrior、Archer、Mageそれぞれで異なる強化量を設定できる）。強化ボタンのラベルには実際の設定値が表示される。強化ボタンをクリックすると、強化が適用され、パネルが自動的に非表示になり、ゲームモード選択パネルが表示される
 - **ゲーム再開**: ゲームモードを再選択すると、Power・城のHPがリセットされ、フィールド上のキャラクター・エネミーが削除される。キャラクター強化は保持される（ゲーム再開時にリセットされない）
 - **ステージシステム**: 画面右上に現在のステージ数を表示。勝利後、ゲームモードを選択するとStageが進む。敗北後、ゲームモードを選択するとStage1にリセット。Stageが進むごとに敵のスポーン間隔が0.9倍になり、難易度が上昇する
 - **背景システム**: ステージごとに背景画像を切り替える。ステージが変更されると自動的に背景が切り替わる。Background GameObjectのSpriteRendererを使用して背景を表示
@@ -126,7 +126,7 @@
 
 ## 最終更新日
 
-2026年1月20日（CharacterUpgradeUI修正：強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される機能を追加）
+2026年1月20日（CharacterUpgradeManager修正：各キャラクターごとに強化値をInspectorで設定可能に、CharacterUpgradeButton修正：ラベル表示を実際の設定値を使用するように変更）
 
 ## 変更履歴
 
@@ -155,4 +155,4 @@
 | 2026-01-19 | 開発ログ・仕様書更新：間違えた問題リスト機能の音声読み上げ機能実装、IPointerClickHandler実装、GameSceneManager作成、タイトルシーンを使用しない構成への変更を記録 | - |
 | 2026-01-19 | ステージシステム実装完了：StageManager作成（ステージ数の管理、勝利時の増加、敗北時のリセット）、StageUI作成（画面右上に「Stage: X」を表示）、GameEndHandler修正（勝利/敗北フラグの管理）、GameModeSelectUI修正（ゲームモード選択時にステージ管理を実行）、EnemySpawner修正（Stageに応じてスポーン間隔を0.9倍に調整）、Unity Editorセットアップガイド作成 | - |
 | 2026-01-20 | 背景システム実装完了：BackgroundManager修正（タイル表示機能を削除、Background GameObjectのSpriteRendererを使用したシンプルな背景切り替え機能に変更）、ステージ変更時に自動的に背景が切り替わる機能を実装、Unity Editorセットアップ完了 | - |
-| 2026-01-20 | CharacterUpgradeUI修正：強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される機能を追加（CharacterUpgradeUI.HidePanelAndShowModeSelection()メソッド追加、GameEndHandler.ShowGameModeSelection()メソッド追加） | - |
+| 2026-01-20 | CharacterUpgradeUI修正：強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される機能を追加（CharacterUpgradeUI.HidePanelAndShowModeSelection()メソッド追加、GameEndHandler.ShowGameModeSelection()メソッド追加） | - ||| 2026-01-20 | CharacterUpgradeManager修正：各キャラクターごとに強化値をInspectorで設定できるように修正（CharacterUpgradeSettingsクラス追加、characterUpgradeSettings配列追加、GetHealthUpgradeAmount/GetAttackPowerUpgradeAmount/GetAttackSpeedUpgradeAmount/GetMoveSpeedUpgradeAmountメソッドをパブリック化）。CharacterUpgradeButton修正：ラベル表示をハードコード値からCharacterUpgradeManagerの実際の設定値を使用するように変更（GetUpgradeDescription()メソッド修正） | - |

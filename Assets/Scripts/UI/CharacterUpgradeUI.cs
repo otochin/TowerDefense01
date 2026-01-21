@@ -4,7 +4,7 @@ using System.Linq;
 
 /// <summary>
 /// キャラクター強化UI
-/// ゲーム終了時に表示され、3つのボタンから1つだけ選択できる
+/// ゲーム終了時に表示され、6つのボタン（HP強化3つ + Attack Power強化3つ）から1つだけ選択できる
 /// </summary>
 public class CharacterUpgradeUI : MonoBehaviour
 {
@@ -13,10 +13,6 @@ public class CharacterUpgradeUI : MonoBehaviour
     
     [Header("強化ボタン")]
     [SerializeField] private List<CharacterUpgradeButton> upgradeButtons = new List<CharacterUpgradeButton>();
-    
-    [Header("初期強化設定")]
-    [Tooltip("初期表示する強化タイプ（最初はHP強化のみ）")]
-    [SerializeField] private CharacterUpgradeManager.UpgradeType initialUpgradeType = CharacterUpgradeManager.UpgradeType.Health;
     
     private bool isUpgradeSelected = false; // 強化が選択されたかどうか
     private bool isInitialized = false; // 初期化済みかどうか
@@ -95,22 +91,45 @@ public class CharacterUpgradeUI : MonoBehaviour
         Debug.Log($"[CharacterUpgradeUI] Found {upgradeButtons.Count} upgrade buttons.");
         
         // 各ボタンにキャラクタータイプと強化タイプを設定
-        // Warrior, Archer, Mageの順に設定（初期はHP強化のみ）
+        // 6つのボタン: HP強化3つ（Warrior, Archer, Mage）+ Attack Power強化3つ（Warrior, Archer, Mage）
         CharacterType[] characterTypes = { CharacterType.Warrior, CharacterType.Archer, CharacterType.Mage };
+        CharacterUpgradeManager.UpgradeType[] upgradeTypes = 
+        { 
+            CharacterUpgradeManager.UpgradeType.Health, 
+            CharacterUpgradeManager.UpgradeType.Health, 
+            CharacterUpgradeManager.UpgradeType.Health,
+            CharacterUpgradeManager.UpgradeType.AttackPower,
+            CharacterUpgradeManager.UpgradeType.AttackPower,
+            CharacterUpgradeManager.UpgradeType.AttackPower
+        };
         
-        for (int i = 0; i < upgradeButtons.Count && i < characterTypes.Length; i++)
+        // ボタンが6つ以上ある場合のみ、6つのボタンを設定
+        int buttonCount = Mathf.Min(upgradeButtons.Count, 6);
+        
+        for (int i = 0; i < buttonCount; i++)
         {
             if (upgradeButtons[i] != null)
             {
-                upgradeButtons[i].SetUpgradeInfo(characterTypes[i], initialUpgradeType);
+                // 最初の3つはHP強化、次の3つはAttack Power強化
+                CharacterType charType = characterTypes[i % 3];
+                CharacterUpgradeManager.UpgradeType upgradeType = upgradeTypes[i];
+                
+                upgradeButtons[i].SetUpgradeInfo(charType, upgradeType);
                 
                 // クリックイベントを設定
                 upgradeButtons[i].OnButtonClicked = null; // 既存のイベントをクリア
-                CharacterType charType = characterTypes[i]; // クロージャー用にローカル変数に保存
-                upgradeButtons[i].OnButtonClicked += (type, upgrade) => OnUpgradeButtonClicked(charType, upgrade);
+                CharacterType charTypeLocal = charType; // クロージャー用にローカル変数に保存
+                CharacterUpgradeManager.UpgradeType upgradeTypeLocal = upgradeType; // クロージャー用にローカル変数に保存
+                upgradeButtons[i].OnButtonClicked += (type, upgrade) => OnUpgradeButtonClicked(charTypeLocal, upgradeTypeLocal);
                 
-                Debug.Log($"[CharacterUpgradeUI] Button {i} set to: {charType} - {initialUpgradeType}");
+                Debug.Log($"[CharacterUpgradeUI] Button {i} set to: {charType} - {upgradeType}");
             }
+        }
+        
+        // 6つ未満の場合は警告
+        if (upgradeButtons.Count < 6)
+        {
+            Debug.LogWarning($"[CharacterUpgradeUI] Expected 6 upgrade buttons, but found {upgradeButtons.Count}. Please add more buttons to the CharacterUpgradePanel.");
         }
     }
     

@@ -50,18 +50,129 @@ public class CharacterUpgradeManager : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// キャラクターごとの強化設定
+    /// </summary>
+    [System.Serializable]
+    public class CharacterUpgradeSettings
+    {
+        [Header("キャラクタータイプ")]
+        public CharacterType characterType;
+        
+        [Header("強化量設定")]
+        [Tooltip("HP強化時の増加量")]
+        public int healthUpgradeAmount = 10;
+        
+        [Tooltip("攻撃力強化時の増加量")]
+        public int attackPowerUpgradeAmount = 5;
+        
+        [Tooltip("攻撃速度強化時の増加量（秒）")]
+        public float attackSpeedUpgradeAmount = 0.1f;
+        
+        [Tooltip("移動速度強化時の増加量")]
+        public float moveSpeedUpgradeAmount = 0.5f;
+    }
+    
     [Header("強化設定")]
-    [Tooltip("HP強化時の増加量")]
-    [SerializeField] private int healthUpgradeAmount = 10;
+    [Tooltip("各キャラクターごとの強化設定")]
+    [SerializeField] private CharacterUpgradeSettings[] characterUpgradeSettings = new CharacterUpgradeSettings[]
+    {
+        new CharacterUpgradeSettings { characterType = CharacterType.Warrior, healthUpgradeAmount = 10, attackPowerUpgradeAmount = 3, attackSpeedUpgradeAmount = 0.1f, moveSpeedUpgradeAmount = 0.5f },
+        new CharacterUpgradeSettings { characterType = CharacterType.Archer, healthUpgradeAmount = 5, attackPowerUpgradeAmount = 2, attackSpeedUpgradeAmount = 0.1f, moveSpeedUpgradeAmount = 0.5f },
+        new CharacterUpgradeSettings { characterType = CharacterType.Mage, healthUpgradeAmount = 2, attackPowerUpgradeAmount = 5, attackSpeedUpgradeAmount = 0.1f, moveSpeedUpgradeAmount = 0.5f }
+    };
     
-    [Tooltip("攻撃力強化時の増加量")]
-    [SerializeField] private int attackPowerUpgradeAmount = 5;
+    // 外部から強化量を取得するためのプロパティ（後方互換性のため）
+    public int HealthUpgradeAmount => GetCharacterHealthUpgradeAmount(CharacterType.Warrior);
+    public int AttackPowerUpgradeAmount => GetCharacterAttackPowerUpgradeAmount(CharacterType.Warrior);
+    public float AttackSpeedUpgradeAmount => GetCharacterAttackSpeedUpgradeAmount(CharacterType.Warrior);
+    public float MoveSpeedUpgradeAmount => GetCharacterMoveSpeedUpgradeAmount(CharacterType.Warrior);
     
-    [Tooltip("攻撃速度強化時の増加量（秒）")]
-    [SerializeField] private float attackSpeedUpgradeAmount = 0.1f;
+    /// <summary>
+    /// キャラクター固有のHP強化量を取得（内部用）
+    /// </summary>
+    private int GetCharacterHealthUpgradeAmount(CharacterType characterType)
+    {
+        var settings = GetUpgradeSettings(characterType);
+        return settings != null ? settings.healthUpgradeAmount : 10; // デフォルト値
+    }
     
-    [Tooltip("移動速度強化時の増加量")]
-    [SerializeField] private float moveSpeedUpgradeAmount = 0.5f;
+    /// <summary>
+    /// キャラクター固有のHP強化量を取得（外部用）
+    /// </summary>
+    public int GetHealthUpgradeAmount(CharacterType characterType)
+    {
+        return GetCharacterHealthUpgradeAmount(characterType);
+    }
+    
+    /// <summary>
+    /// キャラクター固有の攻撃力強化量を取得（内部用）
+    /// </summary>
+    private int GetCharacterAttackPowerUpgradeAmount(CharacterType characterType)
+    {
+        var settings = GetUpgradeSettings(characterType);
+        return settings != null ? settings.attackPowerUpgradeAmount : 5; // デフォルト値
+    }
+    
+    /// <summary>
+    /// キャラクター固有の攻撃力強化量を取得（外部用）
+    /// </summary>
+    public int GetAttackPowerUpgradeAmount(CharacterType characterType)
+    {
+        return GetCharacterAttackPowerUpgradeAmount(characterType);
+    }
+    
+    /// <summary>
+    /// キャラクター固有の攻撃速度強化量を取得（内部用）
+    /// </summary>
+    private float GetCharacterAttackSpeedUpgradeAmount(CharacterType characterType)
+    {
+        var settings = GetUpgradeSettings(characterType);
+        return settings != null ? settings.attackSpeedUpgradeAmount : 0.1f; // デフォルト値
+    }
+    
+    /// <summary>
+    /// キャラクター固有の攻撃速度強化量を取得（外部用）
+    /// </summary>
+    public float GetAttackSpeedUpgradeAmount(CharacterType characterType)
+    {
+        return GetCharacterAttackSpeedUpgradeAmount(characterType);
+    }
+    
+    /// <summary>
+    /// キャラクター固有の移動速度強化量を取得（内部用）
+    /// </summary>
+    private float GetCharacterMoveSpeedUpgradeAmount(CharacterType characterType)
+    {
+        var settings = GetUpgradeSettings(characterType);
+        return settings != null ? settings.moveSpeedUpgradeAmount : 0.5f; // デフォルト値
+    }
+    
+    /// <summary>
+    /// キャラクター固有の移動速度強化量を取得（外部用）
+    /// </summary>
+    public float GetMoveSpeedUpgradeAmount(CharacterType characterType)
+    {
+        return GetCharacterMoveSpeedUpgradeAmount(characterType);
+    }
+    
+    /// <summary>
+    /// キャラクタータイプに対応する強化設定を取得
+    /// </summary>
+    private CharacterUpgradeSettings GetUpgradeSettings(CharacterType characterType)
+    {
+        if (characterUpgradeSettings == null) return null;
+        
+        foreach (var settings in characterUpgradeSettings)
+        {
+            if (settings != null && settings.characterType == characterType)
+            {
+                return settings;
+            }
+        }
+        
+        return null;
+    }
     
     // 各キャラクターの強化データ
     private Dictionary<CharacterType, CharacterUpgradeData> upgradeData = new Dictionary<CharacterType, CharacterUpgradeData>();
@@ -78,12 +189,18 @@ public class CharacterUpgradeManager : MonoBehaviour
         {
             instance = this;
             InitializeUpgradeData();
+            Debug.Log($"[CharacterUpgradeManager] Instance created. Upgrade data initialized. Warrior HP level: {upgradeData[CharacterType.Warrior].healthUpgrade}, Archer HP level: {upgradeData[CharacterType.Archer].healthUpgrade}, Mage HP level: {upgradeData[CharacterType.Mage].healthUpgrade}");
         }
         else if (instance != this)
         {
             Debug.LogWarning("[CharacterUpgradeManager] Duplicate CharacterUpgradeManager found. Destroying duplicate.");
             Destroy(gameObject);
             return;
+        }
+        else
+        {
+            // 既存のインスタンスが存在する場合、強化データを確認
+            Debug.Log($"[CharacterUpgradeManager] Existing instance found. Warrior HP level: {upgradeData[CharacterType.Warrior].healthUpgrade}, Archer HP level: {upgradeData[CharacterType.Archer].healthUpgrade}, Mage HP level: {upgradeData[CharacterType.Mage].healthUpgrade}");
         }
     }
     
@@ -92,11 +209,19 @@ public class CharacterUpgradeManager : MonoBehaviour
     /// </summary>
     private void InitializeUpgradeData()
     {
-        upgradeData[CharacterType.Warrior] = new CharacterUpgradeData(CharacterType.Warrior);
-        upgradeData[CharacterType.Archer] = new CharacterUpgradeData(CharacterType.Archer);
-        upgradeData[CharacterType.Mage] = new CharacterUpgradeData(CharacterType.Mage);
-        
-        Debug.Log("[CharacterUpgradeManager] Upgrade data initialized for all character types.");
+        // 既存の強化データがある場合は保持（リセット時以外）
+        if (upgradeData.Count == 0)
+        {
+            upgradeData[CharacterType.Warrior] = new CharacterUpgradeData(CharacterType.Warrior);
+            upgradeData[CharacterType.Archer] = new CharacterUpgradeData(CharacterType.Archer);
+            upgradeData[CharacterType.Mage] = new CharacterUpgradeData(CharacterType.Mage);
+            
+            Debug.Log("[CharacterUpgradeManager] Upgrade data initialized for all character types (new initialization).");
+        }
+        else
+        {
+            Debug.Log($"[CharacterUpgradeManager] Upgrade data already exists. Warrior HP level: {upgradeData[CharacterType.Warrior].healthUpgrade}, Archer HP level: {upgradeData[CharacterType.Archer].healthUpgrade}, Mage HP level: {upgradeData[CharacterType.Mage].healthUpgrade}");
+        }
     }
     
     /// <summary>
@@ -115,19 +240,25 @@ public class CharacterUpgradeManager : MonoBehaviour
         {
             case UpgradeType.Health:
                 data.healthUpgrade++;
-                Debug.Log($"[CharacterUpgradeManager] {characterType} HP upgraded to level {data.healthUpgrade} (+{healthUpgradeAmount * data.healthUpgrade} HP)");
+                int healthAmount = GetCharacterHealthUpgradeAmount(characterType);
+                int totalHealthIncrease = healthAmount * data.healthUpgrade;
+                Debug.Log($"[CharacterUpgradeManager] {characterType} HP upgraded to level {data.healthUpgrade} (+{totalHealthIncrease} HP, +{healthAmount} per level)");
                 break;
             case UpgradeType.AttackPower:
                 data.attackPowerUpgrade++;
-                Debug.Log($"[CharacterUpgradeManager] {characterType} Attack Power upgraded to level {data.attackPowerUpgrade} (+{attackPowerUpgradeAmount * data.attackPowerUpgrade} Attack)");
+                int attackAmount = GetCharacterAttackPowerUpgradeAmount(characterType);
+                int totalAttackIncrease = attackAmount * data.attackPowerUpgrade;
+                Debug.Log($"[CharacterUpgradeManager] {characterType} Attack Power upgraded to level {data.attackPowerUpgrade} (+{totalAttackIncrease} Attack, +{attackAmount} per level)");
                 break;
             case UpgradeType.AttackSpeed:
                 data.attackSpeedUpgrade++;
-                Debug.Log($"[CharacterUpgradeManager] {characterType} Attack Speed upgraded to level {data.attackSpeedUpgrade} (+{attackSpeedUpgradeAmount * data.attackSpeedUpgrade} Attack Speed)");
+                float attackSpeedAmount = GetCharacterAttackSpeedUpgradeAmount(characterType);
+                Debug.Log($"[CharacterUpgradeManager] {characterType} Attack Speed upgraded to level {data.attackSpeedUpgrade} (+{attackSpeedAmount * data.attackSpeedUpgrade} Attack Speed)");
                 break;
             case UpgradeType.MoveSpeed:
                 data.moveSpeedUpgrade++;
-                Debug.Log($"[CharacterUpgradeManager] {characterType} Move Speed upgraded to level {data.moveSpeedUpgrade} (+{moveSpeedUpgradeAmount * data.moveSpeedUpgrade} Move Speed)");
+                float moveSpeedAmount = GetCharacterMoveSpeedUpgradeAmount(characterType);
+                Debug.Log($"[CharacterUpgradeManager] {characterType} Move Speed upgraded to level {data.moveSpeedUpgrade} (+{moveSpeedAmount * data.moveSpeedUpgrade} Move Speed)");
                 break;
         }
         
@@ -141,10 +272,18 @@ public class CharacterUpgradeManager : MonoBehaviour
     {
         if (!upgradeData.ContainsKey(characterType))
         {
+            Debug.LogWarning($"[CharacterUpgradeManager] GetUpgradedHealth: No upgrade data found for {characterType}. Returning base health: {baseHealth}");
             return baseHealth;
         }
         
-        return baseHealth + (upgradeData[characterType].healthUpgrade * healthUpgradeAmount);
+        int healthAmount = GetCharacterHealthUpgradeAmount(characterType);
+        int upgradeLevel = upgradeData[characterType].healthUpgrade;
+        int totalUpgrade = upgradeLevel * healthAmount;
+        int finalHealth = baseHealth + totalUpgrade;
+        
+        Debug.Log($"[CharacterUpgradeManager] GetUpgradedHealth: {characterType} - Base: {baseHealth}, UpgradeLevel: {upgradeLevel}, HealthAmount: {healthAmount}, TotalUpgrade: {totalUpgrade}, Final: {finalHealth}");
+        
+        return finalHealth;
     }
     
     /// <summary>
@@ -157,7 +296,8 @@ public class CharacterUpgradeManager : MonoBehaviour
             return baseAttackPower;
         }
         
-        return baseAttackPower + (upgradeData[characterType].attackPowerUpgrade * attackPowerUpgradeAmount);
+        int attackAmount = GetCharacterAttackPowerUpgradeAmount(characterType);
+        return baseAttackPower + (upgradeData[characterType].attackPowerUpgrade * attackAmount);
     }
     
     /// <summary>
@@ -171,7 +311,8 @@ public class CharacterUpgradeManager : MonoBehaviour
         }
         
         // 攻撃速度は減少（間隔が短くなる）ので、強化レベル分だけ減算
-        float upgradedSpeed = baseAttackSpeed - (upgradeData[characterType].attackSpeedUpgrade * attackSpeedUpgradeAmount);
+        float attackSpeedAmount = GetCharacterAttackSpeedUpgradeAmount(characterType);
+        float upgradedSpeed = baseAttackSpeed - (upgradeData[characterType].attackSpeedUpgrade * attackSpeedAmount);
         return Mathf.Max(0.1f, upgradedSpeed); // 最小値0.1秒
     }
     
@@ -185,7 +326,8 @@ public class CharacterUpgradeManager : MonoBehaviour
             return baseMoveSpeed;
         }
         
-        return baseMoveSpeed + (upgradeData[characterType].moveSpeedUpgrade * moveSpeedUpgradeAmount);
+        float moveSpeedAmount = GetCharacterMoveSpeedUpgradeAmount(characterType);
+        return baseMoveSpeed + (upgradeData[characterType].moveSpeedUpgrade * moveSpeedAmount);
     }
     
     /// <summary>

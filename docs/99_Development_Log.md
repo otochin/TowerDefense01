@@ -630,7 +630,7 @@
 - **キャラクターシステム**: `Warrior`、`Archer`、`Mage`は`EnemyCastle`タグを持つ城も攻撃対象として検出し、攻撃する
 - **キャラクターシステム**: `Archer`と`Mage`は投射物システムを使用する（`Projectile.cs`を使用、プレハブが設定されていない場合は直接ダメージを与えるフォールバック処理あり）
 - **投射物システム**: `Projectile.cs`で実装済み。ターゲットに向かって移動し、衝突時にダメージを与える。2Dと3Dの両方に対応
-- **キャラクター強化システム**: `CharacterUpgradeManager`で各キャラクターの強化レベルを管理。ゲーム終了時に`CharacterUpgradeUI`が表示され、3つのボタンから1つだけ選択可能。強化されたステータスは`CharacterBase`で自動的に適用される。強化ボタンをクリックすると、パネルが自動的に非表示になり、`GameEndHandler.ShowGameModeSelection()`が呼び出されてゲームモード選択パネルが表示される
+- **キャラクター強化システム**: `CharacterUpgradeManager`で各キャラクターの強化レベルを管理。ゲーム終了時に`CharacterUpgradeUI`が表示され、3つのボタンから1つだけ選択可能。強化されたステータスは`CharacterBase`で自動的に適用される。強化ボタンをクリックすると、パネルが自動的に非表示になり、`GameEndHandler.ShowGameModeSelection()`が呼び出されてゲームモード選択パネルが表示される。各キャラクター（Warrior、Archer、Mage）ごとに強化値をInspectorで設定可能（`CharacterUpgradeSettings`クラスを使用）。`CharacterUpgradeButton`のラベル表示は`CharacterUpgradeManager`から実際の設定値を取得して表示する（ハードコード値は使用しない）
 - **城システム**: `PlayerCastle`と`EnemyCastle`は攻撃を受けた時に一瞬赤くフラッシュするエフェクトを持つ（キャラクター・エネミーと同じ仕組み）
 - **城システム**: 城の`SpriteRenderer`は自分自身または子オブジェクト（`CastleModel`）から自動検出される
 - **ライフゲージシステム**: `WorldSpaceHealthBarUI`はWorld Space Canvasを使用して、キャラクター・エネミーの上部に追従するライフゲージを表示する
@@ -712,7 +712,7 @@
 
 ## 最終更新日
 
-2026年1月20日（CharacterUpgradeUI修正：強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される機能を追加）
+2026年1月20日（CharacterUpgradeManager修正：各キャラクターごとに強化値をInspectorで設定可能に、CharacterUpgradeButton修正：ラベル表示を実際の設定値を使用するように変更）
 
 ## 変更履歴
 
@@ -802,4 +802,4 @@
 | 2026-01-19 | 背景システム実装開始：BackgroundManager.cs作成（ステージごとの背景切り替え、タイル表示機能）、Unity Editorセットアップガイド作成（docs/23_BackgroundSystem_Setup.md）、調査ドキュメント作成（docs/24_BackgroundTile_Investigation.md）。問題：DrawModeがTiledからSlicedに変わってしまう、タイルが2枚分しか表示されない。原因調査中：Mesh TypeはFull Rectに設定済み、Background Rendererの参照設定が必要。次のステップ：Background Rendererの参照設定、Unity Editorで手動でDrawModeをTiledに設定、Sizeプロパティを適切に設定 | - |
 | 2026-01-20 | 背景システム実装完了：BackgroundManager修正（タイル表示機能を削除、Background GameObjectのSpriteRendererを使用したシンプルな背景切り替え機能に変更）、Background GameObjectの自動検出機能実装（GameObject.Find("Background")を使用）、Awake()とUpdateBackground()で常にBackground GameObjectを検索して正しいSpriteRendererを参照するように修正、ステージ変更時に自動的に背景が切り替わる機能を実装、Unity Editorセットアップ完了 | - |
 | 2026-01-20 | CharacterUpgradeUI修正：パネル表示時にボタンがクリックできない問題を修正（CharacterUpgradeUI.OnEnable()を追加してパネルがアクティブになったときにボタンを確実に有効化、CharacterUpgradeButton.OnEnable()を追加して各ボタンがアクティブになったときに有効化、SetPanelVisible()の改善でSetActive()の後にもボタンを有効化する処理を追加） | - |
-| 2026-01-20 | CharacterUpgradeUI修正：強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される機能を追加（CharacterUpgradeUI.HidePanelAndShowModeSelection()メソッド追加、GameEndHandler.ShowGameModeSelection()メソッド追加） | - |
+| 2026-01-20 | CharacterUpgradeUI修正：強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される機能を追加（CharacterUpgradeUI.HidePanelAndShowModeSelection()メソッド追加、GameEndHandler.ShowGameModeSelection()メソッド追加） | - ||| 2026-01-20 | CharacterUpgradeManager修正：各キャラクターごとに強化値をInspectorで設定できるように修正（CharacterUpgradeSettingsクラス追加、characterUpgradeSettings配列追加、GetHealthUpgradeAmount/GetAttackPowerUpgradeAmount/GetAttackSpeedUpgradeAmount/GetMoveSpeedUpgradeAmountメソッドをパブリック化）。CharacterUpgradeButton修正：ラベル表示をハードコード値からCharacterUpgradeManagerの実際の設定値を使用するように変更（GetUpgradeDescription()メソッド修正） | - |

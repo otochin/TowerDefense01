@@ -15,7 +15,7 @@ public class WorldSpaceHealthBarUI : MonoBehaviour
     
     [Header("表示設定")]
     [SerializeField] private string healthFormat = "{0} / {1}";
-    [SerializeField] private bool showHealthText = false; // デフォルトは非表示（コンパクトに）
+    [SerializeField] private bool showHealthText = true; // HPテキストを表示するか（デフォルトは表示）
     [SerializeField] private Vector3 offset = new Vector3(0, 1f, 0); // キャラクター上部からのオフセット
     [SerializeField] private bool useBillboard = true; // カメラの方を向くか（2Dではfalse推奨）
     
@@ -92,9 +92,18 @@ public class WorldSpaceHealthBarUI : MonoBehaviour
             Debug.LogError($"[WorldSpaceHealthBarUI] healthBarFill is still null after search in {gameObject.name}!");
         }
         
+        // HPテキストを自動検出（showHealthTextがtrueの場合）
         if (healthBarText == null && showHealthText)
         {
-            healthBarText = GetComponentInChildren<TextMeshProUGUI>();
+            healthBarText = GetComponentInChildren<TextMeshProUGUI>(true); // 非アクティブなものも含める
+            if (healthBarText == null)
+            {
+                Debug.LogWarning($"[WorldSpaceHealthBarUI] healthBarText not found in {gameObject.name}. HP text will not be displayed. Please add a TextMeshProUGUI component to HealthBarPanel.");
+            }
+            else
+            {
+                Debug.Log($"[WorldSpaceHealthBarUI] Found healthBarText: {healthBarText.gameObject.name}");
+            }
         }
         
         // ワールドスペースCanvasを探す（なければ作成）
@@ -234,6 +243,21 @@ public class WorldSpaceHealthBarUI : MonoBehaviour
         if (healthBarText != null && showHealthText)
         {
             healthBarText.text = string.Format(healthFormat, currentHealth, maxHealth);
+            // テキストが非アクティブな場合は有効化
+            if (!healthBarText.gameObject.activeSelf)
+            {
+                healthBarText.gameObject.SetActive(true);
+            }
+        }
+        else if (showHealthText && healthBarText == null)
+        {
+            // テキストが設定されていない場合、再検索を試みる
+            healthBarText = GetComponentInChildren<TextMeshProUGUI>(true);
+            if (healthBarText != null)
+            {
+                healthBarText.text = string.Format(healthFormat, currentHealth, maxHealth);
+                healthBarText.gameObject.SetActive(true);
+            }
         }
     }
 }

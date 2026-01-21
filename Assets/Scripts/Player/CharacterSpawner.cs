@@ -164,6 +164,26 @@ public class CharacterSpawner : MonoBehaviour
         // キャラクターを生成
         GameObject spawnedCharacter = Instantiate(characterData.CharacterPrefab, spawnPosition, Quaternion.identity);
         
+        // CharacterDataを設定（プレハブに設定されていない場合に備えて）
+        CharacterBase characterBase = spawnedCharacter.GetComponent<CharacterBase>();
+        if (characterBase != null)
+        {
+            // CharacterDataが設定されていない場合、または異なる場合に設定
+            if (characterBase.CharacterData == null || characterBase.CharacterData != characterData)
+            {
+                characterBase.SetCharacterData(characterData);
+                Debug.Log($"[CharacterSpawner] CharacterData set for spawned character: {characterData.CharacterName}");
+            }
+            else
+            {
+                Debug.Log($"[CharacterSpawner] CharacterData already set for spawned character: {characterData.CharacterName}. CharacterData matches.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[CharacterSpawner] CharacterBase component not found on spawned character: {spawnedCharacter.name}");
+        }
+        
         // 右を向く設定
         if (autoFaceRight)
         {
