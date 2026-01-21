@@ -216,29 +216,29 @@
 ### Phase 5: 戦闘システム実装
 
 #### 5.1 ダメージシステム
-- [ ] `DamageSystem.cs` の実装
-- [ ] ダメージ計算ロジック
-- [ ] 防御力の実装
+- [x] ダメージ計算ロジック（`IDamageable`インターフェースと`HealthSystem`で実装済み）
+- [x] 防御力の実装（`IDamageable`インターフェースで実装済み、最小ダメージは1）
+- [ ] `DamageSystem.cs` の実装（オプション、現在は各キャラクター・エネミーで直接実装）
 
 **優先度**: 高  
-**見積もり**: 3時間
+**見積もり**: 3時間（実装済み）
 
 #### 5.2 攻撃システム
-- [ ] 近接攻撃の実装
-- [ ] 遠距離攻撃の実装
-- [ ] `Projectile.cs` の実装（矢、魔法弾等）
-- [ ] 攻撃アニメーション
+- [x] 近接攻撃の実装（`Warrior`、`Enemy_Orc`、`Enemy_Goblin`で実装済み）
+- [x] 遠距離攻撃の実装（`Archer`、`Mage`で実装済み）
+- [x] `Projectile.cs` の実装（矢、魔法弾等、実装済み）
+- [x] 攻撃アニメーション（突進アニメーション実装済み）
 
 **優先度**: 高  
-**見積もり**: 5時間
+**見積もり**: 5時間（実装済み）
 
 #### 5.3 衝突検出
-- [ ] キャラクター同士の衝突検出
-- [ ] 投射物の衝突検出
-- [ ] 城への衝突検出
+- [x] キャラクター同士の衝突検出（`Physics2D.OverlapCircleAll`を使用して実装済み）
+- [x] 投射物の衝突検出（`Projectile.cs`の`OnTriggerEnter2D`で実装済み）
+- [x] 城への衝突検出（`EnemyCastle`/`PlayerCastle`タグの検出で実装済み）
 
 **優先度**: 高  
-**見積もり**: 3時間
+**見積もり**: 3時間（実装済み）
 
 ### Phase 6: ゲームループ実装
 
@@ -251,9 +251,19 @@
 - [x] `ResourceManager.ResetMoney()` の実装（Powerリセット用）
 - [x] `PlayerCastle.ResetHealth()` / `EnemyCastle.ResetHealth()` の実装（HPリセット用）
 - [x] `GameModeSelectUI.ResetGame()` の実装（ゲーム再開時のリセット処理）
+- [x] キャラクター強化システムの実装
+  - `CharacterUpgradeManager.cs` の実装（シングルトンパターン、強化データ管理）
+  - `CharacterUpgradeUI.cs` の実装（ゲーム終了時に表示される強化選択UI）
+  - `CharacterUpgradeButton.cs` の実装（個別の強化ボタン管理）
+  - `CharacterBase.cs` 修正（強化されたステータスを取得する機能を追加）
+  - `GameEndHandler.cs` 修正（ゲーム終了時にキャラクター強化UIを表示、`ShowGameModeSelection()`メソッドを追加）
+  - `GameModeSelectUI.cs` 修正（ゲーム再開時にキャラクター強化UIを非表示・リセット）
+  - 強化タイプ：HP、攻撃力、攻撃速度、移動速度
+  - ゲーム終了時に3つのボタンから1つだけ選択可能
+  - 強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される
 
 **優先度**: 高  
-**見積もり**: 3時間
+**見積もり**: 3時間（実装済み）
 
 #### 6.2 ゲームマネージャー（将来の拡張用）
 - [ ] `GameManager.cs` の実装
@@ -574,16 +584,20 @@
     2. `Start()`でも確実に`initialMoney`を反映するように、`instance == this`の場合に`currentMoney = initialMoney;`を実行
 
 ### 次回の作業内容
-1. 間違えた問題リスト機能の動作確認・デバッグ
-   - ゲーム終了時に間違えた問題リストが正しく表示されるか確認
-   - 間違えた問題が回数順（多い順）でソートされているか確認
-   - 英語/英熟語、日本語、間違えた回数が正しく表示されるか確認
-   - ゲーム再開時にリストがリセットされているか確認
-   - 症状が変わらない原因を特定・修正
-2. Phase 5（戦闘システム実装）に進む（間違えた問題リスト機能が動作確認完了後）
-   - `DamageSystem.cs`の実装
-   - 投射物システム（`Projectile.cs`）の実装
-   - 衝突検出システムの実装
+1. キャラクター強化システムの動作確認・デバッグ（完了）
+   - [x] ゲーム終了時にキャラクター強化UIが正しく表示されるか確認
+   - [x] 強化ボタンがクリック可能か確認
+   - [x] 強化が正しく適用されるか確認（HP、攻撃力、攻撃速度、移動速度）
+   - [x] 強化ボタンクリック後にパネルが非表示になり、ゲームモード選択パネルが表示されるか確認
+   - [x] Unity Editorでのセットアップ確認（CharacterUpgradePanel、CharacterUpgradeManagerの配置）
+2. 投射物システムの動作確認
+   - ArcherとMageの投射物プレハブが設定されているか確認
+   - 投射物が正しく発射され、ターゲットに到達するか確認
+   - 投射物の衝突検出が正しく動作するか確認
+3. Phase 6.2（ゲームマネージャー）の実装（オプション）
+   - `GameManager.cs`の実装
+   - ゲーム状態管理
+   - 一時停止機能（`P`キーまたは`Space`キー）
 
 ### 技術的なメモ
 - `Money Format`のデフォルト値を英語（`Money: {0}`）に設定済み（日本語文字化け対策）
@@ -614,7 +628,9 @@
 - **キャラクターシステム**: `Warrior`、`Archer`、`Mage`は攻撃範囲内の敵を自動検出し、攻撃する
 - **キャラクターシステム**: 敵が見つかった場合、移動を停止して攻撃する。敵が見つからない場合は移動を再開する
 - **キャラクターシステム**: `Warrior`、`Archer`、`Mage`は`EnemyCastle`タグを持つ城も攻撃対象として検出し、攻撃する
-- **キャラクターシステム**: `Archer`と`Mage`は投射物システム（Phase 5で実装予定）に対応する構造になっている
+- **キャラクターシステム**: `Archer`と`Mage`は投射物システムを使用する（`Projectile.cs`を使用、プレハブが設定されていない場合は直接ダメージを与えるフォールバック処理あり）
+- **投射物システム**: `Projectile.cs`で実装済み。ターゲットに向かって移動し、衝突時にダメージを与える。2Dと3Dの両方に対応
+- **キャラクター強化システム**: `CharacterUpgradeManager`で各キャラクターの強化レベルを管理。ゲーム終了時に`CharacterUpgradeUI`が表示され、3つのボタンから1つだけ選択可能。強化されたステータスは`CharacterBase`で自動的に適用される。強化ボタンをクリックすると、パネルが自動的に非表示になり、`GameEndHandler.ShowGameModeSelection()`が呼び出されてゲームモード選択パネルが表示される
 - **城システム**: `PlayerCastle`と`EnemyCastle`は攻撃を受けた時に一瞬赤くフラッシュするエフェクトを持つ（キャラクター・エネミーと同じ仕組み）
 - **城システム**: 城の`SpriteRenderer`は自分自身または子オブジェクト（`CastleModel`）から自動検出される
 - **ライフゲージシステム**: `WorldSpaceHealthBarUI`はWorld Space Canvasを使用して、キャラクター・エネミーの上部に追従するライフゲージを表示する
@@ -696,7 +712,7 @@
 
 ## 最終更新日
 
-2026年1月20日（背景システム実装完了：BackgroundManager修正、タイル表示機能を削除してシンプルなSprite切り替え機能に変更、Background GameObjectの自動検出機能実装、Unity Editorセットアップ完了）
+2026年1月20日（CharacterUpgradeUI修正：強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される機能を追加）
 
 ## 変更履歴
 
@@ -786,3 +802,4 @@
 | 2026-01-19 | 背景システム実装開始：BackgroundManager.cs作成（ステージごとの背景切り替え、タイル表示機能）、Unity Editorセットアップガイド作成（docs/23_BackgroundSystem_Setup.md）、調査ドキュメント作成（docs/24_BackgroundTile_Investigation.md）。問題：DrawModeがTiledからSlicedに変わってしまう、タイルが2枚分しか表示されない。原因調査中：Mesh TypeはFull Rectに設定済み、Background Rendererの参照設定が必要。次のステップ：Background Rendererの参照設定、Unity Editorで手動でDrawModeをTiledに設定、Sizeプロパティを適切に設定 | - |
 | 2026-01-20 | 背景システム実装完了：BackgroundManager修正（タイル表示機能を削除、Background GameObjectのSpriteRendererを使用したシンプルな背景切り替え機能に変更）、Background GameObjectの自動検出機能実装（GameObject.Find("Background")を使用）、Awake()とUpdateBackground()で常にBackground GameObjectを検索して正しいSpriteRendererを参照するように修正、ステージ変更時に自動的に背景が切り替わる機能を実装、Unity Editorセットアップ完了 | - |
 | 2026-01-20 | CharacterUpgradeUI修正：パネル表示時にボタンがクリックできない問題を修正（CharacterUpgradeUI.OnEnable()を追加してパネルがアクティブになったときにボタンを確実に有効化、CharacterUpgradeButton.OnEnable()を追加して各ボタンがアクティブになったときに有効化、SetPanelVisible()の改善でSetActive()の後にもボタンを有効化する処理を追加） | - |
+| 2026-01-20 | CharacterUpgradeUI修正：強化ボタンクリック後にパネルが自動的に非表示になり、ゲームモード選択パネルが表示される機能を追加（CharacterUpgradeUI.HidePanelAndShowModeSelection()メソッド追加、GameEndHandler.ShowGameModeSelection()メソッド追加） | - |

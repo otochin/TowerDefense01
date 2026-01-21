@@ -292,6 +292,14 @@ public class GameEndHandler : MonoBehaviour
     /// </summary>
     private void ShowModeSelectionPanel()
     {
+        ShowGameModeSelection();
+    }
+    
+    /// <summary>
+    /// ゲームモード選択パネルを表示（外部から呼び出し可能）
+    /// </summary>
+    public void ShowGameModeSelection()
+    {
         // CharacterSelectPanelを非表示
         CharacterSelectUI characterSelectUI = FindObjectOfType<CharacterSelectUI>(true);
         if (characterSelectUI != null)
@@ -304,6 +312,7 @@ public class GameEndHandler : MonoBehaviour
         if (gameModeSelectUI != null)
         {
             gameModeSelectUI.gameObject.SetActive(true);
+            Debug.Log("[GameEndHandler] GameModeSelectPanel shown.");
         }
         else
         {
@@ -312,6 +321,11 @@ public class GameEndHandler : MonoBehaviour
             if (gameModeSelectUI != null)
             {
                 gameModeSelectUI.gameObject.SetActive(true);
+                Debug.Log("[GameEndHandler] GameModeSelectPanel found and shown.");
+            }
+            else
+            {
+                Debug.LogWarning("[GameEndHandler] GameModeSelectUIが見つかりません。ゲームモード選択パネルを表示できません。");
             }
         }
     }

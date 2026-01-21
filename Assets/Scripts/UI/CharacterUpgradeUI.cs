@@ -149,6 +149,30 @@ public class CharacterUpgradeUI : MonoBehaviour
         }
         
         Debug.Log($"[CharacterUpgradeUI] Upgrade applied: {characterType} - {upgradeType}. All buttons disabled.");
+        
+        // パネルを非表示にして、ゲームモード選択パネルを表示
+        HidePanelAndShowModeSelection();
+    }
+    
+    /// <summary>
+    /// パネルを非表示にして、ゲームモード選択パネルを表示
+    /// </summary>
+    private void HidePanelAndShowModeSelection()
+    {
+        // パネルを非表示
+        SetPanelVisible(false);
+        
+        // GameEndHandlerを検索して、ゲームモード選択パネルを表示
+        GameEndHandler gameEndHandler = FindObjectOfType<GameEndHandler>();
+        if (gameEndHandler != null)
+        {
+            gameEndHandler.ShowGameModeSelection();
+            Debug.Log("[CharacterUpgradeUI] GameModeSelectPanel shown after upgrade selection.");
+        }
+        else
+        {
+            Debug.LogWarning("[CharacterUpgradeUI] GameEndHandlerが見つかりません。ゲームモード選択パネルを表示できません。");
+        }
     }
     
     /// <summary>
