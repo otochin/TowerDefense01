@@ -189,7 +189,7 @@ public class CharacterUpgradeManager : MonoBehaviour
         {
             instance = this;
             InitializeUpgradeData();
-            Debug.Log($"[CharacterUpgradeManager] Instance created. Upgrade data initialized. Warrior HP level: {upgradeData[CharacterType.Warrior].healthUpgrade}, Archer HP level: {upgradeData[CharacterType.Archer].healthUpgrade}, Mage HP level: {upgradeData[CharacterType.Mage].healthUpgrade}");
+            // Debug.Log($"[CharacterUpgradeManager] Instance created. Upgrade data initialized. Warrior HP level: {upgradeData[CharacterType.Warrior].healthUpgrade}, Archer HP level: {upgradeData[CharacterType.Archer].healthUpgrade}, Mage HP level: {upgradeData[CharacterType.Mage].healthUpgrade}");
         }
         else if (instance != this)
         {
@@ -197,11 +197,11 @@ public class CharacterUpgradeManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        else
-        {
-            // 既存のインスタンスが存在する場合、強化データを確認
-            Debug.Log($"[CharacterUpgradeManager] Existing instance found. Warrior HP level: {upgradeData[CharacterType.Warrior].healthUpgrade}, Archer HP level: {upgradeData[CharacterType.Archer].healthUpgrade}, Mage HP level: {upgradeData[CharacterType.Mage].healthUpgrade}");
-        }
+        // else
+        // {
+        //     // 既存のインスタンスが存在する場合、強化データを確認
+        //     Debug.Log($"[CharacterUpgradeManager] Existing instance found. Warrior HP level: {upgradeData[CharacterType.Warrior].healthUpgrade}, Archer HP level: {upgradeData[CharacterType.Archer].healthUpgrade}, Mage HP level: {upgradeData[CharacterType.Mage].healthUpgrade}");
+        // }
     }
     
     /// <summary>
@@ -216,12 +216,12 @@ public class CharacterUpgradeManager : MonoBehaviour
             upgradeData[CharacterType.Archer] = new CharacterUpgradeData(CharacterType.Archer);
             upgradeData[CharacterType.Mage] = new CharacterUpgradeData(CharacterType.Mage);
             
-            Debug.Log("[CharacterUpgradeManager] Upgrade data initialized for all character types (new initialization).");
+            // Debug.Log("[CharacterUpgradeManager] Upgrade data initialized for all character types (new initialization).");
         }
-        else
-        {
-            Debug.Log($"[CharacterUpgradeManager] Upgrade data already exists. Warrior HP level: {upgradeData[CharacterType.Warrior].healthUpgrade}, Archer HP level: {upgradeData[CharacterType.Archer].healthUpgrade}, Mage HP level: {upgradeData[CharacterType.Mage].healthUpgrade}");
-        }
+        // else
+        // {
+        //     Debug.Log($"[CharacterUpgradeManager] Upgrade data already exists. Warrior HP level: {upgradeData[CharacterType.Warrior].healthUpgrade}, Archer HP level: {upgradeData[CharacterType.Archer].healthUpgrade}, Mage HP level: {upgradeData[CharacterType.Mage].healthUpgrade}");
+        // }
     }
     
     /// <summary>
@@ -229,12 +229,17 @@ public class CharacterUpgradeManager : MonoBehaviour
     /// </summary>
     public void UpgradeCharacter(CharacterType characterType, UpgradeType upgradeType)
     {
+        Debug.Log($"[CharacterUpgradeManager] ===== UpgradeCharacter START =====");
+        Debug.Log($"[CharacterUpgradeManager] 【調査用】受け取ったパラメータ: CharacterType={characterType}, UpgradeType={upgradeType}");
+        
         if (!upgradeData.ContainsKey(characterType))
         {
             upgradeData[characterType] = new CharacterUpgradeData(characterType);
+            Debug.Log($"[CharacterUpgradeManager] 【調査用】{characterType} の強化データが存在しなかったため、新規作成しました");
         }
         
         CharacterUpgradeData data = upgradeData[characterType];
+        Debug.Log($"[CharacterUpgradeManager] 【調査用】強化前の状態: HP強化レベル={data.healthUpgrade}, 攻撃力強化レベル={data.attackPowerUpgrade}, 攻撃速度強化レベル={data.attackSpeedUpgrade}, 移動速度強化レベル={data.moveSpeedUpgrade}");
         
         switch (upgradeType)
         {
@@ -242,25 +247,28 @@ public class CharacterUpgradeManager : MonoBehaviour
                 data.healthUpgrade++;
                 int healthAmount = GetCharacterHealthUpgradeAmount(characterType);
                 int totalHealthIncrease = healthAmount * data.healthUpgrade;
-                Debug.Log($"[CharacterUpgradeManager] {characterType} HP upgraded to level {data.healthUpgrade} (+{totalHealthIncrease} HP, +{healthAmount} per level)");
+                Debug.Log($"[CharacterUpgradeManager] 【調査用】{characterType} のHPを強化しました: レベル {data.healthUpgrade} (+{totalHealthIncrease} HP, +{healthAmount} per level)");
                 break;
             case UpgradeType.AttackPower:
                 data.attackPowerUpgrade++;
                 int attackAmount = GetCharacterAttackPowerUpgradeAmount(characterType);
                 int totalAttackIncrease = attackAmount * data.attackPowerUpgrade;
-                Debug.Log($"[CharacterUpgradeManager] {characterType} Attack Power upgraded to level {data.attackPowerUpgrade} (+{totalAttackIncrease} Attack, +{attackAmount} per level)");
+                Debug.Log($"[CharacterUpgradeManager] 【調査用】{characterType} の攻撃力を強化しました: レベル {data.attackPowerUpgrade} (+{totalAttackIncrease} Attack, +{attackAmount} per level)");
                 break;
             case UpgradeType.AttackSpeed:
                 data.attackSpeedUpgrade++;
                 float attackSpeedAmount = GetCharacterAttackSpeedUpgradeAmount(characterType);
-                Debug.Log($"[CharacterUpgradeManager] {characterType} Attack Speed upgraded to level {data.attackSpeedUpgrade} (+{attackSpeedAmount * data.attackSpeedUpgrade} Attack Speed)");
+                Debug.Log($"[CharacterUpgradeManager] 【調査用】{characterType} の攻撃速度を強化しました: レベル {data.attackSpeedUpgrade} (+{attackSpeedAmount * data.attackSpeedUpgrade} Attack Speed)");
                 break;
             case UpgradeType.MoveSpeed:
                 data.moveSpeedUpgrade++;
                 float moveSpeedAmount = GetCharacterMoveSpeedUpgradeAmount(characterType);
-                Debug.Log($"[CharacterUpgradeManager] {characterType} Move Speed upgraded to level {data.moveSpeedUpgrade} (+{moveSpeedAmount * data.moveSpeedUpgrade} Move Speed)");
+                Debug.Log($"[CharacterUpgradeManager] 【調査用】{characterType} の移動速度を強化しました: レベル {data.moveSpeedUpgrade} (+{moveSpeedAmount * data.moveSpeedUpgrade} Move Speed)");
                 break;
         }
+        
+        Debug.Log($"[CharacterUpgradeManager] 【調査用】強化後の状態: HP強化レベル={data.healthUpgrade}, 攻撃力強化レベル={data.attackPowerUpgrade}, 攻撃速度強化レベル={data.attackSpeedUpgrade}, 移動速度強化レベル={data.moveSpeedUpgrade}");
+        Debug.Log($"[CharacterUpgradeManager] ===== UpgradeCharacter END =====");
         
         OnUpgradeChanged?.Invoke(characterType, upgradeType);
     }
@@ -272,7 +280,7 @@ public class CharacterUpgradeManager : MonoBehaviour
     {
         if (!upgradeData.ContainsKey(characterType))
         {
-            Debug.LogWarning($"[CharacterUpgradeManager] GetUpgradedHealth: No upgrade data found for {characterType}. Returning base health: {baseHealth}");
+            // Debug.LogWarning($"[CharacterUpgradeManager] GetUpgradedHealth: No upgrade data found for {characterType}. Returning base health: {baseHealth}");
             return baseHealth;
         }
         
@@ -281,7 +289,7 @@ public class CharacterUpgradeManager : MonoBehaviour
         int totalUpgrade = upgradeLevel * healthAmount;
         int finalHealth = baseHealth + totalUpgrade;
         
-        Debug.Log($"[CharacterUpgradeManager] GetUpgradedHealth: {characterType} - Base: {baseHealth}, UpgradeLevel: {upgradeLevel}, HealthAmount: {healthAmount}, TotalUpgrade: {totalUpgrade}, Final: {finalHealth}");
+        // Debug.Log($"[CharacterUpgradeManager] GetUpgradedHealth: {characterType} - Base: {baseHealth}, UpgradeLevel: {upgradeLevel}, HealthAmount: {healthAmount}, TotalUpgrade: {totalUpgrade}, Final: {finalHealth}");
         
         return finalHealth;
     }
@@ -349,6 +357,6 @@ public class CharacterUpgradeManager : MonoBehaviour
     public void ResetUpgrades()
     {
         InitializeUpgradeData();
-        Debug.Log("[CharacterUpgradeManager] All upgrades reset.");
+        // Debug.Log("[CharacterUpgradeManager] All upgrades reset.");
     }
 }

@@ -29,7 +29,7 @@ public class CharacterSelectUI : MonoBehaviour
     
     private void Start()
     {
-        Debug.Log($"[CharacterSelectUI] Start called on {gameObject.name}");
+        // Debug.Log($"[CharacterSelectUI] Start called on {gameObject.name}");
         
         // CharacterSpawnerを再検索（Awakeで見つからなかった場合）
         if (characterSpawner == null)
@@ -39,15 +39,15 @@ public class CharacterSelectUI : MonoBehaviour
             {
                 Debug.LogError("[CharacterSelectUI] CharacterSpawnerが見つかりません。シーンにCharacterSpawnerを配置してください。");
             }
-            else
-            {
-                Debug.Log($"[CharacterSelectUI] CharacterSpawner found in Start: {characterSpawner.gameObject.name}");
-            }
+            // else
+            // {
+            //     Debug.Log($"[CharacterSelectUI] CharacterSpawner found in Start: {characterSpawner.gameObject.name}");
+            // }
         }
-        else
-        {
-            Debug.Log($"[CharacterSelectUI] CharacterSpawner already set: {characterSpawner.gameObject.name}");
-        }
+        // else
+        // {
+        //     Debug.Log($"[CharacterSelectUI] CharacterSpawner already set: {characterSpawner.gameObject.name}");
+        // }
         
         // ResourceManagerのシングルトンインスタンスを強制的に取得（Startで取得することで、ResourceManagerのAwakeが確実に実行された後に取得できる）
         // Inspectorで設定されていても、シングルトンインスタンスを使用する
@@ -59,7 +59,7 @@ public class CharacterSelectUI : MonoBehaviour
                 Debug.LogWarning($"[CharacterSelectUI] ResourceManager reference mismatch! Inspector setting: {(resourceManager != null ? resourceManager.gameObject.name : "null")}, Singleton: {singletonInstance.gameObject.name}. Using singleton instance.");
             }
             resourceManager = singletonInstance;
-            Debug.Log($"[CharacterSelectUI] ResourceManager set in Start: {resourceManager.gameObject.name} (InstanceID: {resourceManager.GetInstanceID()}, CurrentMoney: {resourceManager.CurrentMoney})");
+            // Debug.Log($"[CharacterSelectUI] ResourceManager set in Start: {resourceManager.gameObject.name} (InstanceID: {resourceManager.GetInstanceID()}, CurrentMoney: {resourceManager.CurrentMoney})");
         }
         else
         {
@@ -102,21 +102,21 @@ public class CharacterSelectUI : MonoBehaviour
             characterButtons = GetComponentsInChildren<CharacterButton>().ToList();
         }
         
-        Debug.Log($"[CharacterSelectUI] Found {characterButtons.Count} character buttons.");
+        // Debug.Log($"[CharacterSelectUI] Found {characterButtons.Count} character buttons.");
         
         // CharacterSpawnerから利用可能なキャラクターリストを取得
         if (characterSpawner != null)
         {
             List<CharacterData> availableCharacters = characterSpawner.GetAvailableCharacters();
             
-            Debug.Log($"[CharacterSelectUI] Available characters: {availableCharacters.Count}. Names: {string.Join(", ", availableCharacters.Select(c => c?.CharacterName ?? "null"))}");
+            // Debug.Log($"[CharacterSelectUI] Available characters: {availableCharacters.Count}. Names: {string.Join(", ", availableCharacters.Select(c => c?.CharacterName ?? "null"))}");
             
             // 各ボタンにキャラクターデータを設定
             for (int i = 0; i < characterButtons.Count && i < availableCharacters.Count; i++)
             {
                 if (characterButtons[i] != null && availableCharacters[i] != null)
                 {
-                    Debug.Log($"[CharacterSelectUI] Setting button {i} to character: {availableCharacters[i].CharacterName}");
+                    // Debug.Log($"[CharacterSelectUI] Setting button {i} to character: {availableCharacters[i].CharacterName}");
                     characterButtons[i].SetCharacterData(availableCharacters[i]);
                     
                     // クリックイベントを設定
@@ -215,7 +215,7 @@ public class CharacterSelectUI : MonoBehaviour
     /// </summary>
     public void SetPanelVisible(bool visible)
     {
-        Debug.Log($"[CharacterSelectUI] SetPanelVisible called: {visible} on {gameObject.name}. Current active state: {gameObject.activeSelf}, Active in hierarchy: {gameObject.activeInHierarchy}");
+        // Debug.Log($"[CharacterSelectUI] SetPanelVisible called: {visible} on {gameObject.name}. Current active state: {gameObject.activeSelf}, Active in hierarchy: {gameObject.activeInHierarchy}");
         
         isGameStarted = visible;
         
@@ -223,7 +223,7 @@ public class CharacterSelectUI : MonoBehaviour
         if (gameObject != null)
         {
             gameObject.SetActive(visible);
-            Debug.Log($"[CharacterSelectUI] Panel {(visible ? "shown" : "hidden")}. isGameStarted: {isGameStarted}. After SetActive: activeSelf={gameObject.activeSelf}, activeInHierarchy={gameObject.activeInHierarchy}");
+            // Debug.Log($"[CharacterSelectUI] Panel {(visible ? "shown" : "hidden")}. isGameStarted: {isGameStarted}. After SetActive: activeSelf={gameObject.activeSelf}, activeInHierarchy={gameObject.activeInHierarchy}");
         }
         else
         {

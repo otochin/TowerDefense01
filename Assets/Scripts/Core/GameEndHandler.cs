@@ -77,17 +77,17 @@ public class GameEndHandler : MonoBehaviour
             characterUpgradeUI = FindObjectOfType<CharacterUpgradeUI>(true);
             if (characterUpgradeUI != null)
             {
-                Debug.Log($"[GameEndHandler] CharacterUpgradeUI found in Start: {characterUpgradeUI.gameObject.name}");
+                // Debug.Log($"[GameEndHandler] CharacterUpgradeUI found in Start: {characterUpgradeUI.gameObject.name}");
             }
             else
             {
                 Debug.LogWarning("[GameEndHandler] CharacterUpgradeUI not found in Start. It will be searched again when game ends.");
             }
         }
-        else
-        {
-            Debug.Log($"[GameEndHandler] CharacterUpgradeUI already set in Start: {characterUpgradeUI.gameObject.name}");
-        }
+        // else
+        // {
+        //     Debug.Log($"[GameEndHandler] CharacterUpgradeUI already set in Start: {characterUpgradeUI.gameObject.name}");
+        // }
         
         // BGM用のAudioSourceを自動検出または作成
         if (bgmAudioSource == null)

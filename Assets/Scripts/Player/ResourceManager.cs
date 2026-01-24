@@ -45,7 +45,7 @@ public class ResourceManager : MonoBehaviour
                 
                 if (instance != null)
                 {
-                    Debug.Log($"[ResourceManager] Instance found: {instance.gameObject.name} (InstanceID: {instance.GetInstanceID()}, InitialMoney: {instance.initialMoney})");
+                    // Debug.Log($"[ResourceManager] Instance found: {instance.gameObject.name} (InstanceID: {instance.GetInstanceID()}, InitialMoney: {instance.initialMoney})");
                     // Instanceプロパティで取得した際、確実に初期化する
                     if (!instance.isInitialized)
                     {
@@ -133,13 +133,13 @@ public class ResourceManager : MonoBehaviour
             isInitialized = true;
             // initialMoneyを反映（Inspectorで設定した値が反映されるように）
             currentMoney = initialMoney;
-            Debug.Log($"[ResourceManager] InitializeMoney called on {gameObject.name} (InstanceID: {GetInstanceID()}). Initial money setting: {initialMoney}, Current money: {currentMoney}");
+            // Debug.Log($"[ResourceManager] InitializeMoney called on {gameObject.name} (InstanceID: {GetInstanceID()}). Initial money setting: {initialMoney}, Current money: {currentMoney}");
         }
     }
     
     private void Awake()
     {
-        Debug.Log($"[ResourceManager] Awake called on {gameObject.name} (InstanceID: {GetInstanceID()}). Initial money setting: {initialMoney}");
+        // Debug.Log($"[ResourceManager] Awake called on {gameObject.name} (InstanceID: {GetInstanceID()}). Initial money setting: {initialMoney}");
         
         // 初期化（まだ初期化されていない場合）
         if (!isInitialized)
@@ -154,7 +154,7 @@ public class ResourceManager : MonoBehaviour
         if (instance == this)
         {
             currentMoney = initialMoney;
-            Debug.Log($"[ResourceManager] Start called on {gameObject.name} (InstanceID: {GetInstanceID()}). Setting money to initialMoney: {currentMoney}");
+            // Debug.Log($"[ResourceManager] Start called on {gameObject.name} (InstanceID: {GetInstanceID()}). Setting money to initialMoney: {currentMoney}");
         }
         // 初期状態を通知
         OnMoneyChanged?.Invoke(currentMoney);
@@ -206,7 +206,7 @@ public class ResourceManager : MonoBehaviour
             currentMoney += amount;
         }
         
-        Debug.Log($"[ResourceManager] AddMoney: {oldMoney} -> {currentMoney} (added {amount})");
+        // Debug.Log($"[ResourceManager] AddMoney: {oldMoney} -> {currentMoney} (added {amount})");
         OnMoneyChanged?.Invoke(currentMoney);
     }
     

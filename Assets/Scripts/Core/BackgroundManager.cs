@@ -92,7 +92,7 @@ public class BackgroundManager : MonoBehaviour
         
         if (backgroundRenderer == null)
         {
-            Debug.LogWarning("[BackgroundManager] SpriteRenderer component not found on Background GameObject. Automatically adding SpriteRenderer component...");
+            // Debug.LogWarning("[BackgroundManager] SpriteRenderer component not found on Background GameObject. Automatically adding SpriteRenderer component...");
             backgroundRenderer = backgroundObject.AddComponent<SpriteRenderer>();
         }
     }

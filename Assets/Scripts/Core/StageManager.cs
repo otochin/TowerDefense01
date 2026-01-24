@@ -48,7 +48,15 @@ public class StageManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            // DontDestroyOnLoadはルートGameObjectでのみ動作する
+            if (gameObject.transform.parent == null)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Debug.LogWarning($"[StageManager] DontDestroyOnLoad requires root GameObject. {gameObject.name} is not a root GameObject. Consider moving it to root level.");
+            }
         }
         else if (instance != this)
         {

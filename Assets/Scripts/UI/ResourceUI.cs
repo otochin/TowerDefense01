@@ -26,17 +26,17 @@ public class ResourceUI : MonoBehaviour
             return;
         }
         
-        Debug.Log($"[ResourceUI] ResourceManager found in Awake: {resourceManager.gameObject.name} (InstanceID: {resourceManager.GetInstanceID()}, CurrentMoney: {resourceManager.CurrentMoney}). Subscribing to OnMoneyChanged event.");
+        // Debug.Log($"[ResourceUI] ResourceManager found in Awake: {resourceManager.gameObject.name} (InstanceID: {resourceManager.GetInstanceID()}, CurrentMoney: {resourceManager.CurrentMoney}). Subscribing to OnMoneyChanged event.");
         
         // お金変更イベントを購読
         resourceManager.OnMoneyChanged += UpdateMoneyDisplay;
         
-        Debug.Log($"[ResourceUI] Subscribed to OnMoneyChanged event in Awake.");
+        // Debug.Log($"[ResourceUI] Subscribed to OnMoneyChanged event in Awake.");
     }
     
     private void Start()
     {
-        Debug.Log($"[ResourceUI] Start called on {gameObject.name}");
+        // Debug.Log($"[ResourceUI] Start called on {gameObject.name}");
         
         // ResourceManagerのシングルトンインスタンスを再取得（Awakeで見つからなかった場合）
         if (resourceManager == null)
@@ -44,7 +44,7 @@ public class ResourceUI : MonoBehaviour
             resourceManager = ResourceManager.Instance;
             if (resourceManager != null)
             {
-                Debug.Log($"[ResourceUI] ResourceManager found in Start. Subscribing to OnMoneyChanged event.");
+                // Debug.Log($"[ResourceUI] ResourceManager found in Start. Subscribing to OnMoneyChanged event.");
                 resourceManager.OnMoneyChanged += UpdateMoneyDisplay;
             }
         }
@@ -53,16 +53,16 @@ public class ResourceUI : MonoBehaviour
         if (moneyText == null)
         {
             moneyText = GetComponentInChildren<TextMeshProUGUI>();
-            if (moneyText != null)
-            {
-                Debug.Log($"[ResourceUI] Found MoneyText in Start: {moneyText.gameObject.name}");
-            }
+            // if (moneyText != null)
+            // {
+            //     Debug.Log($"[ResourceUI] Found MoneyText in Start: {moneyText.gameObject.name}");
+            // }
         }
         
         // 初期表示を更新
         if (resourceManager != null)
         {
-            Debug.Log($"[ResourceUI] Initializing display with money: {resourceManager.CurrentMoney}");
+            // Debug.Log($"[ResourceUI] Initializing display with money: {resourceManager.CurrentMoney}");
             UpdateMoneyDisplay(resourceManager.CurrentMoney);
         }
         else
@@ -85,7 +85,7 @@ public class ResourceUI : MonoBehaviour
     /// </summary>
     private void UpdateMoneyDisplay(int money)
     {
-        Debug.Log($"[ResourceUI] UpdateMoneyDisplay called with money: {money} on GameObject: {gameObject.name}. ResourceManager InstanceID: {(resourceManager != null ? resourceManager.GetInstanceID().ToString() : "null")}");
+        // Debug.Log($"[ResourceUI] UpdateMoneyDisplay called with money: {money} on GameObject: {gameObject.name}. ResourceManager InstanceID: {(resourceManager != null ? resourceManager.GetInstanceID().ToString() : "null")}");
         
         // MoneyTextがnullの場合、子オブジェクトから自動的に探す
         if (moneyText == null)
@@ -97,7 +97,7 @@ public class ResourceUI : MonoBehaviour
                 Debug.LogWarning($"[ResourceUI] MoneyText is null and could not be found in children of {gameObject.name}.");
                 return;
             }
-            Debug.Log($"[ResourceUI] Found MoneyText: {moneyText.gameObject.name}");
+            // Debug.Log($"[ResourceUI] Found MoneyText: {moneyText.gameObject.name}");
         }
         
         // テキストを設定
@@ -105,6 +105,6 @@ public class ResourceUI : MonoBehaviour
         string oldText = moneyText.text;
         moneyText.text = formattedText;
         
-        Debug.Log($"[ResourceUI] Money text updated on {gameObject.name}: '{oldText}' -> '{formattedText}'");
+        // Debug.Log($"[ResourceUI] Money text updated on {gameObject.name}: '{oldText}' -> '{formattedText}'");
     }
 }

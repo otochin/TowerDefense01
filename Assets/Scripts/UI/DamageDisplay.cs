@@ -12,7 +12,6 @@ public class DamageDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI damageText;
     
     [Header("アニメーション設定")]
-    [SerializeField] private float moveSpeed = 2.0f; // 上に移動する速度
     [SerializeField] private float moveDistance = 1.0f; // 移動距離
     [SerializeField] private float fadeOutDuration = 0.5f; // フェードアウト時間
     [SerializeField] private float displayDuration = 1.0f; // 表示時間（秒）
@@ -70,7 +69,7 @@ public class DamageDisplay : MonoBehaviour
         {
             startPosition = transform.position;
         }
-        Debug.Log($"[DamageDisplay] Start position: {startPosition}, Canvas mode: {(canvas != null ? canvas.renderMode.ToString() : "null")}");
+        // Debug.Log($"[DamageDisplay] Start position: {startPosition}, Canvas mode: {(canvas != null ? canvas.renderMode.ToString() : "null")}");
     }
     
     /// <summary>
@@ -78,12 +77,12 @@ public class DamageDisplay : MonoBehaviour
     /// </summary>
     public void ShowDamage(int damage)
     {
-        Debug.Log($"[DamageDisplay] ShowDamage called: damage={damage}");
+        // Debug.Log($"[DamageDisplay] ShowDamage called: damage={damage}");
         
         if (damageText != null)
         {
             damageText.text = damage.ToString();
-            Debug.Log($"[DamageDisplay] Damage text set to: {damageText.text}");
+            // Debug.Log($"[DamageDisplay] Damage text set to: {damageText.text}");
         }
         else
         {
@@ -93,7 +92,7 @@ public class DamageDisplay : MonoBehaviour
         
         // アニメーションを開始
         StartCoroutine(AnimateDamage());
-        Debug.Log($"[DamageDisplay] Animation coroutine started");
+        // Debug.Log($"[DamageDisplay] Animation coroutine started");
     }
     
     /// <summary>
@@ -101,7 +100,7 @@ public class DamageDisplay : MonoBehaviour
     /// </summary>
     private IEnumerator AnimateDamage()
     {
-        Debug.Log($"[DamageDisplay] AnimateDamage started. Start position: {startPosition}, Move distance: {moveDistance}");
+        // Debug.Log($"[DamageDisplay] AnimateDamage started. Start position: {startPosition}, Move distance: {moveDistance}");
         
         float elapsedTime = 0f;
         Vector3 endPosition = startPosition + Vector3.up * moveDistance;

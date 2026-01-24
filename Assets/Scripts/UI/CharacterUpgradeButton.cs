@@ -74,7 +74,7 @@ public class CharacterUpgradeButton : MonoBehaviour
         if (button != null)
         {
             button.interactable = true;
-            Debug.Log($"[CharacterUpgradeButton] OnEnable: Button enabled for {characterType} - {upgradeType}");
+            // Debug.Log($"[CharacterUpgradeButton] OnEnable: Button enabled for {characterType} - {upgradeType}");
         }
     }
     
@@ -83,15 +83,16 @@ public class CharacterUpgradeButton : MonoBehaviour
     /// </summary>
     public void SetUpgradeInfo(CharacterType type, CharacterUpgradeManager.UpgradeType upgrade)
     {
+        // Debug.Log($"[CharacterUpgradeButton] SetUpgradeInfo: Button {gameObject.name} set to characterType={type}, upgradeType={upgrade}");
         characterType = type;
         upgradeType = upgrade;
         InitializeUI();
     }
     
     /// <summary>
-    /// UIを初期化
+    /// UIを初期化（Inspectorで設定された値に基づいて）
     /// </summary>
-    private void InitializeUI()
+    public void InitializeUI()
     {
         // キャラクター名の設定は削除（UIで手動設定する）
         // if (characterNameText != null)
@@ -153,11 +154,19 @@ public class CharacterUpgradeButton : MonoBehaviour
     {
         if (button != null && !button.interactable)
         {
+            Debug.LogWarning($"[CharacterUpgradeButton] 【調査用】ボタン {gameObject.name} は無効状態のため、クリックを無視します");
             return;
         }
-        
+
+        Debug.Log($"[CharacterUpgradeButton] ===== OnButtonClick START =====");
+        Debug.Log($"[CharacterUpgradeButton] 【調査用】ボタン {gameObject.name} がクリックされました");
+        Debug.Log($"[CharacterUpgradeButton] 【調査用】現在のフィールド値: characterType={characterType}, upgradeType={upgradeType}");
+
         // イベントを発火
+        Debug.Log($"[CharacterUpgradeButton] 【調査用】イベントを発火します: OnButtonClicked?.Invoke({characterType}, {upgradeType})");
         OnButtonClicked?.Invoke(characterType, upgradeType);
+        
+        Debug.Log($"[CharacterUpgradeButton] ===== OnButtonClick END =====");
     }
     
     /// <summary>

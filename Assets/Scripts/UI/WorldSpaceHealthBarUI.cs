@@ -232,7 +232,7 @@ public class WorldSpaceHealthBarUI : MonoBehaviour
             float fillAmount = maxHealth > 0 ? (float)currentHealth / maxHealth : 0f;
             fillAmount = Mathf.Clamp01(fillAmount);
             healthBarFill.fillAmount = fillAmount;
-            Debug.Log($"[WorldSpaceHealthBarUI] UpdateHealthDisplay: {currentHealth}/{maxHealth}, fillAmount: {fillAmount}");
+            // Debug.Log($"[WorldSpaceHealthBarUI] UpdateHealthDisplay: {currentHealth}/{maxHealth}, fillAmount: {fillAmount}");
         }
         else
         {

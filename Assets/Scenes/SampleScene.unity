@@ -1146,7 +1146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterType: 2
-  upgradeType: 0
+  upgradeType: 1
   characterNameText: {fileID: 0}
   upgradeText: {fileID: 0}
   button: {fileID: 0}
@@ -1628,10 +1628,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 367101926}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 4}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &182641274
 MonoBehaviour:
@@ -2313,6 +2313,7 @@ MonoBehaviour:
   costText: {fileID: 96986199}
   lockedOverlay: {fileID: 1039422884}
   button: {fileID: 0}
+  animator: {fileID: 0}
   OnButtonClicked:
     m_PersistentCalls:
       m_Calls: []
@@ -3251,7 +3252,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 400, y: 440}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &538789173
@@ -4414,7 +4415,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterType: 0
-  upgradeType: 0
+  upgradeType: 1
   characterNameText: {fileID: 0}
   upgradeText: {fileID: 0}
   button: {fileID: 0}
@@ -4715,6 +4716,7 @@ MonoBehaviour:
   costText: {fileID: 1954208954}
   lockedOverlay: {fileID: 155908017}
   button: {fileID: 0}
+  animator: {fileID: 0}
   OnButtonClicked:
     m_PersistentCalls:
       m_Calls: []
@@ -6113,10 +6115,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 969972266}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 4}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1318114955
 MonoBehaviour:
@@ -6271,7 +6273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterType: 1
-  upgradeType: 0
+  upgradeType: 1
   characterNameText: {fileID: 0}
   upgradeText: {fileID: 0}
   button: {fileID: 0}
@@ -7971,6 +7973,7 @@ GameObject:
   - component: {fileID: 1626213610}
   - component: {fileID: 1626213612}
   - component: {fileID: 1626213611}
+  - component: {fileID: 1626213613}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -8017,7 +8020,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7b09c3215a4bb4a218ce0b1a4f460a4c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5e666705d4ccb42e299973c1bc6ab7a6, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -8035,6 +8038,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1626213609}
   m_CullTransparentMesh: 1
+--- !u!95 &1626213613
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626213609}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2350b1471171042719e39dedaea3c122, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1629513194
 GameObject:
   m_ObjectHideFlags: 0
@@ -8214,7 +8238,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -2
-  m_Sprite: {fileID: 21300000, guid: a4cc950201e854e0085083565c978ac1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9fcf17e4bcaed479cbd55bf4e9ae0f35, type: 3}
   m_Color: {r: 0.5882353, g: 0.5882353, b: 0.5882353, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -10158,7 +10182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a9530f6d68b84119b028a3a206d38e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialMoney: 0
+  initialMoney: 10000
   moneyGenerationRate: 1
   moneyPerGeneration: 1
   maxMoney: -1
@@ -11014,6 +11038,7 @@ MonoBehaviour:
   costText: {fileID: 1478922911}
   lockedOverlay: {fileID: 505780487}
   button: {fileID: 0}
+  animator: {fileID: 0}
   OnButtonClicked:
     m_PersistentCalls:
       m_Calls: []

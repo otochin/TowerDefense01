@@ -157,7 +157,7 @@ public class CastleHealthBarUI : MonoBehaviour
             healthBarFill.fillAmount = Mathf.Clamp01(fillAmount);
             
             // デバッグログ（HPが変更された時のみ）
-            Debug.Log($"[CastleHealthBarUI] UpdateHealthDisplay: {currentHealth}/{maxHealth}, fillAmount={fillAmount} on {gameObject.name}");
+            // Debug.Log($"[CastleHealthBarUI] UpdateHealthDisplay: {currentHealth}/{maxHealth}, fillAmount={fillAmount} on {gameObject.name}");
         }
         else
         {

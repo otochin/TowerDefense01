@@ -182,6 +182,7 @@ MonoBehaviour:
   autoCreateHealthBar: 1
   damagePrefab: {fileID: 7946836199734585661, guid: 54a982843655449a3a1d24a7c8f665f2, type: 3}
   damageDisplayOffset: 0.5
+  damageDisplayOffsetX: 0
 --- !u!114 &7724182097889973747
 MonoBehaviour:
   m_ObjectHideFlags: 0

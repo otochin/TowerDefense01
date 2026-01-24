@@ -247,7 +247,7 @@ public class CharacterBase : MonoBehaviour, IDamageable
             return;
         }
         
-        Debug.Log($"[CharacterBase] ShowDamageDisplay called: damage={damage}, damagePrefab={damagePrefab.name}");
+        // Debug.Log($"[CharacterBase] ShowDamageDisplay called: damage={damage}, damagePrefab={damagePrefab.name}");
         
         // ライフゲージの位置を取得
         Vector3 displayPosition = transform.position;
@@ -259,7 +259,7 @@ public class CharacterBase : MonoBehaviour, IDamageable
             if (healthBarRect != null)
             {
                 displayPosition = healthBarRect.position;
-                Debug.Log($"[CharacterBase] Using healthBarUI position: {displayPosition}");
+                // Debug.Log($"[CharacterBase] Using healthBarUI position: {displayPosition}");
             }
         }
         else if (simpleHealthBar != null)
@@ -268,22 +268,22 @@ public class CharacterBase : MonoBehaviour, IDamageable
             if (healthBarTransform != null)
             {
                 displayPosition = healthBarTransform.position;
-                Debug.Log($"[CharacterBase] Using simpleHealthBar position: {displayPosition}");
+                // Debug.Log($"[CharacterBase] Using simpleHealthBar position: {displayPosition}");
             }
         }
-        else
-        {
-            Debug.Log($"[CharacterBase] No health bar found, using character position: {displayPosition}");
-        }
+        // else
+        // {
+        //     Debug.Log($"[CharacterBase] No health bar found, using character position: {displayPosition}");
+        // }
         
         // ライフゲージの少し上に配置（上下と左右のオフセットを適用）
         displayPosition += Vector3.up * damageDisplayOffset;
         displayPosition += Vector3.right * damageDisplayOffsetX;
-        Debug.Log($"[CharacterBase] Final display position: {displayPosition} (offset Y: {damageDisplayOffset}, offset X: {damageDisplayOffsetX})");
+        // Debug.Log($"[CharacterBase] Final display position: {displayPosition} (offset Y: {damageDisplayOffset}, offset X: {damageDisplayOffsetX})");
         
         // ダメージ表示をインスタンス化
         GameObject damageObj = Instantiate(damagePrefab, displayPosition, Quaternion.identity);
-        Debug.Log($"[CharacterBase] Damage object instantiated: {damageObj.name} at {displayPosition}");
+        // Debug.Log($"[CharacterBase] Damage object instantiated: {damageObj.name} at {displayPosition}");
         
         // World Space Canvasの場合、RectTransformの位置を設定
         Canvas canvas = damageObj.GetComponent<Canvas>();
@@ -293,7 +293,7 @@ public class CharacterBase : MonoBehaviour, IDamageable
             if (rectTransform != null)
             {
                 rectTransform.position = displayPosition;
-                Debug.Log($"[CharacterBase] World Space Canvas detected, set RectTransform position: {displayPosition}");
+                // Debug.Log($"[CharacterBase] World Space Canvas detected, set RectTransform position: {displayPosition}");
             }
         }
         
@@ -301,7 +301,7 @@ public class CharacterBase : MonoBehaviour, IDamageable
         DamageDisplay damageDisplay = damageObj.GetComponentInChildren<DamageDisplay>();
         if (damageDisplay != null)
         {
-            Debug.Log($"[CharacterBase] DamageDisplay component found, showing damage: {damage}");
+            // Debug.Log($"[CharacterBase] DamageDisplay component found, showing damage: {damage}");
             damageDisplay.ShowDamage(damage);
         }
         else

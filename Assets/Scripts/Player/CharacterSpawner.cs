@@ -55,7 +55,7 @@ public class CharacterSpawner : MonoBehaviour
     
     private void Start()
     {
-        Debug.Log($"[CharacterSpawner] Start called on {gameObject.name}");
+        // Debug.Log($"[CharacterSpawner] Start called on {gameObject.name}");
         
         // ResourceManagerのシングルトンインスタンスを強制的に取得（Startで取得することで、ResourceManagerのAwakeが確実に実行された後に取得できる）
         // Inspectorで設定されていても、シングルトンインスタンスを使用する
@@ -67,7 +67,7 @@ public class CharacterSpawner : MonoBehaviour
                 Debug.LogWarning($"[CharacterSpawner] ResourceManager reference mismatch! Inspector setting: {(resourceManager != null ? resourceManager.gameObject.name : "null")}, Singleton: {singletonInstance.gameObject.name}. Using singleton instance.");
             }
             resourceManager = singletonInstance;
-            Debug.Log($"[CharacterSpawner] ResourceManager set in Start: {resourceManager.gameObject.name} (InstanceID: {resourceManager.GetInstanceID()}, CurrentMoney: {resourceManager.CurrentMoney})");
+            // Debug.Log($"[CharacterSpawner] ResourceManager set in Start: {resourceManager.gameObject.name} (InstanceID: {resourceManager.GetInstanceID()}, CurrentMoney: {resourceManager.CurrentMoney})");
         }
         else
         {

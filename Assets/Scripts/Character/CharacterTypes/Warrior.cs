@@ -24,6 +24,12 @@ public class Warrior : MonoBehaviour
     [Header("効果音設定")]
     [SerializeField] private AudioClip attackSound; // 攻撃時の効果音
     [SerializeField] private AudioSource audioSource; // 効果音再生用のAudioSource
+
+    [Header("スプライト設定")]
+    [SerializeField] private SpriteRenderer spriteRenderer; // スプライトレンダラーの参照
+    [SerializeField] private Animator animator; // アニメーターの参照
+    private Sprite originalSprite; // 元のスプライトを保存
+    [SerializeField] private Sprite battleSprite; // 攻撃時のスプライト（Knight-battle - 2）
     
     private void Awake()
     {
@@ -42,7 +48,7 @@ public class Warrior : MonoBehaviour
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
-            
+
             // AudioSourceが存在しない場合は作成
             if (audioSource == null)
             {
@@ -50,6 +56,30 @@ public class Warrior : MonoBehaviour
                 audioSource.playOnAwake = false;
                 audioSource.loop = false;
             }
+        }
+
+        // SpriteRendererを自動検出
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
+        // Animatorを自動検出
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+        }
+
+        // 元のスプライトを保存
+        if (spriteRenderer != null && originalSprite == null)
+        {
+            originalSprite = spriteRenderer.sprite;
+        }
+
+        // 攻撃時のスプライトが設定されていない場合は警告を表示
+        if (battleSprite == null)
+        {
+            Debug.LogWarning("[Warrior] Battle sprite is not set. Please assign 'Knight-battle - 2' sprite in the Inspector.");
         }
     }
     
@@ -234,13 +264,36 @@ public class Warrior : MonoBehaviour
         }
         
         Vector3 lungePosition = originalPosition + lungeDirection * attackLungeDistance;
-        
+
+        // 攻撃時のスプライトに変更
+        if (spriteRenderer != null && battleSprite != null)
+        {
+            // アニメーションを一時的に無効化
+            if (animator != null)
+            {
+                animator.enabled = false;
+            }
+            spriteRenderer.sprite = battleSprite;
+        }
+
         // 突進（前進）
         float elapsed = 0f;
         while (elapsed < attackLungeDuration)
         {
-            if (Time.timeScale == 0f) yield break; // ゲーム停止時は中断
-            
+            if (Time.timeScale == 0f)
+            {
+                // ゲーム停止時はスプライトを元に戻して中断
+                if (spriteRenderer != null && originalSprite != null)
+                {
+                    spriteRenderer.sprite = originalSprite;
+                    if (animator != null)
+                    {
+                        animator.enabled = true;
+                    }
+                }
+                yield break;
+            }
+
             elapsed += Time.deltaTime;
             float t = elapsed / attackLungeDuration;
             transform.position = Vector3.Lerp(originalPosition, lungePosition, t);
@@ -251,8 +304,20 @@ public class Warrior : MonoBehaviour
         elapsed = 0f;
         while (elapsed < attackLungeDuration)
         {
-            if (Time.timeScale == 0f) yield break; // ゲーム停止時は中断
-            
+            if (Time.timeScale == 0f)
+            {
+                // ゲーム停止時はスプライトを元に戻して中断
+                if (spriteRenderer != null && originalSprite != null)
+                {
+                    spriteRenderer.sprite = originalSprite;
+                    if (animator != null)
+                    {
+                        animator.enabled = true;
+                    }
+                }
+                yield break;
+            }
+
             elapsed += Time.deltaTime;
             float t = elapsed / attackLungeDuration;
             transform.position = Vector3.Lerp(lungePosition, originalPosition, t);
@@ -261,6 +326,17 @@ public class Warrior : MonoBehaviour
         
         // 確実に元の位置に戻す
         transform.position = originalPosition;
+
+        // 元のスプライトに戻す
+        if (spriteRenderer != null && originalSprite != null)
+        {
+            spriteRenderer.sprite = originalSprite;
+            // アニメーションを再び有効化
+            if (animator != null)
+            {
+                animator.enabled = true;
+            }
+        }
     }
     
     /// <summary>

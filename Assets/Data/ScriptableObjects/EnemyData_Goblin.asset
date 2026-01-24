@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   maxHealth: 70
   attackPower: 6
-  attackRange: 1
+  attackRange: 1.3
   attackSpeed: 1.3
   moveSpeed: 1.2
   defense: 0

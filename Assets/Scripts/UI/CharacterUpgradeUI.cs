@@ -31,7 +31,7 @@ public class CharacterUpgradeUI : MonoBehaviour
     
     private void Start()
     {
-        Debug.Log($"[CharacterUpgradeUI] Start called on {gameObject.name}");
+        // Debug.Log($"[CharacterUpgradeUI] Start called on {gameObject.name}");
         
         // CharacterUpgradeManagerを再検索
         if (upgradeManager == null)
@@ -45,15 +45,15 @@ public class CharacterUpgradeUI : MonoBehaviour
         
         // 各ボタンを初期化
         InitializeButtons();
+        // 初期化完了フラグを設定（SetPanelVisible()内での重複ログを防ぐため）
+        isInitialized = true;
         
         // 初期状態では非表示（Start()が呼ばれた時点でアクティブな場合のみ）
         // ただし、SetPanelVisible()で既に表示されている場合は、そのまま表示状態を維持
-        if (gameObject.activeSelf && !isInitialized)
+        if (gameObject.activeSelf)
         {
             SetPanelVisible(false);
         }
-        
-        isInitialized = true;
     }
     
     private void OnEnable()
@@ -73,7 +73,7 @@ public class CharacterUpgradeUI : MonoBehaviour
                 }
             }
             
-            Debug.Log($"[CharacterUpgradeUI] OnEnable: All buttons enabled. Button count: {upgradeButtons.Count}");
+            // Debug.Log($"[CharacterUpgradeUI] OnEnable: All buttons enabled. Button count: {upgradeButtons.Count}");
         }
     }
     
@@ -82,48 +82,59 @@ public class CharacterUpgradeUI : MonoBehaviour
     /// </summary>
     private void InitializeButtons()
     {
-        // 子要素からCharacterUpgradeButtonを自動検出（設定されていない場合）
-        if (upgradeButtons == null || upgradeButtons.Count == 0)
+        // 子要素からCharacterUpgradeButtonを自動検出（常に最新の順番で取得）
+        upgradeButtons = GetComponentsInChildren<CharacterUpgradeButton>(true).ToList();
+        // 名前順にソート（CharacterButton_1, CharacterButton_2, ... の順番にする）
+        upgradeButtons.Sort((a, b) => string.Compare(a.gameObject.name, b.gameObject.name));
+        
+        // 【調査用ログ】初回初期化時のみ詳細ログを出力（Start()から呼ばれる時）
+        bool shouldLog = !isInitialized;
+        
+        if (shouldLog)
         {
-            upgradeButtons = GetComponentsInChildren<CharacterUpgradeButton>(true).ToList();
+            Debug.Log($"[CharacterUpgradeUI] ===== InitializeButtons START =====");
+            Debug.Log($"[CharacterUpgradeUI] Found {upgradeButtons.Count} upgrade buttons.");
         }
         
-        Debug.Log($"[CharacterUpgradeUI] Found {upgradeButtons.Count} upgrade buttons.");
-        
-        // 各ボタンにキャラクタータイプと強化タイプを設定
-        // 6つのボタン: HP強化3つ（Warrior, Archer, Mage）+ Attack Power強化3つ（Warrior, Archer, Mage）
-        CharacterType[] characterTypes = { CharacterType.Warrior, CharacterType.Archer, CharacterType.Mage };
-        CharacterUpgradeManager.UpgradeType[] upgradeTypes = 
-        { 
-            CharacterUpgradeManager.UpgradeType.Health, 
-            CharacterUpgradeManager.UpgradeType.Health, 
-            CharacterUpgradeManager.UpgradeType.Health,
-            CharacterUpgradeManager.UpgradeType.AttackPower,
-            CharacterUpgradeManager.UpgradeType.AttackPower,
-            CharacterUpgradeManager.UpgradeType.AttackPower
-        };
-        
-        // ボタンが6つ以上ある場合のみ、6つのボタンを設定
-        int buttonCount = Mathf.Min(upgradeButtons.Count, 6);
-        
-        for (int i = 0; i < buttonCount; i++)
+        // Inspectorで設定された値を尊重し、各ボタンの設定を使用
+        // すべてのボタンを処理
+        for (int i = 0; i < upgradeButtons.Count; i++)
         {
-            if (upgradeButtons[i] != null)
+            var button = upgradeButtons[i];
+            if (button != null)
             {
-                // 最初の3つはHP強化、次の3つはAttack Power強化
-                CharacterType charType = characterTypes[i % 3];
-                CharacterUpgradeManager.UpgradeType upgradeType = upgradeTypes[i];
+                // Inspectorで設定された値を取得（既に設定されている場合はそれを使用）
+                CharacterType charType = button.GetCharacterType();
+                CharacterUpgradeManager.UpgradeType upgradeType = button.GetUpgradeType();
                 
-                upgradeButtons[i].SetUpgradeInfo(charType, upgradeType);
+                // 【調査用ログ】初回のみ各ボタンのInspector設定値を詳細に出力
+                if (shouldLog)
+                {
+                    Debug.Log($"[CharacterUpgradeUI] === Button {i + 1}/{upgradeButtons.Count}: {button.gameObject.name} ===");
+                    Debug.Log($"[CharacterUpgradeUI]   Inspector設定値: CharacterType={charType}, UpgradeType={upgradeType}");
+                }
                 
-                // クリックイベントを設定
-                upgradeButtons[i].OnButtonClicked = null; // 既存のイベントをクリア
+                // UIテキストを更新（Inspectorで設定された値に基づいて）
+                button.InitializeUI();
+
+                // クリックイベントを設定（Inspectorで設定された値を使用）
+                button.OnButtonClicked = null; // 既存のイベントをクリア
                 CharacterType charTypeLocal = charType; // クロージャー用にローカル変数に保存
                 CharacterUpgradeManager.UpgradeType upgradeTypeLocal = upgradeType; // クロージャー用にローカル変数に保存
-                upgradeButtons[i].OnButtonClicked += (type, upgrade) => OnUpgradeButtonClicked(charTypeLocal, upgradeTypeLocal);
-                
-                Debug.Log($"[CharacterUpgradeUI] Button {i} set to: {charType} - {upgradeType}");
+                button.OnButtonClicked += (type, upgrade) => OnUpgradeButtonClicked(charTypeLocal, upgradeTypeLocal);
+
+                // 【調査用ログ】初回のみクリックイベントに設定された値を確認
+                if (shouldLog)
+                {
+                    Debug.Log($"[CharacterUpgradeUI]   クリックイベント設定値: CharacterType={charTypeLocal}, UpgradeType={upgradeTypeLocal}");
+                    Debug.Log($"[CharacterUpgradeUI]   → このボタンをクリックすると、{charTypeLocal} の {upgradeTypeLocal} が強化されます");
+                }
             }
+        }
+        
+        if (shouldLog)
+        {
+            Debug.Log($"[CharacterUpgradeUI] ===== InitializeButtons END =====");
         }
         
         // 6つ未満の場合は警告
@@ -138,26 +149,36 @@ public class CharacterUpgradeUI : MonoBehaviour
     /// </summary>
     private void OnUpgradeButtonClicked(CharacterType characterType, CharacterUpgradeManager.UpgradeType upgradeType)
     {
+        Debug.Log($"[CharacterUpgradeUI] ===== OnUpgradeButtonClicked START =====");
+        Debug.Log($"[CharacterUpgradeUI] 【調査用】クリックイベントで受け取った値: CharacterType={characterType}, UpgradeType={upgradeType}");
+        
         if (isUpgradeSelected)
         {
             Debug.LogWarning("[CharacterUpgradeUI] Upgrade already selected. Ignoring click.");
             return;
         }
-        
+
         if (upgradeManager == null)
         {
             Debug.LogError("[CharacterUpgradeUI] CharacterUpgradeManager is null!");
             return;
         }
-        
-        Debug.Log($"[CharacterUpgradeUI] Upgrade button clicked: {characterType} - {upgradeType}");
-        
+
+        // 現在の強化レベルを確認
+        var currentData = upgradeManager.GetUpgradeData(characterType);
+        Debug.Log($"[CharacterUpgradeUI] 【調査用】強化前の状態: {characterType} - HP強化レベル={currentData.healthUpgrade}, 攻撃力強化レベル={currentData.attackPowerUpgrade}");
+
         // 強化を実行
+        Debug.Log($"[CharacterUpgradeUI] 【調査用】強化を実行: {characterType} の {upgradeType} を強化します");
         upgradeManager.UpgradeCharacter(characterType, upgradeType);
-        
+
+        // 強化後のレベルを確認
+        var afterData = upgradeManager.GetUpgradeData(characterType);
+        Debug.Log($"[CharacterUpgradeUI] 【調査用】強化後の状態: {characterType} - HP強化レベル={afterData.healthUpgrade}, 攻撃力強化レベル={afterData.attackPowerUpgrade}");
+
         // 選択済みフラグを設定
         isUpgradeSelected = true;
-        
+
         // すべてのボタンを無効化（1つ選択したら他のボタンは選べない）
         foreach (var button in upgradeButtons)
         {
@@ -166,9 +187,9 @@ public class CharacterUpgradeUI : MonoBehaviour
                 button.SetInteractable(false);
             }
         }
-        
-        Debug.Log($"[CharacterUpgradeUI] Upgrade applied: {characterType} - {upgradeType}. All buttons disabled.");
-        
+
+        Debug.Log($"[CharacterUpgradeUI] ===== OnUpgradeButtonClicked END =====");
+
         // パネルを非表示にして、ゲームモード選択パネルを表示
         HidePanelAndShowModeSelection();
     }
@@ -192,14 +213,14 @@ public class CharacterUpgradeUI : MonoBehaviour
         // 勝利時はゲームモード選択パネルを表示せず、直接次のステージへ進む
         if (gameEndHandler.IsVictory)
         {
-            Debug.Log("[CharacterUpgradeUI] Victory detected. Proceeding to next stage without showing game mode selection panel.");
+            // Debug.Log("[CharacterUpgradeUI] Victory detected. Proceeding to next stage without showing game mode selection panel.");
             StartNextStageWithCurrentMode();
         }
         else
         {
             // 敗北時はゲームモード選択パネルを表示
             gameEndHandler.ShowGameModeSelection();
-            Debug.Log("[CharacterUpgradeUI] Defeat detected. GameModeSelectPanel shown after upgrade selection.");
+            // Debug.Log("[CharacterUpgradeUI] Defeat detected. GameModeSelectPanel shown after upgrade selection.");
         }
     }
     
@@ -217,14 +238,14 @@ public class CharacterUpgradeUI : MonoBehaviour
         }
         
         GameMode currentMode = wordLearningSystem.CurrentGameMode;
-        Debug.Log($"[CharacterUpgradeUI] Starting next stage with current game mode: {currentMode}");
+        // Debug.Log($"[CharacterUpgradeUI] Starting next stage with current game mode: {currentMode}");
         
         // ステージ管理（勝利時はStageを進める）
         StageManager stageManager = StageManager.Instance;
         if (stageManager != null)
         {
             stageManager.AdvanceStage();
-            Debug.Log($"[CharacterUpgradeUI] Stage advanced to: {stageManager.CurrentStage}");
+            // Debug.Log($"[CharacterUpgradeUI] Stage advanced to: {stageManager.CurrentStage}");
         }
         
         // ゲーム再開処理（現在のゲームモードのまま）
@@ -245,14 +266,12 @@ public class CharacterUpgradeUI : MonoBehaviour
     /// </summary>
     public void SetPanelVisible(bool visible)
     {
-        Debug.Log($"[CharacterUpgradeUI] SetPanelVisible called: {visible} on {gameObject.name}. Current active: {gameObject.activeSelf}, isInitialized: {isInitialized}");
-        
-        // 初期化が完了していない場合、初期化を実行
-        if (!isInitialized)
-        {
-            InitializeButtons();
-            isInitialized = true;
-        }
+        // Debug.Log($"[CharacterUpgradeUI] ===== SetPanelVisible called: {visible} =====");
+        // Debug.Log($"[CharacterUpgradeUI] SetPanelVisible called: {visible} on {gameObject.name}. Current active: {gameObject.activeSelf}, isInitialized: {isInitialized}");
+
+        // ボタンの初期化を常に実行（順番が変わる可能性があるため）
+        InitializeButtons();
+        isInitialized = true;
         
         // 表示する場合は、Awake()やStart()で非表示にされないように、先に初期化フラグを設定
         if (visible)
@@ -267,7 +286,7 @@ public class CharacterUpgradeUI : MonoBehaviour
             if (characterSelectUI != null)
             {
                 characterSelectUI.SetPanelVisible(false);
-                Debug.Log("[CharacterUpgradeUI] CharacterSelectPanel hidden while CharacterUpgradePanel is shown.");
+                // Debug.Log("[CharacterUpgradeUI] CharacterSelectPanel hidden while CharacterUpgradePanel is shown.");
             }
         }
         
@@ -286,12 +305,12 @@ public class CharacterUpgradeUI : MonoBehaviour
                 }
             }
             
-            Debug.Log($"[CharacterUpgradeUI] Panel shown. All buttons enabled. Button count: {upgradeButtons.Count}");
+            // Debug.Log($"[CharacterUpgradeUI] Panel shown. All buttons enabled. Button count: {upgradeButtons.Count}");
         }
-        else
-        {
-            Debug.Log($"[CharacterUpgradeUI] Panel hidden.");
-        }
+        // else
+        // {
+        //     Debug.Log($"[CharacterUpgradeUI] Panel hidden.");
+        // }
     }
     
     /// <summary>
@@ -318,6 +337,6 @@ public class CharacterUpgradeUI : MonoBehaviour
             }
         }
         
-        Debug.Log("[CharacterUpgradeUI] Selection reset. All buttons enabled.");
+        // Debug.Log("[CharacterUpgradeUI] Selection reset. All buttons enabled.");
     }
 }

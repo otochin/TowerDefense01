@@ -114,10 +114,10 @@ public class CharacterMovementController : MonoBehaviour
                 rb2D.velocity = Vector2.zero;
                 
                 // デバッグ: 移動停止中であることを定期的にログ出力
-                if (Time.frameCount % 60 == 0) // 1秒ごと
-                {
-                    Debug.Log($"[CharacterMovementController] Movement stopped on {gameObject.name}. Position: {transform.position}, Velocity: {rb2D.velocity}");
-                }
+                // if (Time.frameCount % 60 == 0) // 1秒ごと
+                // {
+                //     Debug.Log($"[CharacterMovementController] Movement stopped on {gameObject.name}. Position: {transform.position}, Velocity: {rb2D.velocity}");
+                // }
             }
         }
         

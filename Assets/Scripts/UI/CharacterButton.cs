@@ -16,9 +16,10 @@ public class CharacterButton : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private TextMeshProUGUI costText;
     [SerializeField] private Image lockedOverlay;
-    
+
     [Header("参照")]
     [SerializeField] private Button button;
+    [SerializeField] private Animator animator;
     
     // イベント
     public UnityEvent<CharacterData> OnButtonClicked = new UnityEvent<CharacterData>();
@@ -33,22 +34,28 @@ public class CharacterButton : MonoBehaviour
         {
             button = GetComponent<Button>();
         }
-        
+
+        // Animatorコンポーネントを自動検出（Icon GameObjectから）
+        if (animator == null && iconImage != null)
+        {
+            animator = iconImage.GetComponent<Animator>();
+        }
+
         // ResourceManagerを自動検出
         resourceManager = FindObjectOfType<ResourceManager>();
-        
+
         // ボタンクリックイベントを設定
         if (button != null)
         {
             button.onClick.AddListener(OnButtonClick);
         }
-        
+
         // 子要素を自動検出
         if (iconImage == null)
         {
             iconImage = GetComponentInChildren<Image>();
         }
-        
+
         if (costText == null)
         {
             costText = GetComponentInChildren<TextMeshProUGUI>();
@@ -116,6 +123,30 @@ public class CharacterButton : MonoBehaviour
         {
             button.interactable = interactable;
         }
+
+        // アニメーション状態も更新
+        UpdateAnimationState(interactable);
+    }
+
+    /// <summary>
+    /// アニメーション状態を更新
+    /// </summary>
+    private void UpdateAnimationState(bool isEnabled)
+    {
+        if (animator != null)
+        {
+            if (isEnabled)
+            {
+                // 有効な場合はアニメーションを再生
+                animator.enabled = true;
+                animator.Play("front", 0, 0f); // "front"アニメーションを再生
+            }
+            else
+            {
+                // 無効な場合はアニメーションを停止
+                animator.enabled = false;
+            }
+        }
     }
     
     /// <summary>
@@ -133,21 +164,24 @@ public class CharacterButton : MonoBehaviour
     private void UpdateLockedState()
     {
         // お金が足りるかチェック
-        bool canAfford = resourceManager != null && 
-                        characterData != null && 
+        bool canAfford = resourceManager != null &&
+                        characterData != null &&
                         resourceManager.CanAfford(characterData.Cost);
-        
+
         isLocked = !canAfford;
-        
+
         // ボタンの有効/無効を設定
         SetInteractable(canAfford);
-        
+
+        // アニメーションを制御
+        UpdateAnimationState(canAfford);
+
         // ロックオーバーレイを表示/非表示
         if (lockedOverlay != null)
         {
             lockedOverlay.gameObject.SetActive(isLocked);
         }
-        
+
         // ボタンの色を変更（オプション）
         if (button != null)
         {

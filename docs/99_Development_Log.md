@@ -582,6 +582,10 @@
   - 解決方法：
     1. `Awake()`の80-93行目の条件分岐を修正し、常に`currentMoney = initialMoney;`を実行するように変更
     2. `Start()`でも確実に`initialMoney`を反映するように、`instance == this`の場合に`currentMoney = initialMoney;`を実行
+- **CharacterButtonのクリック判定の問題**: 解決済み
+  - 問題：CharacterButton_1を押してもCharacterButton_4が押されたことになってしまう
+  - 原因：CharacterButton_4の子要素のText (TMP)の横幅サイズが大きすぎて、隣のボタン（CharacterButton_1）に重なっていたため、クリック判定が誤ってCharacterButton_4に反応していた
+  - 解決方法：CharacterButton_4の子要素のText (TMP)の横幅サイズを適切な値に調整し、隣のボタンに重ならないように修正
 
 ### 次回の作業内容
 1. キャラクター強化システムの動作確認・デバッグ（完了）
@@ -712,7 +716,7 @@
 
 ## 最終更新日
 
-2026年1月20日（ゲーム終了時の処理変更、城へのダメージ表示機能追加、ダメージ表示の左右オフセット機能追加、CharacterUpgradePanel表示中にCharacterSelectPanelを非表示にする機能追加）
+2026年1月25日（CharacterButtonのクリック判定問題修正：CharacterButton_4のText (TMP)の横幅サイズが大きすぎて隣のボタンに重なっていた問題を解決）
 
 ## 変更履歴
 
@@ -806,3 +810,5 @@
 | 2026-01-20 | ゲーム終了時の処理変更：勝利時はゲームモード選択パネルを表示せずキャラクター強化パネルのみ表示、強化選択後は現在のゲームモードのまま次のステージへ進む機能を追加（GameEndHandler、CharacterUpgradeUI、GameModeSelectUI修正）。敗北時はゲームモード選択パネルのみ表示、キャラクター強化パネルは非表示、ゲームモード選択後はステージ1から開始する機能を追加 | - |
 | 2026-01-20 | ダメージ表示機能拡張：プレイヤーの城と敵の城にダメージ表示機能を追加（PlayerCastle、EnemyCastleにdamagePrefab、damageDisplayOffset、ShowDamageDisplay()メソッド追加、初期化時のダメージ表示を防ぐisInitializingフラグ追加）。キャラクター・エネミー・城のダメージ表示に左右オフセット機能を追加（damageDisplayOffsetXフィールド追加、CharacterBase、EnemyBase、PlayerCastle、EnemyCastleに実装） | - |
 | 2026-01-20 | CharacterUpgradeUI修正：CharacterUpgradePanel表示中にCharacterSelectPanelを非表示にする機能を追加（SetPanelVisible()メソッドでパネル表示時にCharacterSelectUIを検索して非表示にする処理を追加） | - |
+| 2026-01-24 | CharacterButtonアニメーション制御機能実装：CharacterSelectPanelのCharacterButton_1が無効（お金不足）の場合はAnimationを停止、有効な場合はAnimationを実行する機能を追加。最初はCharacterButton_1自体にAnimatorを追加しようとしたが、実際はIconの子要素にAnimationが設定されていることが判明。CharacterButton.csを修正して、iconImageのGameObjectからAnimatorを取得するように変更 | - |
+| 2026-01-25 | CharacterButtonのクリック判定問題修正：CharacterButton_1を押してもCharacterButton_4が押されたことになってしまう問題を修正。原因はCharacterButton_4の子要素のText (TMP)の横幅サイズが大きすぎて隣のボタンに重なっていたため。Text (TMP)の横幅サイズを適切な値に調整して解決 | - |

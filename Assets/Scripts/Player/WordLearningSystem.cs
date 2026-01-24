@@ -239,7 +239,7 @@ public class WordLearningSystem : MonoBehaviour
             }
         }
         
-        Debug.Log($"[WordLearningSystem] 英単語データを{wordDataList.Count}件読み込みました。");
+        // Debug.Log($"[WordLearningSystem] 英単語データを{wordDataList.Count}件読み込みました。");
     }
     
     /// <summary>
@@ -515,7 +515,7 @@ public class WordLearningSystem : MonoBehaviour
             {
                 incorrectAnswersCount[currentQuestion] = 1;
             }
-            Debug.Log($"[WordLearningSystem] Time-over answer count for '{GetQuestionText(currentQuestion)}': {incorrectAnswersCount[currentQuestion]}");
+            // Debug.Log($"[WordLearningSystem] Time-over answer count for '{GetQuestionText(currentQuestion)}': {incorrectAnswersCount[currentQuestion]}");
         }
         
         // 間違えた問題をキューに追加（再出題用）
@@ -525,7 +525,7 @@ public class WordLearningSystem : MonoBehaviour
             if (!incorrectQuestionsQueue.Contains(currentQuestion))
             {
                 incorrectQuestionsQueue.Enqueue(currentQuestion);
-                Debug.Log($"[WordLearningSystem] Added time-over question to retry queue: {GetQuestionText(currentQuestion)} (Queue size: {incorrectQuestionsQueue.Count})");
+                // Debug.Log($"[WordLearningSystem] Added time-over question to retry queue: {GetQuestionText(currentQuestion)} (Queue size: {incorrectQuestionsQueue.Count})");
             }
         }
         

@@ -40,7 +40,7 @@ public class GameModeSelectUI : MonoBehaviour
             if (allSelectUIs.Length > 0)
             {
                 characterSelectUI = allSelectUIs[0];
-                Debug.Log($"[GameModeSelectUI] CharacterSelectUI found: {characterSelectUI.gameObject.name} (Active: {characterSelectUI.gameObject.activeSelf})");
+                // Debug.Log($"[GameModeSelectUI] CharacterSelectUI found: {characterSelectUI.gameObject.name} (Active: {characterSelectUI.gameObject.activeSelf})");
             }
             else
             {
