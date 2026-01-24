@@ -58,11 +58,11 @@ public class CharacterMovementController : MonoBehaviour
         originalRotation = transform.rotation.eulerAngles;
         
         // デバッグ: 初期化状態を確認
-        Debug.Log($"[CharacterMovementController] Start called on {gameObject.name}. MoveRight: {moveRight}, MoveDirection: {moveDirection}");
+        // Debug.Log($"[CharacterMovementController] Start called on {gameObject.name}. MoveRight: {moveRight}, MoveDirection: {moveDirection}");
         
         if (characterBase != null)
         {
-            Debug.Log($"[CharacterMovementController] CharacterBase found. MoveSpeed: {characterBase.MoveSpeed}");
+            // Debug.Log($"[CharacterMovementController] CharacterBase found. MoveSpeed: {characterBase.MoveSpeed}");
         }
         else
         {
@@ -151,7 +151,7 @@ public class CharacterMovementController : MonoBehaviour
         }
         else
         {
-            Debug.Log($"[CharacterMovementController] Rigidbody2D found on {gameObject.name}. Body Type: {rb2D.bodyType}");
+            // Debug.Log($"[CharacterMovementController] Rigidbody2D found on {gameObject.name}. Body Type: {rb2D.bodyType}");
         }
     }
     
@@ -181,7 +181,7 @@ public class CharacterMovementController : MonoBehaviour
         // デバッグ: 最初の数フレームのみ詳細ログ
         if (Time.frameCount <= 5)
         {
-            Debug.Log($"[CharacterMovementController] Move called on {gameObject.name}. MoveSpeed: {moveSpeed}, Movement: {movement}, MoveDirection: {moveDirection}");
+            // Debug.Log($"[CharacterMovementController] Move called on {gameObject.name}. MoveSpeed: {moveSpeed}, Movement: {movement}, MoveDirection: {moveDirection}");
         }
         
         // 2Dの場合
@@ -202,7 +202,7 @@ public class CharacterMovementController : MonoBehaviour
                 // デバッグ: 最初の数フレームのみ詳細を確認
                 if (Time.frameCount <= 5)
                 {
-                    Debug.Log($"[CharacterMovementController] MovePosition to {newPosition} on {gameObject.name}");
+                    // Debug.Log($"[CharacterMovementController] MovePosition to {newPosition} on {gameObject.name}");
                 }
             }
             else
@@ -213,7 +213,7 @@ public class CharacterMovementController : MonoBehaviour
                 // デバッグ: 最初の数フレームのみvelocityを確認
                 if (Time.frameCount <= 5)
                 {
-                    Debug.Log($"[CharacterMovementController] Set velocity to {rb2D.velocity} on {gameObject.name}");
+                    // Debug.Log($"[CharacterMovementController] Set velocity to {rb2D.velocity} on {gameObject.name}");
                 }
             }
         }
@@ -243,14 +243,14 @@ public class CharacterMovementController : MonoBehaviour
             rb2D.velocity = Vector2.zero;
             if (wasMoving)
             {
-                Debug.Log($"[CharacterMovementController] StopMovement called on {gameObject.name}. Position: {transform.position}, Velocity: {rb2D.velocity}");
+                // Debug.Log($"[CharacterMovementController] StopMovement called on {gameObject.name}. Position: {transform.position}, Velocity: {rb2D.velocity}");
             }
         }
         else
         {
             if (wasMoving)
             {
-                Debug.Log($"[CharacterMovementController] StopMovement called on {gameObject.name} (no Rigidbody2D). Position: {transform.position}");
+                // Debug.Log($"[CharacterMovementController] StopMovement called on {gameObject.name} (no Rigidbody2D). Position: {transform.position}");
             }
         }
     }

@@ -26,11 +26,11 @@ public class IncorrectAnswerListItemUI : MonoBehaviour, IPointerClickHandler
         {
             // シーン内に存在しない場合は、このGameObjectに追加
             textToSpeech = gameObject.AddComponent<MacOSTextToSpeech>();
-            Debug.Log("[IncorrectAnswerListItemUI] MacOSTextToSpeech component created.");
+            // Debug.Log("[IncorrectAnswerListItemUI] MacOSTextToSpeech component created.");
         }
         else
         {
-            Debug.Log("[IncorrectAnswerListItemUI] MacOSTextToSpeech component found.");
+            // Debug.Log("[IncorrectAnswerListItemUI] MacOSTextToSpeech component found.");
         }
     }
     
@@ -42,14 +42,14 @@ public class IncorrectAnswerListItemUI : MonoBehaviour, IPointerClickHandler
     /// <param name="count">間違えた回数</param>
     public void SetData(string english, string japanese, int count)
     {
-        Debug.Log($"[IncorrectAnswerListItemUI] SetData called: english='{english}', japanese='{japanese}', count={count}");
-        Debug.Log($"[IncorrectAnswerListItemUI] Text references - englishText: {(englishText != null ? englishText.name : "NULL")}, japaneseText: {(japaneseText != null ? japaneseText.name : "NULL")}, countText: {(countText != null ? countText.name : "NULL")}");
+        // Debug.Log($"[IncorrectAnswerListItemUI] SetData called: english='{english}', japanese='{japanese}', count={count}");
+        // Debug.Log($"[IncorrectAnswerListItemUI] Text references - englishText: {(englishText != null ? englishText.name : "NULL")}, japaneseText: {(japaneseText != null ? japaneseText.name : "NULL")}, countText: {(countText != null ? countText.name : "NULL")}");
         
         if (englishText != null)
         {
             englishText.text = english;
             currentEnglishText = english; // 英語テキストを保存
-            Debug.Log($"[IncorrectAnswerListItemUI] Set englishText.text to '{englishText.text}'");
+            // Debug.Log($"[IncorrectAnswerListItemUI] Set englishText.text to '{englishText.text}'");
         }
         else
         {
@@ -59,7 +59,7 @@ public class IncorrectAnswerListItemUI : MonoBehaviour, IPointerClickHandler
         if (japaneseText != null)
         {
             japaneseText.text = japanese;
-            Debug.Log($"[IncorrectAnswerListItemUI] Set japaneseText.text to '{japaneseText.text}'");
+            // Debug.Log($"[IncorrectAnswerListItemUI] Set japaneseText.text to '{japaneseText.text}'");
         }
         else
         {
@@ -69,7 +69,7 @@ public class IncorrectAnswerListItemUI : MonoBehaviour, IPointerClickHandler
         if (countText != null)
         {
             countText.text = $"×{count}回";
-            Debug.Log($"[IncorrectAnswerListItemUI] Set countText.text to '{countText.text}'");
+            // Debug.Log($"[IncorrectAnswerListItemUI] Set countText.text to '{countText.text}'");
         }
         else
         {
@@ -85,7 +85,7 @@ public class IncorrectAnswerListItemUI : MonoBehaviour, IPointerClickHandler
     {
         if (!string.IsNullOrEmpty(currentEnglishText))
         {
-            Debug.Log($"[IncorrectAnswerListItemUI] Item clicked: '{currentEnglishText}'");
+            // Debug.Log($"[IncorrectAnswerListItemUI] Item clicked: '{currentEnglishText}'");
             
             // MacOSTextToSpeechを使用して読み上げ
             if (textToSpeech != null)

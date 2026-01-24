@@ -140,7 +140,7 @@ public class CharacterSelectUI : MonoBehaviour
     /// </summary>
     private void OnCharacterButtonClicked(CharacterData characterData)
     {
-        Debug.Log($"[CharacterSelectUI] OnCharacterButtonClicked called for: {(characterData != null ? characterData.CharacterName : "null")}");
+        // Debug.Log($"[CharacterSelectUI] OnCharacterButtonClicked called for: {(characterData != null ? characterData.CharacterName : "null")}");
         
         if (characterData == null)
         {
@@ -157,10 +157,10 @@ public class CharacterSelectUI : MonoBehaviour
                 Debug.LogError("[CharacterSelectUI] CharacterSpawner still not found!");
                 return;
             }
-            Debug.Log($"[CharacterSelectUI] CharacterSpawner found: {characterSpawner.gameObject.name}");
+            // Debug.Log($"[CharacterSelectUI] CharacterSpawner found: {characterSpawner.gameObject.name}");
         }
         
-        Debug.Log($"[CharacterSelectUI] Button clicked for {characterData.CharacterName}. Calling SpawnCharacter...");
+        // Debug.Log($"[CharacterSelectUI] Button clicked for {characterData.CharacterName}. Calling SpawnCharacter...");
         
         // キャラクターを召喚
         GameObject spawned = characterSpawner.SpawnCharacter(characterData);
@@ -171,7 +171,7 @@ public class CharacterSelectUI : MonoBehaviour
         }
         else
         {
-            Debug.Log($"[CharacterSelectUI] Successfully spawned {characterData.CharacterName}");
+            // Debug.Log($"[CharacterSelectUI] Successfully spawned {characterData.CharacterName}");
         }
         
         // UIを更新（お金が変更されるため）
@@ -236,7 +236,7 @@ public class CharacterSelectUI : MonoBehaviour
     /// </summary>
     public void SetButtonsEnabled(bool enabled)
     {
-        Debug.Log($"[CharacterSelectUI] SetButtonsEnabled called: {enabled} on {gameObject.name}. Current active state: {gameObject.activeSelf}");
+        // Debug.Log($"[CharacterSelectUI] SetButtonsEnabled called: {enabled} on {gameObject.name}. Current active state: {gameObject.activeSelf}");
         
         isGameStarted = enabled;
         
@@ -267,7 +267,7 @@ public class CharacterSelectUI : MonoBehaviour
             }
         }
         
-        Debug.Log($"[CharacterSelectUI] Buttons {(enabled ? "enabled" : "disabled")}. isGameStarted: {isGameStarted}. Active state: {gameObject.activeSelf}");
+        // Debug.Log($"[CharacterSelectUI] Buttons {(enabled ? "enabled" : "disabled")}. isGameStarted: {isGameStarted}. Active state: {gameObject.activeSelf}");
     }
     
     /// <summary>

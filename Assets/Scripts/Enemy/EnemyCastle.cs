@@ -170,7 +170,7 @@ public class EnemyCastle : MonoBehaviour, IDamageable
         // ただし、前回のHPが0より大きかった場合のみ（重複検出を防ぐ）
         if (currentHealth <= 0 && previousHealth > 0 && !isDestroyedHandled)
         {
-            Debug.LogWarning($"[EnemyCastle] HP became 0 in HandleHealthChanged (fallback detection). currentHealth: {currentHealth}, previousHealth: {previousHealth}");
+            // Debug.LogWarning($"[EnemyCastle] HP became 0 in HandleHealthChanged (fallback detection). currentHealth: {currentHealth}, previousHealth: {previousHealth}");
             // HandleHealthDepletedが呼ばれるはずだが、念のため再度確認
             if (healthSystem != null && healthSystem.IsDead)
             {
@@ -210,18 +210,18 @@ public class EnemyCastle : MonoBehaviour, IDamageable
         // 重複呼び出しを防ぐ
         if (isDestroyedHandled)
         {
-            Debug.LogWarning("[EnemyCastle] HandleHealthDepleted called multiple times. Ignoring duplicate call.");
+            // Debug.LogWarning("[EnemyCastle] HandleHealthDepleted called multiple times. Ignoring duplicate call.");
             return;
         }
         
         isDestroyedHandled = true;
-        Debug.Log($"[EnemyCastle] HandleHealthDepleted called. CurrentHealth: {healthSystem?.CurrentHealth ?? -1}, OnDestroyed subscribers: {(OnDestroyed?.GetInvocationList().Length ?? 0)}");
+        // Debug.Log($"[EnemyCastle] HandleHealthDepleted called. CurrentHealth: {healthSystem?.CurrentHealth ?? -1}, OnDestroyed subscribers: {(OnDestroyed?.GetInvocationList().Length ?? 0)}");
         
         // 効果音を再生
         PlayDestroyedSound();
         
         OnDestroyed?.Invoke();
-        Debug.Log("[EnemyCastle] OnDestroyed event invoked.");
+        // Debug.Log("[EnemyCastle] OnDestroyed event invoked.");
         
         // クリアイベントを発火（GameManagerが実装されたら使用）
         // GameManager.OnEnemyCastleDestroyed?.Invoke();
@@ -235,7 +235,7 @@ public class EnemyCastle : MonoBehaviour, IDamageable
         if (audioSource != null && destroyedSound != null)
         {
             audioSource.PlayOneShot(destroyedSound);
-            Debug.Log("[EnemyCastle] Destroyed sound played.");
+            // Debug.Log("[EnemyCastle] Destroyed sound played.");
         }
         else
         {
@@ -311,7 +311,7 @@ public class EnemyCastle : MonoBehaviour, IDamageable
             return;
         }
         
-        Debug.Log($"[EnemyCastle] ShowDamageDisplay called: damage={damage}, damagePrefab={damagePrefab.name}");
+        // Debug.Log($"[EnemyCastle] ShowDamageDisplay called: damage={damage}, damagePrefab={damagePrefab.name}");
         
         // ライフゲージの位置を取得
         Vector3 displayPosition = transform.position;
@@ -323,22 +323,22 @@ public class EnemyCastle : MonoBehaviour, IDamageable
             if (healthBarRect != null)
             {
                 displayPosition = healthBarRect.position;
-                Debug.Log($"[EnemyCastle] Using healthBarUI position: {displayPosition}");
+                // Debug.Log($"[EnemyCastle] Using healthBarUI position: {displayPosition}");
             }
         }
         else
         {
-            Debug.Log($"[EnemyCastle] No health bar found, using castle position: {displayPosition}");
+            // Debug.Log($"[EnemyCastle] No health bar found, using castle position: {displayPosition}");
         }
         
         // ライフゲージの少し上に配置（上下と左右のオフセットを適用）
         displayPosition += Vector3.up * damageDisplayOffset;
         displayPosition += Vector3.right * damageDisplayOffsetX;
-        Debug.Log($"[EnemyCastle] Final display position: {displayPosition} (offset Y: {damageDisplayOffset}, offset X: {damageDisplayOffsetX})");
+        // Debug.Log($"[EnemyCastle] Final display position: {displayPosition} (offset Y: {damageDisplayOffset}, offset X: {damageDisplayOffsetX})");
         
         // ダメージ表示をインスタンス化
         GameObject damageObj = Instantiate(damagePrefab, displayPosition, Quaternion.identity);
-        Debug.Log($"[EnemyCastle] Damage object instantiated: {damageObj.name} at {displayPosition}");
+        // Debug.Log($"[EnemyCastle] Damage object instantiated: {damageObj.name} at {displayPosition}");
         
         // World Space Canvasの場合、RectTransformの位置を設定
         Canvas canvas = damageObj.GetComponent<Canvas>();
@@ -348,7 +348,7 @@ public class EnemyCastle : MonoBehaviour, IDamageable
             if (rectTransform != null)
             {
                 rectTransform.position = displayPosition;
-                Debug.Log($"[EnemyCastle] World Space Canvas detected, set RectTransform position: {displayPosition}");
+                // Debug.Log($"[EnemyCastle] World Space Canvas detected, set RectTransform position: {displayPosition}");
             }
         }
         
@@ -357,7 +357,7 @@ public class EnemyCastle : MonoBehaviour, IDamageable
         if (damageDisplay != null)
         {
             damageDisplay.ShowDamage(damage);
-            Debug.Log($"[EnemyCastle] DamageDisplay.ShowDamage called with damage: {damage}");
+            // Debug.Log($"[EnemyCastle] DamageDisplay.ShowDamage called with damage: {damage}");
         }
         else
         {

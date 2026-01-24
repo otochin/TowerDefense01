@@ -143,7 +143,7 @@ public class WorldSpaceHealthBarUI : MonoBehaviour
     /// </summary>
     public void Initialize(HealthSystem healthSystem)
     {
-        Debug.Log($"[WorldSpaceHealthBarUI] Initialize called on {gameObject.name} for {healthSystem?.GetInstanceID()}");
+        // Debug.Log($"[WorldSpaceHealthBarUI] Initialize called on {gameObject.name} for {healthSystem?.GetInstanceID()}");
         
         // 既存の購読を解除
         if (this.healthSystem != null)
@@ -176,17 +176,17 @@ public class WorldSpaceHealthBarUI : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log($"[WorldSpaceHealthBarUI] Found healthBarFill: {healthBarFill.gameObject.name}");
+                    // Debug.Log($"[WorldSpaceHealthBarUI] Found healthBarFill: {healthBarFill.gameObject.name}");
                 }
             }
             else
             {
-                Debug.Log($"[WorldSpaceHealthBarUI] healthBarFill already set: {healthBarFill.gameObject.name}");
+                // Debug.Log($"[WorldSpaceHealthBarUI] healthBarFill already set: {healthBarFill.gameObject.name}");
             }
             
             // イベントを購読
             healthSystem.OnHealthChanged += UpdateHealthDisplay;
-            Debug.Log($"[WorldSpaceHealthBarUI] Subscribed to OnHealthChanged event. Current health: {healthSystem.CurrentHealth}/{healthSystem.MaxHealth}");
+            // Debug.Log($"[WorldSpaceHealthBarUI] Subscribed to OnHealthChanged event. Current health: {healthSystem.CurrentHealth}/{healthSystem.MaxHealth}");
             
             // 初期表示を更新
             UpdateHealthDisplay(healthSystem.CurrentHealth, healthSystem.MaxHealth);

@@ -24,7 +24,7 @@ public class DamageDisplay : MonoBehaviour
     
     private void Awake()
     {
-        Debug.Log($"[DamageDisplay] Awake called on {gameObject.name}");
+        // Debug.Log($"[DamageDisplay] Awake called on {gameObject.name}");
         
         // CanvasとRectTransformを取得
         canvas = GetComponent<Canvas>();
@@ -38,7 +38,7 @@ public class DamageDisplay : MonoBehaviour
         if (damageText == null)
         {
             damageText = GetComponentInChildren<TextMeshProUGUI>();
-            Debug.Log($"[DamageDisplay] DamageText auto-detected: {(damageText != null ? damageText.name : "null")}");
+            // Debug.Log($"[DamageDisplay] DamageText auto-detected: {(damageText != null ? damageText.name : "null")}");
         }
         
         if (damageText == null)
@@ -51,7 +51,7 @@ public class DamageDisplay : MonoBehaviour
         if (canvasGroup == null)
         {
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
-            Debug.Log($"[DamageDisplay] CanvasGroup added to {gameObject.name}");
+            // Debug.Log($"[DamageDisplay] CanvasGroup added to {gameObject.name}");
         }
         
         // 元の色を保存
@@ -143,7 +143,7 @@ public class DamageDisplay : MonoBehaviour
             yield return null;
         }
         
-        Debug.Log($"[DamageDisplay] Animation completed, destroying {gameObject.name}");
+        // Debug.Log($"[DamageDisplay] Animation completed, destroying {gameObject.name}");
         // アニメーション終了後、破棄
         Destroy(gameObject);
     }

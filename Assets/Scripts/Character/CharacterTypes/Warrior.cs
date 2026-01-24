@@ -238,7 +238,7 @@ public class Warrior : MonoBehaviour
         // 攻撃時の突進アニメーション
         StartCoroutine(AttackLunge(target));
         
-        Debug.Log($"[Warrior] {characterBase.CharacterData?.CharacterName} attacked {target} for {damage} damage!");
+        // Debug.Log($"[Warrior] {characterBase.CharacterData?.CharacterName} attacked {target} for {damage} damage!");
     }
     
     /// <summary>

@@ -55,7 +55,7 @@ public class StageManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"[StageManager] DontDestroyOnLoad requires root GameObject. {gameObject.name} is not a root GameObject. Consider moving it to root level.");
+                // Debug.LogWarning($"[StageManager] DontDestroyOnLoad requires root GameObject. {gameObject.name} is not a root GameObject. Consider moving it to root level.");
             }
         }
         else if (instance != this)
@@ -82,7 +82,7 @@ public class StageManager : MonoBehaviour
     public void ResetStage()
     {
         currentStage = 1;
-        Debug.Log("[StageManager] Stage reset to: 1");
+        // Debug.Log("[StageManager] Stage reset to: 1");
         OnStageChanged?.Invoke(currentStage);
     }
     

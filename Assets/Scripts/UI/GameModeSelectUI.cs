@@ -111,7 +111,7 @@ public class GameModeSelectUI : MonoBehaviour
     /// </summary>
     private void OnModeSelected(GameMode selectedMode)
     {
-        Debug.Log($"[GameModeSelectUI] Mode selected: {selectedMode}");
+        // Debug.Log($"[GameModeSelectUI] Mode selected: {selectedMode}");
         
         // ステージ管理（勝利時はStageを進める、敗北時はStageをリセット）
         HandleStageManagement();
@@ -124,7 +124,7 @@ public class GameModeSelectUI : MonoBehaviour
         {
             // ゲームモードを設定
             wordLearningSystem.SetGameMode(selectedMode);
-            Debug.Log($"[GameModeSelectUI] Game mode set to: {selectedMode}");
+            // Debug.Log($"[GameModeSelectUI] Game mode set to: {selectedMode}");
             
             // ゲームを開始
             wordLearningSystem.StartGame();
@@ -143,7 +143,7 @@ public class GameModeSelectUI : MonoBehaviour
             if (allSelectUIs.Length > 0)
             {
                 characterSelectUI = allSelectUIs[0];
-                Debug.Log($"[GameModeSelectUI] CharacterSelectUI re-searched. Found: {characterSelectUI.gameObject.name} (Active: {characterSelectUI.gameObject.activeSelf})");
+                // Debug.Log($"[GameModeSelectUI] CharacterSelectUI re-searched. Found: {characterSelectUI.gameObject.name} (Active: {characterSelectUI.gameObject.activeSelf})");
             }
             else
             {
@@ -153,11 +153,11 @@ public class GameModeSelectUI : MonoBehaviour
         
         if (characterSelectUI != null)
         {
-            Debug.Log($"[GameModeSelectUI] Showing CharacterSelectPanel. Current active state: {characterSelectUI.gameObject.activeSelf}");
+            // Debug.Log($"[GameModeSelectUI] Showing CharacterSelectPanel. Current active state: {characterSelectUI.gameObject.activeSelf}");
             characterSelectUI.SetPanelVisible(true);
-            Debug.Log($"[GameModeSelectUI] After SetPanelVisible(true). Active state: {characterSelectUI.gameObject.activeSelf}");
+            // Debug.Log($"[GameModeSelectUI] After SetPanelVisible(true). Active state: {characterSelectUI.gameObject.activeSelf}");
             characterSelectUI.SetButtonsEnabled(true);
-            Debug.Log($"[GameModeSelectUI] After SetButtonsEnabled(true). Active state: {characterSelectUI.gameObject.activeSelf}");
+            // Debug.Log($"[GameModeSelectUI] After SetButtonsEnabled(true). Active state: {characterSelectUI.gameObject.activeSelf}");
         }
         else
         {
@@ -170,14 +170,14 @@ public class GameModeSelectUI : MonoBehaviour
         {
             characterUpgradeUI.SetPanelVisible(false);
             characterUpgradeUI.ResetSelection();
-            Debug.Log("[GameModeSelectUI] CharacterUpgradePanel hidden.");
+            // Debug.Log("[GameModeSelectUI] CharacterUpgradePanel hidden.");
         }
         
         // EnemySpawnerのスポーンを開始（ゲームモード選択後）
         if (enemySpawner != null)
         {
             enemySpawner.StartSpawning();
-            Debug.Log("[GameModeSelectUI] EnemySpawner.StartSpawning() called.");
+            // Debug.Log("[GameModeSelectUI] EnemySpawner.StartSpawning() called.");
         }
         else
         {
@@ -186,7 +186,7 @@ public class GameModeSelectUI : MonoBehaviour
             if (enemySpawner != null)
             {
                 enemySpawner.StartSpawning();
-                Debug.Log("[GameModeSelectUI] EnemySpawner re-searched and StartSpawning() called.");
+                // Debug.Log("[GameModeSelectUI] EnemySpawner re-searched and StartSpawning() called.");
             }
             else
             {
@@ -226,7 +226,7 @@ public class GameModeSelectUI : MonoBehaviour
         if (resourceManager != null)
         {
             resourceManager.ResetMoney();
-            Debug.Log("[GameModeSelectUI] Power reset.");
+            // Debug.Log("[GameModeSelectUI] Power reset.");
         }
         
         // プレイヤーの城のライフをリセット
@@ -234,7 +234,7 @@ public class GameModeSelectUI : MonoBehaviour
         if (playerCastle != null)
         {
             playerCastle.ResetHealth();
-            Debug.Log("[GameModeSelectUI] PlayerCastle health reset.");
+            // Debug.Log("[GameModeSelectUI] PlayerCastle health reset.");
         }
         
         // 敵の城のライフをリセット
@@ -242,7 +242,7 @@ public class GameModeSelectUI : MonoBehaviour
         if (enemyCastle != null)
         {
             enemyCastle.ResetHealth();
-            Debug.Log("[GameModeSelectUI] EnemyCastle health reset.");
+            // Debug.Log("[GameModeSelectUI] EnemyCastle health reset.");
         }
         
         // フィールド上のすべてのキャラクターとエネミーを削除
@@ -264,7 +264,7 @@ public class GameModeSelectUI : MonoBehaviour
             }
         }
         
-        Debug.Log("[GameModeSelectUI] All characters and enemies removed.");
+        // Debug.Log("[GameModeSelectUI] All characters and enemies removed.");
     }
     
     /// <summary>
@@ -290,12 +290,12 @@ public class GameModeSelectUI : MonoBehaviour
         if (gameEndHandler.IsVictory)
         {
             stageManager.AdvanceStage();
-            Debug.Log($"[GameModeSelectUI] Stage advanced to: {stageManager.CurrentStage}");
+            // Debug.Log($"[GameModeSelectUI] Stage advanced to: {stageManager.CurrentStage}");
         }
         else
         {
             stageManager.ResetStage();
-            Debug.Log("[GameModeSelectUI] Stage reset to: 1");
+            // Debug.Log("[GameModeSelectUI] Stage reset to: 1");
         }
     }
     
@@ -304,7 +304,7 @@ public class GameModeSelectUI : MonoBehaviour
     /// </summary>
     public void StartGameWithMode(GameMode mode)
     {
-        Debug.Log($"[GameModeSelectUI] StartGameWithMode called with mode: {mode}");
+        // Debug.Log($"[GameModeSelectUI] StartGameWithMode called with mode: {mode}");
         
         // ステージ管理は呼び出し元（CharacterUpgradeUI）で既に実行済みのため、ここではスキップ
         
@@ -316,7 +316,7 @@ public class GameModeSelectUI : MonoBehaviour
         {
             // ゲームモードを設定
             wordLearningSystem.SetGameMode(mode);
-            Debug.Log($"[GameModeSelectUI] Game mode set to: {mode}");
+            // Debug.Log($"[GameModeSelectUI] Game mode set to: {mode}");
             
             // ゲームを開始
             wordLearningSystem.StartGame();
@@ -363,6 +363,6 @@ public class GameModeSelectUI : MonoBehaviour
         }
         
         // ゲームモード選択UIパネルは非表示のまま（勝利時は表示しない）
-        Debug.Log("[GameModeSelectUI] Game started with current mode. GameModeSelectPanel remains hidden.");
+        // Debug.Log("[GameModeSelectUI] Game started with current mode. GameModeSelectPanel remains hidden.");
     }
 }

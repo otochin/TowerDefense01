@@ -187,7 +187,7 @@ public class EnemyBase : MonoBehaviour, IDamageable
             return;
         }
         
-        Debug.Log($"[EnemyBase] ShowDamageDisplay called: damage={damage}, damagePrefab={damagePrefab.name}");
+        // Debug.Log($"[EnemyBase] ShowDamageDisplay called: damage={damage}, damagePrefab={damagePrefab.name}");
         
         // ライフゲージの位置を取得
         Vector3 displayPosition = transform.position;
@@ -199,7 +199,7 @@ public class EnemyBase : MonoBehaviour, IDamageable
             if (healthBarRect != null)
             {
                 displayPosition = healthBarRect.position;
-                Debug.Log($"[EnemyBase] Using healthBarUI position: {displayPosition}");
+                // Debug.Log($"[EnemyBase] Using healthBarUI position: {displayPosition}");
             }
         }
         else if (simpleHealthBar != null)
@@ -208,22 +208,22 @@ public class EnemyBase : MonoBehaviour, IDamageable
             if (healthBarTransform != null)
             {
                 displayPosition = healthBarTransform.position;
-                Debug.Log($"[EnemyBase] Using simpleHealthBar position: {displayPosition}");
+                // Debug.Log($"[EnemyBase] Using simpleHealthBar position: {displayPosition}");
             }
         }
         else
         {
-            Debug.Log($"[EnemyBase] No health bar found, using enemy position: {displayPosition}");
+            // Debug.Log($"[EnemyBase] No health bar found, using enemy position: {displayPosition}");
         }
         
         // ライフゲージの少し上に配置（上下と左右のオフセットを適用）
         displayPosition += Vector3.up * damageDisplayOffset;
         displayPosition += Vector3.right * damageDisplayOffsetX;
-        Debug.Log($"[EnemyBase] Final display position: {displayPosition} (offset Y: {damageDisplayOffset}, offset X: {damageDisplayOffsetX})");
+        // Debug.Log($"[EnemyBase] Final display position: {displayPosition} (offset Y: {damageDisplayOffset}, offset X: {damageDisplayOffsetX})");
         
         // ダメージ表示をインスタンス化
         GameObject damageObj = Instantiate(damagePrefab, displayPosition, Quaternion.identity);
-        Debug.Log($"[EnemyBase] Damage object instantiated: {damageObj.name} at {displayPosition}");
+        // Debug.Log($"[EnemyBase] Damage object instantiated: {damageObj.name} at {displayPosition}");
         
         // World Space Canvasの場合、RectTransformの位置を設定
         Canvas canvas = damageObj.GetComponent<Canvas>();
@@ -233,7 +233,7 @@ public class EnemyBase : MonoBehaviour, IDamageable
             if (rectTransform != null)
             {
                 rectTransform.position = displayPosition;
-                Debug.Log($"[EnemyBase] World Space Canvas detected, set RectTransform position: {displayPosition}");
+                // Debug.Log($"[EnemyBase] World Space Canvas detected, set RectTransform position: {displayPosition}");
             }
         }
         
@@ -241,7 +241,7 @@ public class EnemyBase : MonoBehaviour, IDamageable
         DamageDisplay damageDisplay = damageObj.GetComponentInChildren<DamageDisplay>();
         if (damageDisplay != null)
         {
-            Debug.Log($"[EnemyBase] DamageDisplay component found, showing damage: {damage}");
+            // Debug.Log($"[EnemyBase] DamageDisplay component found, showing damage: {damage}");
             damageDisplay.ShowDamage(damage);
         }
         else
@@ -324,7 +324,7 @@ public class EnemyBase : MonoBehaviour, IDamageable
         if (simpleHealthBar != null && healthSystem != null)
         {
             simpleHealthBar.Initialize(healthSystem);
-            Debug.Log($"[EnemyBase] SimpleHealthBar created successfully for {gameObject.name}.");
+            // Debug.Log($"[EnemyBase] SimpleHealthBar created successfully for {gameObject.name}.");
             return;
         }
         
@@ -333,7 +333,7 @@ public class EnemyBase : MonoBehaviour, IDamageable
         if (healthBarUI != null && healthSystem != null)
         {
             healthBarUI.Initialize(healthSystem);
-            Debug.Log($"[EnemyBase] WorldSpaceHealthBarUI created successfully for {gameObject.name}.");
+            // Debug.Log($"[EnemyBase] WorldSpaceHealthBarUI created successfully for {gameObject.name}.");
         }
         else
         {

@@ -262,7 +262,7 @@ public class WordLearningSystem : MonoBehaviour
             if (questionCount % retryInterval == 0)
             {
                 currentQuestion = incorrectQuestionsQueue.Dequeue();
-                Debug.Log($"[WordLearningSystem] Retrying incorrect question: {GetQuestionText(currentQuestion)} (Question #{questionCount})");
+                // Debug.Log($"[WordLearningSystem] Retrying incorrect question: {GetQuestionText(currentQuestion)} (Question #{questionCount})");
             }
             else
             {
@@ -291,12 +291,12 @@ public class WordLearningSystem : MonoBehaviour
         if (wordQuizUI != null)
         {
             string questionText = GetQuestionText(currentQuestion);
-            Debug.Log($"[WordLearningSystem] Generating question: {questionText}");
+            // Debug.Log($"[WordLearningSystem] Generating question: {questionText}");
             wordQuizUI.DisplayQuestion(questionText);
             wordQuizUI.DisplayChoices(currentChoices);
             wordQuizUI.UpdateTimer(currentTimer);
             wordQuizUI.HideFeedback();
-            Debug.Log($"[WordLearningSystem] UI updated. Timer: {currentTimer}, Choices: {currentChoices.Count}");
+            // Debug.Log($"[WordLearningSystem] UI updated. Timer: {currentTimer}, Choices: {currentChoices.Count}");
         }
         else
         {
@@ -458,7 +458,7 @@ public class WordLearningSystem : MonoBehaviour
             {
                 incorrectAnswersCount[currentQuestion] = 1;
             }
-            Debug.Log($"[WordLearningSystem] Incorrect answer count for '{GetQuestionText(currentQuestion)}': {incorrectAnswersCount[currentQuestion]}");
+            // Debug.Log($"[WordLearningSystem] Incorrect answer count for '{GetQuestionText(currentQuestion)}': {incorrectAnswersCount[currentQuestion]}");
         }
         
         // 間違えた問題をキューに追加（再出題用）
@@ -468,7 +468,7 @@ public class WordLearningSystem : MonoBehaviour
             if (!incorrectQuestionsQueue.Contains(currentQuestion))
             {
                 incorrectQuestionsQueue.Enqueue(currentQuestion);
-                Debug.Log($"[WordLearningSystem] Added incorrect question to retry queue: {GetQuestionText(currentQuestion)} (Queue size: {incorrectQuestionsQueue.Count})");
+                // Debug.Log($"[WordLearningSystem] Added incorrect question to retry queue: {GetQuestionText(currentQuestion)} (Queue size: {incorrectQuestionsQueue.Count})");
             }
         }
         
@@ -580,7 +580,7 @@ public class WordLearningSystem : MonoBehaviour
         // データを再読み込み
         LoadWordDataFromCsv();
         
-        Debug.Log($"[WordLearningSystem] Game mode set to: {mode}, CSV path: {wordDataCsvPath}");
+        // Debug.Log($"[WordLearningSystem] Game mode set to: {mode}, CSV path: {wordDataCsvPath}");
     }
     
     /// <summary>
@@ -589,7 +589,7 @@ public class WordLearningSystem : MonoBehaviour
     public void ClearIncorrectAnswers()
     {
         incorrectAnswersCount.Clear();
-        Debug.Log("[WordLearningSystem] Incorrect answers count cleared.");
+        // Debug.Log("[WordLearningSystem] Incorrect answers count cleared.");
     }
     
     /// <summary>
@@ -609,7 +609,7 @@ public class WordLearningSystem : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
-        Debug.Log($"[WordLearningSystem] StartGame called. Current mode: {currentGameMode}");
+        // Debug.Log($"[WordLearningSystem] StartGame called. Current mode: {currentGameMode}");
         
         // 間違えた問題の記録をクリア（新しいゲーム開始時）
         ClearIncorrectAnswers();
@@ -624,11 +624,11 @@ public class WordLearningSystem : MonoBehaviour
         // WordQuizUIが設定されているか確認（非アクティブなオブジェクトも含める）
         if (wordQuizUI == null)
         {
-            Debug.Log("[WordLearningSystem] WordQuizUI is null, searching for it...");
+            // Debug.Log("[WordLearningSystem] WordQuizUI is null, searching for it...");
             wordQuizUI = FindObjectOfType<WordQuizUI>(true);
             if (wordQuizUI != null)
             {
-                Debug.Log($"[WordLearningSystem] WordQuizUI found: {wordQuizUI.gameObject.name} (Active: {wordQuizUI.gameObject.activeSelf}, ActiveInHierarchy: {wordQuizUI.gameObject.activeInHierarchy})");
+                // Debug.Log($"[WordLearningSystem] WordQuizUI found: {wordQuizUI.gameObject.name} (Active: {wordQuizUI.gameObject.activeSelf}, ActiveInHierarchy: {wordQuizUI.gameObject.activeInHierarchy})");
             }
             else
             {
@@ -638,15 +638,15 @@ public class WordLearningSystem : MonoBehaviour
         }
         else
         {
-            Debug.Log($"[WordLearningSystem] WordQuizUI already set: {wordQuizUI.gameObject.name} (Active: {wordQuizUI.gameObject.activeSelf}, ActiveInHierarchy: {wordQuizUI.gameObject.activeInHierarchy})");
+            // Debug.Log($"[WordLearningSystem] WordQuizUI already set: {wordQuizUI.gameObject.name} (Active: {wordQuizUI.gameObject.activeSelf}, ActiveInHierarchy: {wordQuizUI.gameObject.activeInHierarchy})");
         }
         
         // WordQuizPanelを表示する（ShowPanel()が呼ばれる前にwordQuizUIがnullでないことを確認）
         if (wordQuizUI != null)
         {
-            Debug.Log("[WordLearningSystem] Calling ShowPanel()...");
+            // Debug.Log("[WordLearningSystem] Calling ShowPanel()...");
             wordQuizUI.ShowPanel();
-            Debug.Log($"[WordLearningSystem] ShowPanel() called. WordQuizPanel active: {wordQuizUI.gameObject.activeSelf}, activeInHierarchy: {wordQuizUI.gameObject.activeInHierarchy}");
+            // Debug.Log($"[WordLearningSystem] ShowPanel() called. WordQuizPanel active: {wordQuizUI.gameObject.activeSelf}, activeInHierarchy: {wordQuizUI.gameObject.activeInHierarchy}");
         }
         else
         {
@@ -665,14 +665,14 @@ public class WordLearningSystem : MonoBehaviour
         if (resourceManager != null)
         {
             resourceManager.StartGame();
-            Debug.Log("[WordLearningSystem] Notified ResourceManager that game has started.");
+            // Debug.Log("[WordLearningSystem] Notified ResourceManager that game has started.");
         }
         
         // 初回問題を生成（これによりタイマーが開始される）
-        Debug.Log("[WordLearningSystem] Generating first question...");
+        // Debug.Log("[WordLearningSystem] Generating first question...");
         GenerateRandomQuestion();
         
-        Debug.Log($"[WordLearningSystem] Game started with mode: {currentGameMode}");
+        // Debug.Log($"[WordLearningSystem] Game started with mode: {currentGameMode}");
     }
     
     /// <summary>
@@ -690,7 +690,7 @@ public class WordLearningSystem : MonoBehaviour
         // BGMを停止
         StopBGM();
         
-        Debug.Log("[WordLearningSystem] Game stopped.");
+        // Debug.Log("[WordLearningSystem] Game stopped.");
     }
     
     /// <summary>
@@ -717,7 +717,7 @@ public class WordLearningSystem : MonoBehaviour
                 bgmAudioSource.volume = bgmVolume;
                 bgmAudioSource.loop = true;
                 bgmAudioSource.Play();
-                Debug.Log("[WordLearningSystem] BGM started.");
+                // Debug.Log("[WordLearningSystem] BGM started.");
             }
         }
         else
@@ -741,7 +741,7 @@ public class WordLearningSystem : MonoBehaviour
         if (bgmAudioSource != null && bgmAudioSource.isPlaying)
         {
             bgmAudioSource.Stop();
-            Debug.Log("[WordLearningSystem] BGM stopped.");
+            // Debug.Log("[WordLearningSystem] BGM stopped.");
         }
     }
 }

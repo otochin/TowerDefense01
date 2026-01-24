@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -92,8 +93,8 @@ public class CharacterUpgradeUI : MonoBehaviour
         
         if (shouldLog)
         {
-            Debug.Log($"[CharacterUpgradeUI] ===== InitializeButtons START =====");
-            Debug.Log($"[CharacterUpgradeUI] Found {upgradeButtons.Count} upgrade buttons.");
+            // Debug.Log($"[CharacterUpgradeUI] ===== InitializeButtons START =====");
+            // Debug.Log($"[CharacterUpgradeUI] Found {upgradeButtons.Count} upgrade buttons.");
         }
         
         // Inspectorで設定された値を尊重し、各ボタンの設定を使用
@@ -110,8 +111,8 @@ public class CharacterUpgradeUI : MonoBehaviour
                 // 【調査用ログ】初回のみ各ボタンのInspector設定値を詳細に出力
                 if (shouldLog)
                 {
-                    Debug.Log($"[CharacterUpgradeUI] === Button {i + 1}/{upgradeButtons.Count}: {button.gameObject.name} ===");
-                    Debug.Log($"[CharacterUpgradeUI]   Inspector設定値: CharacterType={charType}, UpgradeType={upgradeType}");
+                    // Debug.Log($"[CharacterUpgradeUI] === Button {i + 1}/{upgradeButtons.Count}: {button.gameObject.name} ===");
+                    // Debug.Log($"[CharacterUpgradeUI]   Inspector設定値: CharacterType={charType}, UpgradeType={upgradeType}");
                 }
                 
                 // UIテキストを更新（Inspectorで設定された値に基づいて）
@@ -126,15 +127,15 @@ public class CharacterUpgradeUI : MonoBehaviour
                 // 【調査用ログ】初回のみクリックイベントに設定された値を確認
                 if (shouldLog)
                 {
-                    Debug.Log($"[CharacterUpgradeUI]   クリックイベント設定値: CharacterType={charTypeLocal}, UpgradeType={upgradeTypeLocal}");
-                    Debug.Log($"[CharacterUpgradeUI]   → このボタンをクリックすると、{charTypeLocal} の {upgradeTypeLocal} が強化されます");
+                    // Debug.Log($"[CharacterUpgradeUI]   クリックイベント設定値: CharacterType={charTypeLocal}, UpgradeType={upgradeTypeLocal}");
+                    // Debug.Log($"[CharacterUpgradeUI]   → このボタンをクリックすると、{charTypeLocal} の {upgradeTypeLocal} が強化されます");
                 }
             }
         }
         
         if (shouldLog)
         {
-            Debug.Log($"[CharacterUpgradeUI] ===== InitializeButtons END =====");
+            // Debug.Log($"[CharacterUpgradeUI] ===== InitializeButtons END =====");
         }
         
         // 6つ未満の場合は警告
@@ -305,6 +306,10 @@ public class CharacterUpgradeUI : MonoBehaviour
                 }
             }
             
+            // CharacterButton_1とCharacterButton_4のアニメーションを確実に再生する
+            StartCoroutine(EnsureCharacterButtonAnimation("CharacterButton_1"));
+            StartCoroutine(EnsureCharacterButtonAnimation("CharacterButton_4"));
+            
             // Debug.Log($"[CharacterUpgradeUI] Panel shown. All buttons enabled. Button count: {upgradeButtons.Count}");
         }
         // else
@@ -338,5 +343,105 @@ public class CharacterUpgradeUI : MonoBehaviour
         }
         
         // Debug.Log("[CharacterUpgradeUI] Selection reset. All buttons enabled.");
+    }
+    
+    /// <summary>
+    /// 指定されたCharacterButtonのアニメーションを確実に再生するコルーチン
+    /// </summary>
+    /// <param name="buttonName">ボタン名（例: "CharacterButton_1", "CharacterButton_4"）</param>
+    private IEnumerator EnsureCharacterButtonAnimation(string buttonName)
+    {
+        // 1フレーム待機（SetActive()の後、OnEnable()が呼ばれるのを待つ）
+        yield return null;
+        
+        // 指定されたボタンを探す
+        Transform buttonTransform = transform.Find(buttonName);
+        if (buttonTransform == null)
+        {
+            // 子要素から再帰的に探す
+            buttonTransform = FindChildRecursive(transform, buttonName);
+        }
+        
+        if (buttonTransform != null)
+        {
+            // Iconを探す（CharacterButtonコンポーネントの有無に関係なく、直接Iconを探す）
+            Transform iconTransform = buttonTransform.Find("Icon");
+            if (iconTransform == null)
+            {
+                // 子要素から再帰的に探す
+                iconTransform = FindChildRecursive(buttonTransform, "Icon");
+            }
+            
+            if (iconTransform != null)
+            {
+                // Animatorを取得
+                Animator animator = iconTransform.GetComponent<Animator>();
+                if (animator != null && animator.runtimeAnimatorController != null)
+                {
+                    // Animatorを有効化
+                    animator.enabled = true;
+                    
+                    // Update ModeをUnscaledTimeに設定（Time.timeScaleが0でもアニメーションが再生されるように）
+                    animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+                    
+                    // "front"アニメーションを再生
+                    animator.Play("front", 0, 0f);
+                    
+                    Debug.Log($"[CharacterUpgradeUI] {buttonName}のアニメーションを再生しました。Controller: {animator.runtimeAnimatorController.name}");
+                    
+                    // 次のフレームでアニメーションの状態を確認
+                    yield return null;
+                    AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                    if (stateInfo.IsName("front"))
+                    {
+                        Debug.Log($"[CharacterUpgradeUI] {buttonName}のアニメーション確認: State='front', Normalized time: {stateInfo.normalizedTime:F3}, Length: {stateInfo.length:F3}");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[CharacterUpgradeUI] {buttonName}のアニメーション 'front' が再生されていません。現在のステート: {stateInfo.fullPathHash}");
+                    }
+                }
+                else
+                {
+                    if (animator == null)
+                    {
+                        Debug.LogWarning($"[CharacterUpgradeUI] {buttonName}のIconにAnimatorが見つかりません。");
+                    }
+                    else if (animator.runtimeAnimatorController == null)
+                    {
+                        Debug.LogWarning($"[CharacterUpgradeUI] {buttonName}のIconのAnimatorにControllerが設定されていません。");
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[CharacterUpgradeUI] {buttonName}のIconが見つかりません。");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[CharacterUpgradeUI] {buttonName}が見つかりません。");
+        }
+    }
+    
+    /// <summary>
+    /// 再帰的に子要素を探す
+    /// </summary>
+    private Transform FindChildRecursive(Transform parent, string name)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == name)
+            {
+                return child;
+            }
+            
+            Transform found = FindChildRecursive(child, name);
+            if (found != null)
+            {
+                return found;
+            }
+        }
+        return null;
     }
 }

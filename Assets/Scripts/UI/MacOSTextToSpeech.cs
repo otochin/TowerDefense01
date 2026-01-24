@@ -27,16 +27,16 @@ public class MacOSTextToSpeech : MonoBehaviour
     /// <param name="voice">音声名（nullの場合は自動選択）</param>
     public void Speak(string text, string voice = null)
     {
-        UnityEngine.Debug.Log($"[MacOSTextToSpeech] Speak called. enableTTS: {enableTTS}, text: {text}");
+        // UnityEngine.Debug.Log($"[MacOSTextToSpeech] Speak called. enableTTS: {enableTTS}, text: {text}");
         
         if (!enableTTS || string.IsNullOrEmpty(text))
         {
-            UnityEngine.Debug.Log($"[MacOSTextToSpeech] Speak cancelled. enableTTS: {enableTTS}, text is null or empty: {string.IsNullOrEmpty(text)}");
+            // UnityEngine.Debug.Log($"[MacOSTextToSpeech] Speak cancelled. enableTTS: {enableTTS}, text is null or empty: {string.IsNullOrEmpty(text)}");
             return;
         }
         
         #if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
-        UnityEngine.Debug.Log("[MacOSTextToSpeech] macOS platform detected. Starting speech...");
+        // UnityEngine.Debug.Log("[MacOSTextToSpeech] macOS platform detected. Starting speech...");
         
         // 既に読み上げ中の場合は停止
         Stop();
@@ -53,12 +53,12 @@ public class MacOSTextToSpeech : MonoBehaviour
             selectedVoice = englishVoice; // デフォルトは英語
         }
         
-        UnityEngine.Debug.Log($"[MacOSTextToSpeech] Selected voice: {selectedVoice}, Text: {text}");
+        // UnityEngine.Debug.Log($"[MacOSTextToSpeech] Selected voice: {selectedVoice}, Text: {text}");
         
         // コルーチンで非同期に読み上げを開始
         StartCoroutine(SpeakAsync(text, selectedVoice));
         #else
-        UnityEngine.Debug.Log($"[MacOSTextToSpeech] TTS is only available on macOS. Text: {text}");
+        // UnityEngine.Debug.Log($"[MacOSTextToSpeech] TTS is only available on macOS. Text: {text}");
         #endif
     }
     
@@ -91,7 +91,7 @@ public class MacOSTextToSpeech : MonoBehaviour
         {
             // 通常のsayコマンドを使用（音量調整なし）
             string arguments = $"-v {voice} \"{escapedText}\"";
-            UnityEngine.Debug.Log($"[MacOSTextToSpeech] Executing: /usr/bin/say {arguments}");
+            // UnityEngine.Debug.Log($"[MacOSTextToSpeech] Executing: /usr/bin/say {arguments}");
             
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
@@ -107,7 +107,7 @@ public class MacOSTextToSpeech : MonoBehaviour
             {
                 currentSpeakingProcess = new Process { StartInfo = startInfo };
                 currentSpeakingProcess.Start();
-                UnityEngine.Debug.Log($"[MacOSTextToSpeech] Process started. PID: {currentSpeakingProcess.Id}");
+                // UnityEngine.Debug.Log($"[MacOSTextToSpeech] Process started. PID: {currentSpeakingProcess.Id}");
             }
             catch (System.Exception e)
             {
@@ -131,7 +131,7 @@ public class MacOSTextToSpeech : MonoBehaviour
         {
             // sayコマンドで音声ファイルを生成
             string sayArguments = $"-v {voice} -o \"{tempFilePath}\" \"{escapedText}\"";
-            UnityEngine.Debug.Log($"[MacOSTextToSpeech] Generating audio file: /usr/bin/say {sayArguments}");
+            // UnityEngine.Debug.Log($"[MacOSTextToSpeech] Generating audio file: /usr/bin/say {sayArguments}");
             
             ProcessStartInfo sayInfo = new ProcessStartInfo
             {
@@ -154,7 +154,7 @@ public class MacOSTextToSpeech : MonoBehaviour
                 // afplayで音量を指定して再生
                 float volumeValue = Mathf.Clamp01(volume / 100f); // 0.0-1.0に変換
                 string afplayArguments = $"-v {volumeValue} \"{tempFilePath}\"";
-                UnityEngine.Debug.Log($"[MacOSTextToSpeech] Playing with volume: /usr/bin/afplay {afplayArguments}");
+                // UnityEngine.Debug.Log($"[MacOSTextToSpeech] Playing with volume: /usr/bin/afplay {afplayArguments}");
                 
                 ProcessStartInfo afplayInfo = new ProcessStartInfo
                 {
@@ -168,7 +168,7 @@ public class MacOSTextToSpeech : MonoBehaviour
                 
                 currentSpeakingProcess = new Process { StartInfo = afplayInfo };
                 currentSpeakingProcess.Start();
-                UnityEngine.Debug.Log($"[MacOSTextToSpeech] afplay started. PID: {currentSpeakingProcess.Id}, Volume: {volumeValue}");
+                // UnityEngine.Debug.Log($"[MacOSTextToSpeech] afplay started. PID: {currentSpeakingProcess.Id}, Volume: {volumeValue}");
                 
                 // 再生完了後に一時ファイルを削除（非同期）
                 StartCoroutine(DeleteTempFileAfterPlayback(tempFilePath));
@@ -214,7 +214,7 @@ public class MacOSTextToSpeech : MonoBehaviour
             try
             {
                 System.IO.File.Delete(filePath);
-                UnityEngine.Debug.Log($"[MacOSTextToSpeech] Temporary file deleted: {filePath}");
+                // UnityEngine.Debug.Log($"[MacOSTextToSpeech] Temporary file deleted: {filePath}");
             }
             catch (System.Exception e)
             {
@@ -262,7 +262,7 @@ public class MacOSTextToSpeech : MonoBehaviour
         catch (System.Exception e)
         {
             // killallコマンドが失敗しても続行（sayプロセスが存在しない場合など）
-            UnityEngine.Debug.Log($"[MacOSTextToSpeech] killall say command: {e.Message}");
+            // UnityEngine.Debug.Log($"[MacOSTextToSpeech] killall say command: {e.Message}");
         }
         #endif
     }

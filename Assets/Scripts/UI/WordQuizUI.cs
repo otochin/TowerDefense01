@@ -100,12 +100,12 @@ public class WordQuizUI : MonoBehaviour
     {
         if (gameObject != null)
         {
-            Debug.Log($"[WordQuizUI] ShowPanel called. gameObject: {gameObject.name}, current active state: {gameObject.activeSelf}");
-            Debug.Log($"[WordQuizUI] Parent Canvas active: {(gameObject.transform.parent != null ? gameObject.transform.parent.gameObject.activeSelf : "no parent")}");
+            // Debug.Log($"[WordQuizUI] ShowPanel called. gameObject: {gameObject.name}, current active state: {gameObject.activeSelf}");
+            // Debug.Log($"[WordQuizUI] Parent Canvas active: {(gameObject.transform.parent != null ? gameObject.transform.parent.gameObject.activeSelf : "no parent")}");
             
             gameObject.SetActive(true);
             
-            Debug.Log($"[WordQuizUI] After SetActive(true). Active state: {gameObject.activeSelf}, Active in hierarchy: {gameObject.activeInHierarchy}");
+            // Debug.Log($"[WordQuizUI] After SetActive(true). Active state: {gameObject.activeSelf}, Active in hierarchy: {gameObject.activeInHierarchy}");
             
             // パネルが表示された後に、UI要素を再検索（非アクティブな状態では検出できないため）
             if (timerText == null)
@@ -113,7 +113,7 @@ public class WordQuizUI : MonoBehaviour
                 timerText = GetComponentInChildren<TextMeshProUGUI>(true);
                 if (timerText != null && timerText.gameObject.name.Contains("Timer"))
                 {
-                    Debug.Log($"[WordQuizUI] TimerText found after ShowPanel: {timerText.gameObject.name}");
+                    // Debug.Log($"[WordQuizUI] TimerText found after ShowPanel: {timerText.gameObject.name}");
                 }
                 else
                 {
@@ -124,7 +124,7 @@ public class WordQuizUI : MonoBehaviour
                         if (text.gameObject.name == "TimerText")
                         {
                             timerText = text;
-                            Debug.Log($"[WordQuizUI] TimerText found by name: {text.gameObject.name}");
+                            // Debug.Log($"[WordQuizUI] TimerText found by name: {text.gameObject.name}");
                             break;
                         }
                     }
@@ -139,7 +139,7 @@ public class WordQuizUI : MonoBehaviour
                     if (text.gameObject.name == "QuestionText")
                     {
                         questionText = text;
-                        Debug.Log($"[WordQuizUI] QuestionText found: {text.gameObject.name}");
+                        // Debug.Log($"[WordQuizUI] QuestionText found: {text.gameObject.name}");
                         break;
                     }
                 }
@@ -155,7 +155,7 @@ public class WordQuizUI : MonoBehaviour
                         choiceButtons.Add(button);
                     }
                 }
-                Debug.Log($"[WordQuizUI] Found {choiceButtons.Count} choice buttons after ShowPanel");
+                // Debug.Log($"[WordQuizUI] Found {choiceButtons.Count} choice buttons after ShowPanel");
             }
             
             // ゲーム再開時：タイマー、問題、選択肢ボタンを再表示（ShowGameEndFeedbackで非表示にしたものを表示）
@@ -231,7 +231,7 @@ public class WordQuizUI : MonoBehaviour
                 if (text.gameObject.name == "TimerText" || text.gameObject.name.Contains("Timer"))
                 {
                     timerText = text;
-                    Debug.Log($"[WordQuizUI] TimerText found in UpdateTimer: {text.gameObject.name}");
+                    // Debug.Log($"[WordQuizUI] TimerText found in UpdateTimer: {text.gameObject.name}");
                     break;
                 }
             }
@@ -281,17 +281,17 @@ public class WordQuizUI : MonoBehaviour
             {
                 // 見つからない場合は、このGameObjectに追加
                 textToSpeech = gameObject.AddComponent<MacOSTextToSpeech>();
-                Debug.Log("[WordQuizUI] MacOSTextToSpeech component created in DisplayQuestion");
+                // Debug.Log("[WordQuizUI] MacOSTextToSpeech component created in DisplayQuestion");
             }
             else
             {
-                Debug.Log("[WordQuizUI] MacOSTextToSpeech component found in DisplayQuestion");
+                // Debug.Log("[WordQuizUI] MacOSTextToSpeech component found in DisplayQuestion");
             }
         }
         
         if (textToSpeech != null)
         {
-            Debug.Log($"[WordQuizUI] Calling Speak: {question}");
+            // Debug.Log($"[WordQuizUI] Calling Speak: {question}");
             // 少し遅延してから音声を再生（問題表示が先に完了してから）
             StartCoroutine(SpeakWithDelay(question, 0.1f));
         }

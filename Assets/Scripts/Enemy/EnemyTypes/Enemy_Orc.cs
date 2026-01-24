@@ -87,7 +87,7 @@ public class Enemy_Orc : MonoBehaviour
                 enemyController.StopMovement();
                 if (wasMoving)
                 {
-                    Debug.Log($"[Enemy_Orc] Target found! Stopping movement. Target: {target}, Distance: {Vector2.Distance(transform.position, (target as MonoBehaviour)?.transform.position ?? transform.position):F2}");
+                    // Debug.Log($"[Enemy_Orc] Target found! Stopping movement. Target: {target}, Distance: {Vector2.Distance(transform.position, (target as MonoBehaviour)?.transform.position ?? transform.position):F2}");
                 }
             }
             
@@ -107,7 +107,7 @@ public class Enemy_Orc : MonoBehaviour
                 if (enemyController != null)
                 {
                     enemyController.ResumeMovement();
-                    Debug.Log($"[Enemy_Orc] No target found. Resuming movement.");
+                    // Debug.Log($"[Enemy_Orc] No target found. Resuming movement.");
                 }
             }
         }
@@ -140,12 +140,12 @@ public class Enemy_Orc : MonoBehaviour
         // デバッグ: 検出されたColliderの数を確認
         if (colliders.Length > 0)
         {
-            Debug.Log($"[Enemy_Orc] Found {colliders.Length} colliders in range {attackRange}. Position: {transform.position}");
+            // Debug.Log($"[Enemy_Orc] Found {colliders.Length} colliders in range {attackRange}. Position: {transform.position}");
             foreach (Collider2D col in colliders)
             {
                 if (col != null)
                 {
-                    Debug.Log($"[Enemy_Orc] Collider: {col.gameObject.name}, Tag: {col.tag}, Distance: {Vector2.Distance(transform.position, col.transform.position):F2}");
+                    // Debug.Log($"[Enemy_Orc] Collider: {col.gameObject.name}, Tag: {col.tag}, Distance: {Vector2.Distance(transform.position, col.transform.position):F2}");
                 }
             }
         }
@@ -184,16 +184,16 @@ public class Enemy_Orc : MonoBehaviour
             // PlayerCastleタグを持つオブジェクト（プレイヤー城）を探す
             else if (col.CompareTag("PlayerCastle"))
             {
-                Debug.Log($"[Enemy_Orc] PlayerCastle tag detected! GameObject: {col.gameObject.name}");
+                // Debug.Log($"[Enemy_Orc] PlayerCastle tag detected! GameObject: {col.gameObject.name}");
                 IDamageable target = col.GetComponent<IDamageable>();
                 if (target != null)
                 {
-                    Debug.Log($"[Enemy_Orc] IDamageable found on {col.gameObject.name}. IsDead: {target.IsDead}");
+                    // Debug.Log($"[Enemy_Orc] IDamageable found on {col.gameObject.name}. IsDead: {target.IsDead}");
                     if (!target.IsDead)
                     {
                         // 実際の距離を計算
                         float distance = Vector2.Distance(transform.position, col.transform.position);
-                        Debug.Log($"[Enemy_Orc] PlayerCastle distance: {distance:F2}, AttackRange: {attackRange:F2}");
+                        // Debug.Log($"[Enemy_Orc] PlayerCastle distance: {distance:F2}, AttackRange: {attackRange:F2}");
                         
                         // 攻撃範囲内かどうかを再確認（Colliderのサイズを考慮）
                         if (distance <= attackRange)
@@ -202,7 +202,7 @@ public class Enemy_Orc : MonoBehaviour
                             {
                                 nearestDistance = distance;
                                 nearestTarget = target;
-                                Debug.Log($"[Enemy_Orc] PlayerCastle selected as target! Distance: {nearestDistance:F2}");
+                                // Debug.Log($"[Enemy_Orc] PlayerCastle selected as target! Distance: {nearestDistance:F2}");
                             }
                         }
                     }
@@ -217,7 +217,7 @@ public class Enemy_Orc : MonoBehaviour
         // デバッグ: ターゲットが見つかった場合のみログを出力
         if (nearestTarget != null && currentTarget != nearestTarget)
         {
-            Debug.Log($"[Enemy_Orc] Target found! Distance: {nearestDistance:F2}, Range: {attackRange:F2}, Target: {nearestTarget}");
+            // Debug.Log($"[Enemy_Orc] Target found! Distance: {nearestDistance:F2}, Range: {attackRange:F2}, Target: {nearestTarget}");
         }
         
         currentTarget = nearestTarget;
@@ -240,7 +240,7 @@ public class Enemy_Orc : MonoBehaviour
         // 攻撃時の突進アニメーション
         StartCoroutine(AttackLunge(target));
         
-        Debug.Log($"[Enemy_Orc] {enemyBase.EnemyData?.EnemyName} attacked {target} for {damage} damage!");
+        // Debug.Log($"[Enemy_Orc] {enemyBase.EnemyData?.EnemyName} attacked {target} for {damage} damage!");
     }
     
     /// <summary>

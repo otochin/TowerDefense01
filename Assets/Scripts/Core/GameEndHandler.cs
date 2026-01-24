@@ -144,13 +144,13 @@ public class GameEndHandler : MonoBehaviour
     {
         if (isGameEnded)
         {
-            Debug.Log("[GameEndHandler] OnPlayerCastleDestroyed called but game already ended. Ignoring.");
+            // Debug.Log("[GameEndHandler] OnPlayerCastleDestroyed called but game already ended. Ignoring.");
             return;
         }
         isGameEnded = true;
         isVictory = false; // 敗北フラグを設定
         
-        Debug.Log("[GameEndHandler] Player Castle destroyed. Game Over! CurrentHealth: " + (playerCastle != null ? playerCastle.CurrentHealth.ToString() : "null"));
+        // Debug.Log("[GameEndHandler] Player Castle destroyed. Game Over! CurrentHealth: " + (playerCastle != null ? playerCastle.CurrentHealth.ToString() : "null"));
         
         // フィードバックを表示（赤で「Lost!」）
         if (wordQuizUI != null)
@@ -178,7 +178,7 @@ public class GameEndHandler : MonoBehaviour
     /// </summary>
     private void OnEnemyCastleDestroyed()
     {
-        Debug.Log($"[GameEndHandler] OnEnemyCastleDestroyed called. isGameEnded: {isGameEnded}, enemyCastle.CurrentHealth: {enemyCastle?.CurrentHealth ?? -1}");
+        // Debug.Log($"[GameEndHandler] OnEnemyCastleDestroyed called. isGameEnded: {isGameEnded}, enemyCastle.CurrentHealth: {enemyCastle?.CurrentHealth ?? -1}");
         
         if (isGameEnded)
         {
@@ -188,7 +188,7 @@ public class GameEndHandler : MonoBehaviour
         isGameEnded = true;
         isVictory = true; // 勝利フラグを設定
         
-        Debug.Log("[GameEndHandler] Enemy Castle destroyed. Victory!");
+        // Debug.Log("[GameEndHandler] Enemy Castle destroyed. Victory!");
         
         // フィードバックを表示（緑で「Win!」）
         if (wordQuizUI != null)
@@ -251,7 +251,7 @@ public class GameEndHandler : MonoBehaviour
             }
             else
             {
-                Debug.Log("[GameEndHandler] IncorrectAnswersListUIが見つかりません。間違いリストは表示されません。");
+                // Debug.Log("[GameEndHandler] IncorrectAnswersListUIが見つかりません。間違いリストは表示されません。");
             }
         }
     }
@@ -261,21 +261,21 @@ public class GameEndHandler : MonoBehaviour
     /// </summary>
     private void ShowCharacterUpgradeUI()
     {
-        Debug.Log("[GameEndHandler] ShowCharacterUpgradeUI called.");
+        // Debug.Log("[GameEndHandler] ShowCharacterUpgradeUI called.");
         
         if (characterUpgradeUI != null)
         {
-            Debug.Log($"[GameEndHandler] CharacterUpgradeUI reference exists: {characterUpgradeUI.gameObject.name}");
+            // Debug.Log($"[GameEndHandler] CharacterUpgradeUI reference exists: {characterUpgradeUI.gameObject.name}");
             characterUpgradeUI.SetPanelVisible(true);
         }
         else
         {
-            Debug.Log("[GameEndHandler] CharacterUpgradeUI reference is null. Searching...");
+            // Debug.Log("[GameEndHandler] CharacterUpgradeUI reference is null. Searching...");
             // 再検索を試みる
             characterUpgradeUI = FindObjectOfType<CharacterUpgradeUI>(true);
             if (characterUpgradeUI != null)
             {
-                Debug.Log($"[GameEndHandler] CharacterUpgradeUI found: {characterUpgradeUI.gameObject.name}");
+                // Debug.Log($"[GameEndHandler] CharacterUpgradeUI found: {characterUpgradeUI.gameObject.name}");
                 characterUpgradeUI.SetPanelVisible(true);
             }
             else
@@ -310,7 +310,7 @@ public class GameEndHandler : MonoBehaviour
         if (gameModeSelectUI != null)
         {
             gameModeSelectUI.gameObject.SetActive(true);
-            Debug.Log("[GameEndHandler] GameModeSelectPanel shown.");
+            // Debug.Log("[GameEndHandler] GameModeSelectPanel shown.");
         }
         else
         {
@@ -319,7 +319,7 @@ public class GameEndHandler : MonoBehaviour
             if (gameModeSelectUI != null)
             {
                 gameModeSelectUI.gameObject.SetActive(true);
-                Debug.Log("[GameEndHandler] GameModeSelectPanel found and shown.");
+                // Debug.Log("[GameEndHandler] GameModeSelectPanel found and shown.");
             }
             else
             {
@@ -339,7 +339,7 @@ public class GameEndHandler : MonoBehaviour
             bgmAudioSource.volume = bgmVolume;
             bgmAudioSource.loop = true;
             bgmAudioSource.Play();
-            Debug.Log("[GameEndHandler] Victory BGM started.");
+            // Debug.Log("[GameEndHandler] Victory BGM started.");
         }
         else
         {
@@ -365,7 +365,7 @@ public class GameEndHandler : MonoBehaviour
             bgmAudioSource.volume = bgmVolume;
             bgmAudioSource.loop = true;
             bgmAudioSource.Play();
-            Debug.Log("[GameEndHandler] Defeat BGM started.");
+            // Debug.Log("[GameEndHandler] Defeat BGM started.");
         }
         else
         {
@@ -388,7 +388,7 @@ public class GameEndHandler : MonoBehaviour
         if (bgmAudioSource != null && bgmAudioSource.isPlaying)
         {
             bgmAudioSource.Stop();
-            Debug.Log("[GameEndHandler] BGM stopped.");
+            // Debug.Log("[GameEndHandler] BGM stopped.");
         }
     }
     
@@ -398,7 +398,7 @@ public class GameEndHandler : MonoBehaviour
     public void ResetGameState()
     {
         isGameEnded = false;
-        Debug.Log("[GameEndHandler] Game state reset. isGameEnded: false");
+        // Debug.Log("[GameEndHandler] Game state reset. isGameEnded: false");
         
         // 間違えた問題リストを非表示にし、カウントをリセット
         if (incorrectAnswersListUI != null)

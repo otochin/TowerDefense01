@@ -586,6 +586,13 @@
   - 問題：CharacterButton_1を押してもCharacterButton_4が押されたことになってしまう
   - 原因：CharacterButton_4の子要素のText (TMP)の横幅サイズが大きすぎて、隣のボタン（CharacterButton_1）に重なっていたため、クリック判定が誤ってCharacterButton_4に反応していた
   - 解決方法：CharacterButton_4の子要素のText (TMP)の横幅サイズを適切な値に調整し、隣のボタンに重ならないように修正
+- **CharacterUpgradePanel内のCharacterButtonアニメーション再生問題**: 解決済み
+  - 問題：CharacterUpgradePanelが表示された際に、CharacterButton_1とCharacterButton_4のIconのアニメーションが再生されない
+  - 原因：CharacterUpgradePanel内のCharacterButtonはCharacterUpgradeButtonコンポーネントを使用しており、CharacterButtonコンポーネントを探していたため見つからなかった
+  - 解決方法：
+    1. CharacterButtonコンポーネントの有無に関係なく、直接CharacterButton_1/CharacterButton_4のGameObjectを探し、その子要素のIconからAnimatorを取得するように変更
+    2. 汎用的な関数`EnsureCharacterButtonAnimation(string buttonName)`を作成し、CharacterButton_1とCharacterButton_4の両方で使用
+    3. CharacterUpgradeUI.SetPanelVisible()内で両方のボタンのアニメーションを確実に再生するように修正
 
 ### 次回の作業内容
 1. キャラクター強化システムの動作確認・デバッグ（完了）
@@ -716,7 +723,7 @@
 
 ## 最終更新日
 
-2026年1月25日（CharacterButtonのクリック判定問題修正：CharacterButton_4のText (TMP)の横幅サイズが大きすぎて隣のボタンに重なっていた問題を解決）
+2026年1月25日（CharacterButtonのクリック判定問題修正：CharacterButton_4のText (TMP)の横幅サイズが大きすぎて隣のボタンに重なっていた問題を解決。CharacterUpgradePanel内のCharacterButtonアニメーション再生問題修正：CharacterButton_1とCharacterButton_4のIconのアニメーションが再生されない問題を解決）
 
 ## 変更履歴
 
@@ -812,3 +819,4 @@
 | 2026-01-20 | CharacterUpgradeUI修正：CharacterUpgradePanel表示中にCharacterSelectPanelを非表示にする機能を追加（SetPanelVisible()メソッドでパネル表示時にCharacterSelectUIを検索して非表示にする処理を追加） | - |
 | 2026-01-24 | CharacterButtonアニメーション制御機能実装：CharacterSelectPanelのCharacterButton_1が無効（お金不足）の場合はAnimationを停止、有効な場合はAnimationを実行する機能を追加。最初はCharacterButton_1自体にAnimatorを追加しようとしたが、実際はIconの子要素にAnimationが設定されていることが判明。CharacterButton.csを修正して、iconImageのGameObjectからAnimatorを取得するように変更 | - |
 | 2026-01-25 | CharacterButtonのクリック判定問題修正：CharacterButton_1を押してもCharacterButton_4が押されたことになってしまう問題を修正。原因はCharacterButton_4の子要素のText (TMP)の横幅サイズが大きすぎて隣のボタンに重なっていたため。Text (TMP)の横幅サイズを適切な値に調整して解決 | - |
+|| 2026-01-25 | CharacterUpgradePanel内のCharacterButtonアニメーション再生問題修正：CharacterUpgradePanelが表示された際にCharacterButton_1とCharacterButton_4のIconのアニメーションが再生されない問題を修正。原因はCharacterUpgradePanel内のCharacterButtonがCharacterUpgradeButtonコンポーネントを使用しており、CharacterButtonコンポーネントを探していたため見つからなかった。解決方法として、CharacterButtonコンポーネントの有無に関係なく直接GameObjectを探し、その子要素のIconからAnimatorを取得するように変更。汎用的な関数EnsureCharacterButtonAnimation(string buttonName)を作成し、両方のボタンで使用 | - |

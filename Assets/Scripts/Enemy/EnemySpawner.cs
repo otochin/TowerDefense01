@@ -102,7 +102,7 @@ public class EnemySpawner : MonoBehaviour
         {
             float multiplier = stageManager.GetSpawnIntervalMultiplier();
             spawnInterval = baseSpawnInterval * multiplier;
-            Debug.Log($"[EnemySpawner] Spawn interval updated for Stage {stageManager.CurrentStage}: {spawnInterval:F2}s (multiplier: {multiplier:F2})");
+            // Debug.Log($"[EnemySpawner] Spawn interval updated for Stage {stageManager.CurrentStage}: {spawnInterval:F2}s (multiplier: {multiplier:F2})");
         }
         else
         {

@@ -153,7 +153,7 @@ public class CharacterBase : MonoBehaviour, IDamageable
             return;
         }
         
-        Debug.Log($"[CharacterBase] InitializeFromCharacterData called for {gameObject.name}, CharacterType: {characterData.CharacterType}, BaseMaxHealth: {characterData.MaxHealth}");
+        // Debug.Log($"[CharacterBase] InitializeFromCharacterData called for {gameObject.name}, CharacterType: {characterData.CharacterType}, BaseMaxHealth: {characterData.MaxHealth}");
         
         // HealthSystemの最大HPを設定（強化されたHPを適用）
         if (healthSystem != null)
@@ -166,7 +166,7 @@ public class CharacterBase : MonoBehaviour, IDamageable
             {
                 int baseHealth = characterData.MaxHealth;
                 maxHealth = upgradeManager.GetUpgradedHealth(characterData.CharacterType, baseHealth);
-                Debug.Log($"[CharacterBase] UpgradeManager found. BaseHealth: {baseHealth}, UpgradedHealth: {maxHealth} for {characterData.CharacterType}");
+                // Debug.Log($"[CharacterBase] UpgradeManager found. BaseHealth: {baseHealth}, UpgradedHealth: {maxHealth} for {characterData.CharacterType}");
             }
             else
             {
@@ -177,7 +177,7 @@ public class CharacterBase : MonoBehaviour, IDamageable
             isInitializing = true;
             healthSystem.SetMaxHealth(maxHealth);
             isInitializing = false;
-            Debug.Log($"[CharacterBase] HealthSystem.SetMaxHealth called with {maxHealth} for {gameObject.name}");
+            // Debug.Log($"[CharacterBase] HealthSystem.SetMaxHealth called with {maxHealth} for {gameObject.name}");
         }
         else
         {
@@ -384,7 +384,7 @@ public class CharacterBase : MonoBehaviour, IDamageable
         if (simpleHealthBar != null && healthSystem != null)
         {
             simpleHealthBar.Initialize(healthSystem);
-            Debug.Log($"[CharacterBase] SimpleHealthBar created successfully for {gameObject.name}.");
+            // Debug.Log($"[CharacterBase] SimpleHealthBar created successfully for {gameObject.name}.");
             return;
         }
         
@@ -393,7 +393,7 @@ public class CharacterBase : MonoBehaviour, IDamageable
         if (healthBarUI != null && healthSystem != null)
         {
             healthBarUI.Initialize(healthSystem);
-            Debug.Log($"[CharacterBase] WorldSpaceHealthBarUI created successfully for {gameObject.name}.");
+            // Debug.Log($"[CharacterBase] WorldSpaceHealthBarUI created successfully for {gameObject.name}.");
         }
         else
         {

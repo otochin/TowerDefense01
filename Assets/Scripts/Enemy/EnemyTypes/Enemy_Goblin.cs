@@ -102,7 +102,7 @@ public class Enemy_Goblin : MonoBehaviour
                 if (enemyController != null)
                 {
                     enemyController.ResumeMovement();
-                    Debug.Log($"[Enemy_Goblin] No target found. Resuming movement.");
+                    // Debug.Log($"[Enemy_Goblin] No target found. Resuming movement.");
                 }
             }
         }
@@ -203,7 +203,7 @@ public class Enemy_Goblin : MonoBehaviour
         // 攻撃時の突進アニメーション
         StartCoroutine(AttackLunge(target));
         
-        Debug.Log($"[Enemy_Goblin] {enemyBase.EnemyData?.EnemyName} attacked {target} for {damage} damage!");
+        // Debug.Log($"[Enemy_Goblin] {enemyBase.EnemyData?.EnemyName} attacked {target} for {damage} damage!");
     }
     
     /// <summary>

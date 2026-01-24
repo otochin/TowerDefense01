@@ -184,7 +184,7 @@ public class ResourceManager : MonoBehaviour
         if (!isGameStarted)
         {
             isGameStarted = true;
-            Debug.Log($"[ResourceManager] Game started. Auto money generation: {enableAutoMoneyGeneration}");
+            // Debug.Log($"[ResourceManager] Game started. Auto money generation: {enableAutoMoneyGeneration}");
         }
     }
     
@@ -219,9 +219,9 @@ public class ResourceManager : MonoBehaviour
         {
             int oldMoney = currentMoney;
             currentMoney -= amount;
-        Debug.Log($"[ResourceManager] TrySpendMoney on {gameObject.name} (InstanceID: {GetInstanceID()}): {oldMoney} -> {currentMoney} (spent {amount})");
+        // Debug.Log($"[ResourceManager] TrySpendMoney on {gameObject.name} (InstanceID: {GetInstanceID()}): {oldMoney} -> {currentMoney} (spent {amount})");
         OnMoneyChanged?.Invoke(currentMoney);
-        Debug.Log($"[ResourceManager] OnMoneyChanged event invoked with {currentMoney} on {gameObject.name} (InstanceID: {GetInstanceID()})");
+        // Debug.Log($"[ResourceManager] OnMoneyChanged event invoked with {currentMoney} on {gameObject.name} (InstanceID: {GetInstanceID()})");
             return true;
         }
         
@@ -264,6 +264,6 @@ public class ResourceManager : MonoBehaviour
         currentMoney = initialMoney;
         isGameStarted = false;
         OnMoneyChanged?.Invoke(currentMoney);
-        Debug.Log($"[ResourceManager] Money reset to initial value: {currentMoney}");
+        // Debug.Log($"[ResourceManager] Money reset to initial value: {currentMoney}");
     }
 }

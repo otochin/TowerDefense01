@@ -58,7 +58,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
         if (listPanel == null)
         {
             listPanel = gameObject;
-            Debug.Log($"[IncorrectAnswersListUI] ListPanel was null. Using this GameObject: {gameObject.name}");
+            // Debug.Log($"[IncorrectAnswersListUI] ListPanel was null. Using this GameObject: {gameObject.name}");
         }
         
         // ScrollRectが設定されていない場合は自動検出を試みる
@@ -98,7 +98,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
                             contentParent = content;
                             // ScrollRectのContentも設定する
                             scrollRect.content = content as RectTransform;
-                            Debug.Log("[IncorrectAnswersListUI] ContentParentを自動検出しました。");
+                            // Debug.Log("[IncorrectAnswersListUI] ContentParentを自動検出しました。");
                         }
                     }
                 }
@@ -133,7 +133,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
                 if (!current.gameObject.activeSelf)
                 {
                     current.gameObject.SetActive(true);
-                    Debug.Log($"[IncorrectAnswersListUI] Activated parent: {current.name}");
+                    // Debug.Log($"[IncorrectAnswersListUI] Activated parent: {current.name}");
                 }
                 current = current.parent;
             }
@@ -156,11 +156,11 @@ public class IncorrectAnswersListUI : MonoBehaviour
                 if (parent != null && !parent.gameObject.activeSelf)
                 {
                     parent.gameObject.SetActive(true);
-                    Debug.Log($"[IncorrectAnswersListUI] Force-activated parent: {parent.name}");
+                    // Debug.Log($"[IncorrectAnswersListUI] Force-activated parent: {parent.name}");
                 }
             }
             
-            Debug.Log($"[IncorrectAnswersListUI] ListPanel activated. Active: {listPanel.activeSelf}, ActiveInHierarchy: {listPanel.activeInHierarchy}");
+            // Debug.Log($"[IncorrectAnswersListUI] ListPanel activated. Active: {listPanel.activeSelf}, ActiveInHierarchy: {listPanel.activeInHierarchy}");
         }
         else
         {
@@ -186,7 +186,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
             
             if (titleText != null)
             {
-                Debug.Log($"[IncorrectAnswersListUI] TitleText auto-detected: {titleText.name}");
+                // Debug.Log($"[IncorrectAnswersListUI] TitleText auto-detected: {titleText.name}");
             }
         }
         
@@ -194,7 +194,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
         if (titleText != null)
         {
             titleText.text = string.Format(titleFormat, incorrectAnswers.Count);
-            Debug.Log($"[IncorrectAnswersListUI] Title text updated: {titleText.text}");
+            // Debug.Log($"[IncorrectAnswersListUI] Title text updated: {titleText.text}");
         }
         else
         {
@@ -207,7 +207,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
         // リストアイテムを生成
         if (contentParent != null && listItemPrefab != null)
         {
-            Debug.Log($"[IncorrectAnswersListUI] Generating {incorrectAnswers.Count} list items. ContentParent: {contentParent.name}, ListItemPrefab: {listItemPrefab.name}");
+            // Debug.Log($"[IncorrectAnswersListUI] Generating {incorrectAnswers.Count} list items. ContentParent: {contentParent.name}, ListItemPrefab: {listItemPrefab.name}");
             
             int itemCount = 0;
             foreach (var (wordData, count) in incorrectAnswers)
@@ -255,12 +255,12 @@ public class IncorrectAnswersListUI : MonoBehaviour
                             {
                                 itemRect.sizeDelta = new Vector2(itemWidth, itemRect.sizeDelta.y);
                                 layoutElement.preferredWidth = itemWidth;
-                                Debug.Log($"[IncorrectAnswersListUI] Set item {itemCount} width to {itemWidth} (content width: {parentRect.sizeDelta.x})");
+                                // Debug.Log($"[IncorrectAnswersListUI] Set item {itemCount} width to {itemWidth} (content width: {parentRect.sizeDelta.x})");
                             }
                         }
                     }
                     
-                    Debug.Log($"[IncorrectAnswersListUI] Set LayoutElement preferredHeight: {preferredHeight} for item {itemCount}");
+                    // Debug.Log($"[IncorrectAnswersListUI] Set LayoutElement preferredHeight: {preferredHeight} for item {itemCount}");
                 }
                 
                 // IncorrectAnswerListItemUIコンポーネントを使用してデータを設定
@@ -270,7 +270,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
                 {
                     // テキスト参照を確認
                     TextMeshProUGUI[] allTexts = itemObj.GetComponentsInChildren<TextMeshProUGUI>(true);
-                    Debug.Log($"[IncorrectAnswersListUI] List item {itemCount}: Found {allTexts.Length} TextMeshProUGUI components in children");
+                    // Debug.Log($"[IncorrectAnswersListUI] List item {itemCount}: Found {allTexts.Length} TextMeshProUGUI components in children");
                     
                     // 各テキスト要素にContentSizeFitterを追加してHeightを自動計算
                     foreach (TextMeshProUGUI text in allTexts)
@@ -312,9 +312,9 @@ public class IncorrectAnswersListUI : MonoBehaviour
                             text.overflowMode = TMPro.TextOverflowModes.Overflow; // はみ出しても表示
                             
                             // プレハブで設定された幅をログに出力（確認用）
-                            Debug.Log($"[IncorrectAnswersListUI]   Text element '{text.name}': Width={textRect.sizeDelta.x}, Height={textRect.sizeDelta.y}, Anchor=({textRect.anchorMin.x}, {textRect.anchorMin.y}) to ({textRect.anchorMax.x}, {textRect.anchorMax.y})");
+                            // Debug.Log($"[IncorrectAnswersListUI]   Text element '{text.name}': Width={textRect.sizeDelta.x}, Height={textRect.sizeDelta.y}, Anchor=({textRect.anchorMin.x}, {textRect.anchorMin.y}) to ({textRect.anchorMax.x}, {textRect.anchorMax.y})");
                             
-                            Debug.Log($"[IncorrectAnswersListUI]   Added ContentSizeFitter to {text.name} (isCountText: {isCountText}). Before: Size({textRect.sizeDelta.x}, {textRect.sizeDelta.y})");
+                            // Debug.Log($"[IncorrectAnswersListUI]   Added ContentSizeFitter to {text.name} (isCountText: {isCountText}). Before: Size({textRect.sizeDelta.x}, {textRect.sizeDelta.y})");
                         }
                     }
                     
@@ -328,11 +328,11 @@ public class IncorrectAnswersListUI : MonoBehaviour
                         if (textRect != null)
                         {
                             LayoutRebuilder.ForceRebuildLayoutImmediate(textRect);
-                            Debug.Log($"[IncorrectAnswersListUI]   After layout rebuild: {text.name} Size({textRect.sizeDelta.x}, {textRect.sizeDelta.y})");
+                            // Debug.Log($"[IncorrectAnswersListUI]   After layout rebuild: {text.name} Size({textRect.sizeDelta.x}, {textRect.sizeDelta.y})");
                         }
                     }
                     
-                    Debug.Log($"[IncorrectAnswersListUI] List item {itemCount} created: {wordData.English} / {wordData.Japanese} ×{count}回");
+                    // Debug.Log($"[IncorrectAnswersListUI] List item {itemCount} created: {wordData.English} / {wordData.Japanese} ×{count}回");
                 }
                 else
                 {
@@ -361,7 +361,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
                 }
             }
             
-            Debug.Log($"[IncorrectAnswersListUI] Successfully created {itemCount} list items. ContentParent child count: {contentParent.childCount}");
+            // Debug.Log($"[IncorrectAnswersListUI] Successfully created {itemCount} list items. ContentParent child count: {contentParent.childCount}");
             
             // ContentのRectTransformを取得してアンカーを上部に設定
             RectTransform contentRect = contentParent as RectTransform;
@@ -411,7 +411,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
                         
                         // Contentの幅を確認してログに出力
                         float contentWidth = viewportRect.rect.width - 10f; // 左右のパディング5pxずつ
-                        Debug.Log($"[IncorrectAnswersListUI] Content anchor set to Top Stretch (viewport width: {viewportRect.rect.width}, content width: {contentWidth}, padding: 5px each side)");
+                        // Debug.Log($"[IncorrectAnswersListUI] Content anchor set to Top Stretch (viewport width: {viewportRect.rect.width}, content width: {contentWidth}, padding: 5px each side)");
                     }
                     else
                     {
@@ -433,7 +433,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
                     Debug.LogWarning("[IncorrectAnswersListUI] ScrollRect is null. Using default anchor settings.");
                 }
                 
-                Debug.Log($"[IncorrectAnswersListUI] Content anchor: ({contentRect.anchorMin.x}, {contentRect.anchorMin.y}) to ({contentRect.anchorMax.x}, {contentRect.anchorMax.y}), Position: {contentRect.anchoredPosition}, Size: {contentRect.sizeDelta}");
+                // Debug.Log($"[IncorrectAnswersListUI] Content anchor: ({contentRect.anchorMin.x}, {contentRect.anchorMin.y}) to ({contentRect.anchorMax.x}, {contentRect.anchorMax.y}), Position: {contentRect.anchoredPosition}, Size: {contentRect.sizeDelta}");
             }
             
             // Content Size Fitterを強制的に更新（レイアウトを再計算）
@@ -451,7 +451,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
                     contentRect.offsetMax = new Vector2(contentRect.offsetMax.x, 0f);
                     // anchoredPositionを0に設定して、Viewportの上部に配置
                     contentRect.anchoredPosition = new Vector2(contentRect.anchoredPosition.x, 0f);
-                    Debug.Log($"[IncorrectAnswersListUI] ContentSizeFitter found. Layout rebuilt. Content size: {contentRect.sizeDelta}, Position: {contentRect.anchoredPosition}, OffsetMin: {contentRect.offsetMin}, OffsetMax: {contentRect.offsetMax}");
+                    // Debug.Log($"[IncorrectAnswersListUI] ContentSizeFitter found. Layout rebuilt. Content size: {contentRect.sizeDelta}, Position: {contentRect.anchoredPosition}, OffsetMin: {contentRect.offsetMin}, OffsetMax: {contentRect.offsetMax}");
                 }
             }
             else
@@ -463,7 +463,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
             if (scrollRect != null && scrollRect.content == null && contentRect != null)
             {
                 scrollRect.content = contentRect;
-                Debug.Log($"[IncorrectAnswersListUI] ScrollRect.content set to ContentParent.");
+                // Debug.Log($"[IncorrectAnswersListUI] ScrollRect.content set to ContentParent.");
             }
             
             // ScrollRectの初期位置を上部に設定（リストが上から表示されるように）
@@ -498,10 +498,10 @@ public class IncorrectAnswersListUI : MonoBehaviour
             Debug.LogWarning("[IncorrectAnswersListUI] ScrollRectのContentが設定されていません。スクロール位置をリセットできません。");
         }
         
-        Debug.Log($"[IncorrectAnswersListUI] Showed {incorrectAnswers.Count} incorrect answers.");
+        // Debug.Log($"[IncorrectAnswersListUI] Showed {incorrectAnswers.Count} incorrect answers.");
         
         // デバッグ: ヒエラルキーの状態を確認
-        DebugHierarchy();
+        // DebugHierarchy();
     }
     
     /// <summary>
@@ -515,7 +515,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
         if (scrollRect != null)
         {
             scrollRect.verticalNormalizedPosition = 1f; // 上部（1.0 = 上、0.0 = 下）
-            Debug.Log($"[IncorrectAnswersListUI] ScrollRect position reset to top (verticalNormalizedPosition: 1.0)");
+            // Debug.Log($"[IncorrectAnswersListUI] ScrollRect position reset to top (verticalNormalizedPosition: 1.0)");
         }
     }
     
@@ -526,12 +526,12 @@ public class IncorrectAnswersListUI : MonoBehaviour
     {
         if (contentParent != null)
         {
-            Debug.Log($"[IncorrectAnswersListUI] ContentParent: {contentParent.name}, Active: {contentParent.gameObject.activeSelf}, ActiveInHierarchy: {contentParent.gameObject.activeInHierarchy}, ChildCount: {contentParent.childCount}");
+            // Debug.Log($"[IncorrectAnswersListUI] ContentParent: {contentParent.name}, Active: {contentParent.gameObject.activeSelf}, ActiveInHierarchy: {contentParent.gameObject.activeInHierarchy}, ChildCount: {contentParent.childCount}");
             
             RectTransform contentRect = contentParent as RectTransform;
             if (contentRect != null)
             {
-                Debug.Log($"[IncorrectAnswersListUI] ContentParent RectTransform - Position: {contentRect.anchoredPosition}, Size: {contentRect.sizeDelta}, AnchoredMin: {contentRect.anchorMin}, AnchoredMax: {contentRect.anchorMax}");
+                // Debug.Log($"[IncorrectAnswersListUI] ContentParent RectTransform - Position: {contentRect.anchoredPosition}, Size: {contentRect.sizeDelta}, AnchoredMin: {contentRect.anchorMin}, AnchoredMax: {contentRect.anchorMax}");
             }
             
             for (int i = 0; i < contentParent.childCount; i++)
@@ -541,12 +541,12 @@ public class IncorrectAnswersListUI : MonoBehaviour
                 bool isActive = child.gameObject.activeSelf;
                 bool isActiveInHierarchy = child.gameObject.activeInHierarchy;
                 
-                Debug.Log($"[IncorrectAnswersListUI] Child {i}: {child.name}, Active: {isActive}, ActiveInHierarchy: {isActiveInHierarchy}");
+                // Debug.Log($"[IncorrectAnswersListUI] Child {i}: {child.name}, Active: {isActive}, ActiveInHierarchy: {isActiveInHierarchy}");
                 
                 if (rect != null)
                 {
                     // rect.rectが取得できない場合があるので、sizeDeltaを使用
-                    Debug.Log($"[IncorrectAnswersListUI]   - Position: {rect.anchoredPosition}, SizeDelta: {rect.sizeDelta}, Width: {rect.sizeDelta.x}, Height: {rect.sizeDelta.y}");
+                    // Debug.Log($"[IncorrectAnswersListUI]   - Position: {rect.anchoredPosition}, SizeDelta: {rect.sizeDelta}, Width: {rect.sizeDelta.x}, Height: {rect.sizeDelta.y}");
                 }
                 else
                 {
@@ -555,10 +555,10 @@ public class IncorrectAnswersListUI : MonoBehaviour
                 
                 // 子要素のテキストも確認
                 TextMeshProUGUI[] texts = child.GetComponentsInChildren<TextMeshProUGUI>();
-                Debug.Log($"[IncorrectAnswersListUI]   - TextMeshProUGUI count: {texts.Length}");
+                // Debug.Log($"[IncorrectAnswersListUI]   - TextMeshProUGUI count: {texts.Length}");
                 foreach (var text in texts)
                 {
-                    Debug.Log($"[IncorrectAnswersListUI]     - Text: {text.name}, Active: {text.gameObject.activeSelf}, Text: \"{text.text}\", FontSize: {text.fontSize}");
+                    // Debug.Log($"[IncorrectAnswersListUI]     - Text: {text.name}, Active: {text.gameObject.activeSelf}, Text: \"{text.text}\", FontSize: {text.fontSize}");
                 }
             }
         }
@@ -573,7 +573,7 @@ public class IncorrectAnswersListUI : MonoBehaviour
             // ScrollRectのContentが設定されていない場合、エラーを避けるためにnullチェック
             if (scrollRect.content != null)
             {
-                Debug.Log($"[IncorrectAnswersListUI] ScrollRect: {scrollRect.name}, Active: {scrollRect.gameObject.activeSelf}, Content: {scrollRect.content.name}");
+                // Debug.Log($"[IncorrectAnswersListUI] ScrollRect: {scrollRect.name}, Active: {scrollRect.gameObject.activeSelf}, Content: {scrollRect.content.name}");
             }
             else
             {

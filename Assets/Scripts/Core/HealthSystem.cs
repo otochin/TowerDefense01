@@ -37,7 +37,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
         // 既に死亡していなかった場合のみ発火（重複発火を防ぐ）
         if (currentHealth <= 0 && !wasDead)
         {
-            Debug.Log($"[HealthSystem] OnHealthDepleted event firing. currentHealth: {currentHealth}, wasDead: {wasDead}, subscribers: {(OnHealthDepleted?.GetInvocationList().Length ?? 0)}");
+            // Debug.Log($"[HealthSystem] OnHealthDepleted event firing. currentHealth: {currentHealth}, wasDead: {wasDead}, subscribers: {(OnHealthDepleted?.GetInvocationList().Length ?? 0)}");
             OnHealthDepleted?.Invoke();
         }
         else if (currentHealth <= 0 && wasDead)

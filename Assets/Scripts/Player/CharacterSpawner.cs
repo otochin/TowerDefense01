@@ -82,7 +82,7 @@ public class CharacterSpawner : MonoBehaviour
     /// <returns>召喚されたGameObject（失敗時はnull）</returns>
     public GameObject SpawnCharacter(CharacterData characterData)
     {
-        Debug.Log($"[CharacterSpawner] SpawnCharacter called for: {(characterData != null ? characterData.CharacterName : "null")}");
+        // Debug.Log($"[CharacterSpawner] SpawnCharacter called for: {(characterData != null ? characterData.CharacterName : "null")}");
         
         if (characterData == null)
         {
@@ -91,7 +91,7 @@ public class CharacterSpawner : MonoBehaviour
             return null;
         }
         
-        Debug.Log($"[CharacterSpawner] Attempting to spawn {characterData.CharacterName}...");
+        // Debug.Log($"[CharacterSpawner] Attempting to spawn {characterData.CharacterName}...");
         
         // お金が足りるかチェック
         if (resourceManager == null)
@@ -131,19 +131,19 @@ public class CharacterSpawner : MonoBehaviour
             return null;
         }
         
-        Debug.Log($"[CharacterSpawner] All checks passed. Attempting to spend {characterData.Cost} money...");
+        // Debug.Log($"[CharacterSpawner] All checks passed. Attempting to spend {characterData.Cost} money...");
         
         // お金を消費
         if (resourceManager != null)
         {
-            Debug.Log($"[CharacterSpawner] Calling TrySpendMoney with cost: {characterData.Cost}, current money: {resourceManager.CurrentMoney}");
+            // Debug.Log($"[CharacterSpawner] Calling TrySpendMoney with cost: {characterData.Cost}, current money: {resourceManager.CurrentMoney}");
             if (!resourceManager.TrySpendMoney(characterData.Cost))
             {
                 Debug.LogWarning($"[CharacterSpawner] Failed to spend money for {characterData.CharacterName}.");
                 OnSpawnFailed?.Invoke(characterData);
                 return null;
             }
-            Debug.Log($"[CharacterSpawner] Successfully spent {characterData.Cost} money. Remaining: {resourceManager.CurrentMoney}");
+            // Debug.Log($"[CharacterSpawner] Successfully spent {characterData.Cost} money. Remaining: {resourceManager.CurrentMoney}");
         }
         else
         {
@@ -172,11 +172,11 @@ public class CharacterSpawner : MonoBehaviour
             if (characterBase.CharacterData == null || characterBase.CharacterData != characterData)
             {
                 characterBase.SetCharacterData(characterData);
-                Debug.Log($"[CharacterSpawner] CharacterData set for spawned character: {characterData.CharacterName}");
+                // Debug.Log($"[CharacterSpawner] CharacterData set for spawned character: {characterData.CharacterName}");
             }
             else
             {
-                Debug.Log($"[CharacterSpawner] CharacterData already set for spawned character: {characterData.CharacterName}. CharacterData matches.");
+                // Debug.Log($"[CharacterSpawner] CharacterData already set for spawned character: {characterData.CharacterName}. CharacterData matches.");
             }
         }
         else
@@ -208,7 +208,7 @@ public class CharacterSpawner : MonoBehaviour
         // イベントを発火
         OnCharacterSpawned?.Invoke(characterData, spawnedCharacter);
         
-        Debug.Log($"Spawned {characterData.CharacterName} at {spawnPosition}");
+        // Debug.Log($"Spawned {characterData.CharacterName} at {spawnPosition}");
         
         return spawnedCharacter;
     }

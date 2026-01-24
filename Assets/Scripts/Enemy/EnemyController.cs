@@ -102,7 +102,7 @@ public class EnemyController : MonoBehaviour
                 // デバッグ: 移動停止中であることを定期的にログ出力
                 if (Time.frameCount % 60 == 0) // 1秒ごと
                 {
-                    Debug.Log($"[EnemyController] Movement stopped on {gameObject.name}. Position: {transform.position}, Velocity: {rb2D.velocity}");
+                    // Debug.Log($"[EnemyController] Movement stopped on {gameObject.name}. Position: {transform.position}, Velocity: {rb2D.velocity}");
                 }
             }
         }
@@ -180,14 +180,14 @@ public class EnemyController : MonoBehaviour
             rb2D.velocity = Vector2.zero;
             if (wasMoving)
             {
-                Debug.Log($"[EnemyController] StopMovement called on {gameObject.name}. Position: {transform.position}, Velocity: {rb2D.velocity}");
+                // Debug.Log($"[EnemyController] StopMovement called on {gameObject.name}. Position: {transform.position}, Velocity: {rb2D.velocity}");
             }
         }
         else
         {
             if (wasMoving)
             {
-                Debug.Log($"[EnemyController] StopMovement called on {gameObject.name} (no Rigidbody2D). Position: {transform.position}");
+                // Debug.Log($"[EnemyController] StopMovement called on {gameObject.name} (no Rigidbody2D). Position: {transform.position}");
             }
         }
     }
